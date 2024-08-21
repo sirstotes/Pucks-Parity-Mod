@@ -1,0 +1,36 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        },
+        {
+            "item": "pucks-consistency-mod:copper_nugget"
+        }
+    ],
+    "result": {
+        "id": "minecraft:copper_ingot",
+        "count": 1
+    }
+}
