@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "sirstotes.pucks_parity_mod.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "buckets.BubbleColumnBlockMixin",
+    "buckets.BucketItemMixin",
+    "buckets.CauldronBehaviorMixin",
+    "buckets.CowEntityMixin",
+    "buckets.EmptyBucketStorageMixin",
+    "buckets.FluidBlockMixin",
+    "buckets.FluidMixin",
+    "buckets.FluidStorageMixin",
+    "buckets.LavaFluidMixin",
+    "buckets.PowderSnowBlockMixin",
+    "buckets.WaterFluid$StillMixin",
+    "buckets.WaterloggableMixin",
+    "shears.ItemStackMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}

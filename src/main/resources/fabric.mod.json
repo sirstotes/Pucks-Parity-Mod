@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "pucks-consistency-mod",
+	"id": "pucks-parity-mod",
 	"version": "${version}",
-	"name": "Puck's Consistency Mod",
+	"name": "Puck's Parity Mod",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -12,23 +12,23 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/pucks-consistency-mod/icon.png",
+	"icon": "assets/pucks-parity-mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"sirstotes.pucks_consistency_mod.PucksConsistencyMod"
+			"sirstotes.pucks_parity_mod.PucksParityMod"
 		],
 		"client": [
-			"sirstotes.pucks_consistency_mod.PucksConsistencyModClient"
+			"sirstotes.pucks_parity_mod.PucksParityModClient"
 		],
 		"fabric-datagen": [
-			"sirstotes.pucks_consistency_mod.PucksConsistencyModDataGenerator"
+			"sirstotes.pucks_parity_mod.PucksParityModDataGenerator"
 		]
 	},
 	"mixins": [
-		"pucks-consistency-mod.mixins.json",
+      "pucks-parity-mod.mixins.json",
 		{
-			"config": "pucks-consistency-mod.client.mixins.json",
+			"config": "pucks-parity-mod.client.mixins.json",
 			"environment": "client"
 		}
 	],
