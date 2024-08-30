@@ -6,6 +6,12 @@
     "item.pucks_parity_mod.copper_lava_bucket": "Lava Bucket",
     "item.pucks_parity_mod.copper_milk_bucket": "Milk Bucket",
     "item.pucks_parity_mod.copper_powder_snow_bucket": "Powder Snow Bucket",
-    "block.pucks_parity_mod.copper_chain": "Copper Chain"
-
+    "block.pucks_parity_mod.copper_chain": "Copper Chain",
+    "block.pucks_parity_mod.exposed_copper_chain": "Exposed Copper Chain",
+    "block.pucks_parity_mod.weathered_copper_chain": "Weathered Copper Chain",
+    "block.pucks_parity_mod.oxidized_copper_chain": "Oxidized Copper Chain",
+    "block.pucks_parity_mod.waxed_copper_chain": "Waxed Copper Chain",
+    "block.pucks_parity_mod.waxed_exposed_copper_chain": "Waxed Exposed Copper Chain",
+    "block.pucks_parity_mod.waxed_weathered_copper_chain": "Waxed Weathered Copper Chain",
+    "block.pucks_parity_mod.waxed_oxidized_copper_chain": "Waxed Oxidized Copper Chain"
 }

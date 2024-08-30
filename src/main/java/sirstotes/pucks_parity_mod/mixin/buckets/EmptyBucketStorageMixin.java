@@ -16,7 +16,7 @@ import sirstotes.pucks_parity_mod.PucksParityModItems;
 @Mixin(EmptyBucketStorage.class)
 public abstract class EmptyBucketStorageMixin {
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private ContainerItemContext context;
     @Inject(method="insert(Lnet/fabricmc/fabric/api/transfer/v1/fluid/FluidVariant;JLnet/fabricmc/fabric/api/transfer/v1/transaction/TransactionContext;)J",
             at= @At(value = "INVOKE",

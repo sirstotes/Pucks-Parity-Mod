@@ -22,7 +22,7 @@ import sirstotes.pucks_parity_mod.PucksParityModItems;
 
 @Mixin(FluidStorage.class)
 public abstract class FluidStorageMixin {
-    @Shadow
+    @Shadow(remap = false)
     public static final Event<CombinedItemApiProvider> GENERAL_COMBINED_PROVIDER = null;
     @Inject(method = "<clinit>", at = @At("HEAD"))
 	private static void staticInjection(CallbackInfo ci) {
