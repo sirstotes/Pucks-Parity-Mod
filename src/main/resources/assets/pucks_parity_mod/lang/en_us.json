@@ -13,5 +13,13 @@
     "block.pucks_parity_mod.waxed_copper_chain": "Waxed Copper Chain",
     "block.pucks_parity_mod.waxed_exposed_copper_chain": "Waxed Exposed Copper Chain",
     "block.pucks_parity_mod.waxed_weathered_copper_chain": "Waxed Weathered Copper Chain",
-    "block.pucks_parity_mod.waxed_oxidized_copper_chain": "Waxed Oxidized Copper Chain"
+    "block.pucks_parity_mod.waxed_oxidized_copper_chain": "Waxed Oxidized Copper Chain",
+    "block.pucks_parity_mod.copper_bars": "Copper Bars",
+    "block.pucks_parity_mod.exposed_copper_bars": "Exposed Copper Bars",
+    "block.pucks_parity_mod.weathered_copper_bars": "Weathered Copper Bars",
+    "block.pucks_parity_mod.oxidized_copper_bars": "Oxidized Copper Bars",
+    "block.pucks_parity_mod.waxed_copper_bars": "Waxed Copper Bars",
+    "block.pucks_parity_mod.waxed_exposed_copper_bars": "Waxed Exposed Copper Bars",
+    "block.pucks_parity_mod.waxed_weathered_copper_bars": "Waxed Weathered Copper Bars",
+    "block.pucks_parity_mod.waxed_oxidized_copper_bars": "Waxed Oxidized Copper Bars"
 }
