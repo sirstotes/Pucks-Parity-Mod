@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "buckets.BubbleColumnBlockMixin",
-    "buckets.BucketItemMixin",
     "buckets.CauldronBehaviorMixin",
     "buckets.CowEntityMixin",
     "buckets.EmptyBucketStorageMixin",

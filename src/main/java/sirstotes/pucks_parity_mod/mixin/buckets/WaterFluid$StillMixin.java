@@ -10,13 +10,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import sirstotes.pucks_parity_mod.accessors.BucketItemMixinAccessor;
+import sirstotes.pucks_parity_mod.PucksParityModBucket;
 import sirstotes.pucks_parity_mod.accessors.FluidDrainableMixinAccessor;
 import sirstotes.pucks_parity_mod.accessors.FluidMixinAccessor;
 
 @Mixin(WaterFluid.Still.class)
 public class WaterFluid$StillMixin implements FluidMixinAccessor {
     public Item pucks_Parity_Mod$getBucketItem(BucketItem empty) {
-        return ((BucketItemMixinAccessor) empty).pucks_Parity_Mod$getFilled(Fluids.WATER);
+        return ((PucksParityModBucket) empty).pucks_Parity_Mod$getFilled(Fluids.WATER);
     }
 }

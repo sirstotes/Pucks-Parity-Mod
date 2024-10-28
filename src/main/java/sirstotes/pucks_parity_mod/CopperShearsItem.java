@@ -21,7 +21,7 @@ public class CopperShearsItem extends ShearsItem {
 				ToolComponent.Rule.of(BlockTags.WOOL, 2.0F),
 				ToolComponent.Rule.of(List.of(Blocks.VINE, Blocks.GLOW_LICHEN), 1.0F)
 			),
-			1.0F,
+			0.75F,
 			1
 		);
 	}

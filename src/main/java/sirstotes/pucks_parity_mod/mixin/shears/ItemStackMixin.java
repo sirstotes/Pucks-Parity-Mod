@@ -14,10 +14,10 @@ import sirstotes.pucks_parity_mod.PucksParityModItems;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
-    @ModifyReturnValue(method = "isOf", at = @At("RETURN"))
+    @ModifyReturnValue(method = "isOf", at = @At("RETURN"))//TODO: This is a bad way of doing this. Ideally I should implement the shears tag everywhere.
     public boolean isOfShears(boolean original, Item item) {
         if (item == Items.SHEARS) {
-            return original || this.getItem() == PucksParityModItems.COPPER_SHEARS;//TODO: Shears Group not just these shears
+            return original || new ItemStack(item).isIn(PucksParityModItems.SHEARS);
         }
         return original;
     }

@@ -34,8 +34,10 @@ public class PucksParityModItems {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_LAVA_BUCKET));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_MILK_BUCKET));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET));
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> itemGroup.add(PucksParityModItems.GOLD_SHEARS));
         
 		DispenserBlock.registerBehavior(COPPER_SHEARS.asItem(), new ShearsDispenserBehavior());
+        DispenserBlock.registerBehavior(GOLD_SHEARS.asItem(), new ShearsDispenserBehavior());
 
         DispenserBehavior dispenserBehavior = new ItemDispenserBehavior() {
             private final ItemDispenserBehavior fallbackBehavior = new ItemDispenserBehavior();
@@ -104,13 +106,30 @@ public class PucksParityModItems {
 		return registeredItem;
 	}
     public static final Item COPPER_NUGGET = register(new Item(new Item.Settings()), "copper_nugget");
-    public static final TagKey<Item> SHEARS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "shear"));
+    public static final TagKey<Item> SHEARS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "tools/shear"));
+    public static final TagKey<Item> BUCKETS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "tools/bucket"));
     public static final Item COPPER_SHEARS = register(
         new CopperShearsItem(new Item.Settings().maxDamage(138).component(DataComponentTypes.TOOL, CopperShearsItem.createToolComponent())), "copper_shears"
 	);
+    public static final Item GOLD_SHEARS = register(
+            new GoldShearsItem(new Item.Settings().maxDamage(120).component(DataComponentTypes.TOOL, GoldShearsItem.createToolComponent())), "gold_shears"
+    );
+
     public static final Item COPPER_BUCKET = register(new CopperBucketItem(Fluids.EMPTY, new Item.Settings().maxCount(16)), "copper_bucket");
 	public static final Item COPPER_WATER_BUCKET = register(new CopperBucketItem(Fluids.WATER, new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_water_bucket");
 	public static final Item COPPER_LAVA_BUCKET = register(new CopperBucketItem(Fluids.LAVA, new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_lava_bucket");
 	public static final Item COPPER_MILK_BUCKET = register(new CopperMilkBucketItem(new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_milk_bucket");
 	public static final Item COPPER_POWDER_SNOW_BUCKET = register(new CopperPowderSnowBucketItem(Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "copper_powder_snow_bucket");
+
+    public static final Item GOLD_BUCKET = register(new GoldBucketItem(Fluids.EMPTY, null, 0, new Item.Settings().maxCount(16)), "gold_bucket");
+    public static final Item GOLD_WATER_BUCKET_1 = register(new GoldBucketItem(Fluids.WATER, GOLD_BUCKET, 1, new Item.Settings().recipeRemainder(GOLD_BUCKET).maxCount(1)), "gold_water_bucket_1");
+    public static final Item GOLD_WATER_BUCKET_2 = register(new GoldBucketItem(Fluids.WATER, GOLD_WATER_BUCKET_1, 2, new Item.Settings().recipeRemainder(GOLD_WATER_BUCKET_1).maxCount(1)), "gold_water_bucket_2");
+    public static final Item GOLD_WATER_BUCKET_3 = register(new GoldBucketItem(Fluids.WATER, GOLD_WATER_BUCKET_2, 3, new Item.Settings().recipeRemainder(GOLD_WATER_BUCKET_2).maxCount(1)), "gold_water_bucket_3");
+    public static final Item GOLD_LAVA_BUCKET_1 = register(new GoldBucketItem(Fluids.LAVA, GOLD_BUCKET, 1, new Item.Settings().recipeRemainder(GOLD_BUCKET).maxCount(1)), "gold_lava_bucket_1");
+    public static final Item GOLD_LAVA_BUCKET_2 = register(new GoldBucketItem(Fluids.LAVA, GOLD_LAVA_BUCKET_1, 2, new Item.Settings().recipeRemainder(GOLD_LAVA_BUCKET_1).maxCount(1)), "gold_lava_bucket_2");
+    public static final Item GOLD_LAVA_BUCKET_3 = register(new GoldBucketItem(Fluids.LAVA, GOLD_LAVA_BUCKET_2, 3, new Item.Settings().recipeRemainder(GOLD_LAVA_BUCKET_2).maxCount(1)), "gold_lava_bucket_3");
+    public static final Item GOLD_MILK_BUCKET_1 = register(new GoldMilkBucketItem(GOLD_BUCKET, 1, new Item.Settings().recipeRemainder(GOLD_BUCKET).maxCount(1)), "gold_milk_bucket_1");
+    public static final Item GOLD_MILK_BUCKET_2 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_1, 1, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_1).maxCount(1)), "gold_milk_bucket_2");
+    public static final Item GOLD_MILK_BUCKET_3 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_2, 1, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_2).maxCount(1)), "gold_milk_bucket_3");
+
 }

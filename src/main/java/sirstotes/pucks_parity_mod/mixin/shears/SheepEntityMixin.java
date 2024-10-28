@@ -17,7 +17,7 @@ public abstract class SheepEntityMixin {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z")
     )
     public boolean includeNewShears(boolean original, PlayerEntity player, Hand hand) {
-        return original || player.getStackInHand(hand).isOf(PucksParityModItems.COPPER_SHEARS);
+        return original || player.getStackInHand(hand).isIn(PucksParityModItems.SHEARS);
     }
 }
 // public abstract class SheepEntityMixin extends AnimalEntity implements Shearable {

@@ -41,6 +41,7 @@ public class PucksParityModBlocks {
 
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((itemGroup) -> {
+            itemGroup.add(GOLD_CHAIN.asItem());
             itemGroup.add(COPPER_CHAIN.asItem());
             itemGroup.add(EXPOSED_COPPER_CHAIN.asItem());
             itemGroup.add(WEATHERED_COPPER_CHAIN.asItem());
@@ -49,6 +50,7 @@ public class PucksParityModBlocks {
             itemGroup.add(WAXED_EXPOSED_COPPER_CHAIN.asItem());
             itemGroup.add(WAXED_WEATHERED_COPPER_CHAIN.asItem());
             itemGroup.add(WAXED_OXIDIZED_COPPER_CHAIN.asItem());
+            itemGroup.add(GOLD_BARS.asItem());
             itemGroup.add(COPPER_BARS.asItem());
             itemGroup.add(EXPOSED_COPPER_BARS.asItem());
             itemGroup.add(WEATHERED_COPPER_BARS.asItem());
@@ -69,6 +71,8 @@ public class PucksParityModBlocks {
     public static final Block OXIDIZED_COPPER_CHAIN = register("oxidized_copper_chain", new OxidizableChainBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.create().solid().requiresTool().strength(4.0F, 3.0F).sounds(BlockSoundGroup.CHAIN).nonOpaque()), true);
     public static final Block WAXED_OXIDIZED_COPPER_CHAIN = register("waxed_oxidized_copper_chain", new ChainBlock(AbstractBlock.Settings.copy(COPPER_CHAIN)), true);
 
+    public static final Block GOLD_CHAIN = register("gold_chain", new ChainBlock(AbstractBlock.Settings.create().solid().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.CHAIN).nonOpaque()), true);
+
     public static final Block COPPER_BARS = register("copper_bars", new OxidizablePaneBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.create().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
     public static final Block WAXED_COPPER_BARS = register("waxed_copper_bars", new PaneBlock(AbstractBlock.Settings.copy(COPPER_BARS)), true);
     public static final Block EXPOSED_COPPER_BARS = register("exposed_copper_bars", new OxidizablePaneBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.create().requiresTool().strength(4.0F, 5.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
@@ -77,5 +81,7 @@ public class PucksParityModBlocks {
     public static final Block WAXED_WEATHERED_COPPER_BARS = register("waxed_weathered_copper_bars", new PaneBlock(AbstractBlock.Settings.copy(WEATHERED_COPPER_BARS)), true);
     public static final Block OXIDIZED_COPPER_BARS = register("oxidized_copper_bars", new OxidizablePaneBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.create().requiresTool().strength(4.0F, 3.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
     public static final Block WAXED_OXIDIZED_COPPER_BARS = register("waxed_oxidized_copper_bars", new PaneBlock(AbstractBlock.Settings.copy(OXIDIZED_COPPER_BARS)), true);
+
+    public static final Block GOLD_BARS = register("gold_bars", new PaneBlock(AbstractBlock.Settings.create().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
     //public static final MapCodec<? extends Block> COPPER_CHAIN_TYPE = Registry.register(Registries.BLOCK_TYPE, Identifier.of(PucksParityMod.MOD_ID, "weathering_copper_chain"), OxidizableChainBlock.CODEC);
 }

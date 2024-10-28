@@ -23,5 +23,7 @@ public class PucksParityModClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_EXPOSED_COPPER_BARS, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_WEATHERED_COPPER_BARS, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_OXIDIZED_COPPER_BARS, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_CHAIN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_BARS, RenderLayer.getCutout());
 	}
 }

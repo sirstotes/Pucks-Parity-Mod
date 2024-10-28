@@ -39,6 +39,6 @@ public abstract class BeehiveBlockMixin {// extends BlockWithEntity {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z")
     )
     public boolean includeNewShears(boolean original, ItemStack stack) {
-        return original || stack.isOf(PucksParityModItems.COPPER_SHEARS);
+        return original || stack.isIn(PucksParityModItems.SHEARS);
     }
 }

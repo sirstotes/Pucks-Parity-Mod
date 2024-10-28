@@ -64,6 +64,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			registerBars(blockStateModelGenerator, WAXED_EXPOSED_COPPER_BARS, "exposed_copper_bars");
 			registerBars(blockStateModelGenerator, WAXED_WEATHERED_COPPER_BARS, "weathered_copper_bars");
 			registerBars(blockStateModelGenerator, WAXED_OXIDIZED_COPPER_BARS, "oxidized_copper_bars");
+			registerBars(blockStateModelGenerator, GOLD_BARS, "gold_bars");
 		}
 
 		@Override
@@ -75,6 +76,17 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET, Models.GENERATED);
 			itemModelGenerator.register(PucksParityModItems.COPPER_NUGGET, Models.GENERATED);
 			itemModelGenerator.register(PucksParityModItems.COPPER_SHEARS, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_BUCKET, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_LAVA_BUCKET_1, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_LAVA_BUCKET_2, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_LAVA_BUCKET_3, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_WATER_BUCKET_1, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_WATER_BUCKET_2, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_WATER_BUCKET_3, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_MILK_BUCKET_1, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_MILK_BUCKET_2, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_MILK_BUCKET_3, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_SHEARS, Models.GENERATED);
 
 			itemModelGenerator.register(COPPER_CHAIN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(EXPOSED_COPPER_CHAIN.asItem(), Models.GENERATED);
@@ -84,6 +96,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(WAXED_EXPOSED_COPPER_CHAIN.asItem(), EXPOSED_COPPER_CHAIN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WAXED_WEATHERED_COPPER_CHAIN.asItem(), WEATHERED_COPPER_CHAIN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_CHAIN.asItem(), OXIDIZED_COPPER_CHAIN.asItem(), Models.GENERATED);
+			itemModelGenerator.register(GOLD_CHAIN.asItem(), Models.GENERATED);
 
 			itemModelGenerator.register(COPPER_BARS.asItem(), Models.GENERATED);
 			itemModelGenerator.register(EXPOSED_COPPER_BARS.asItem(), Models.GENERATED);
@@ -93,6 +106,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(WAXED_EXPOSED_COPPER_BARS.asItem(), EXPOSED_COPPER_BARS.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WAXED_WEATHERED_COPPER_BARS.asItem(), WEATHERED_COPPER_BARS.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_BARS.asItem(), OXIDIZED_COPPER_BARS.asItem(), Models.GENERATED);
+			itemModelGenerator.register(GOLD_BARS.asItem(), Models.GENERATED);
 		}
 
 		private void registerBars(BlockStateModelGenerator blockStateModelGenerator, Block block, String texture) {

@@ -28,6 +28,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import sirstotes.pucks_parity_mod.PucksParityModBucket;
 import sirstotes.pucks_parity_mod.PucksParityModItems;
 
 @Mixin(CauldronBehavior.class)
@@ -69,49 +70,57 @@ public abstract interface CauldronBehaviorMixin {
 		));
 		behavior.put(PucksParityModItems.COPPER_WATER_BUCKET, CauldronBehavior.FILL_WITH_WATER);
 		behavior.put(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET, CauldronBehavior.FILL_WITH_POWDER_SNOW);
+		behavior.put(PucksParityModItems.GOLD_WATER_BUCKET_1, CauldronBehavior.FILL_WITH_WATER);
+		behavior.put(PucksParityModItems.GOLD_WATER_BUCKET_2, CauldronBehavior.FILL_WITH_WATER);
+		behavior.put(PucksParityModItems.GOLD_WATER_BUCKET_3, CauldronBehavior.FILL_WITH_WATER);
+		behavior.put(PucksParityModItems.GOLD_LAVA_BUCKET_1, CauldronBehavior.FILL_WITH_LAVA);
+		behavior.put(PucksParityModItems.GOLD_LAVA_BUCKET_2, CauldronBehavior.FILL_WITH_LAVA);
+		behavior.put(PucksParityModItems.GOLD_LAVA_BUCKET_3, CauldronBehavior.FILL_WITH_LAVA);
     }
 
     @Inject(method = "registerBehavior", at = @At("TAIL"))
     private static void registerBehaviorBuckets(CallbackInfo ci, @Local(ordinal = 1) Map<Item, CauldronBehavior> map2, @Local(ordinal = 2) Map<Item, CauldronBehavior> map3, @Local(ordinal = 3) Map<Item, CauldronBehavior> map4) {
         map2.put(
 			PucksParityModItems.COPPER_BUCKET,
-			(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(
-					state,
-					world,
-					pos,
-					player,
-					hand,
-					stack,
-					new ItemStack(PucksParityModItems.COPPER_WATER_BUCKET),
-					statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3,
-					SoundEvents.ITEM_BUCKET_FILL
-				)
+			(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.COPPER_WATER_BUCKET), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
+		);
+		map2.put(
+				PucksParityModItems.GOLD_BUCKET,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_1), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
+		);
+		map2.put(
+				PucksParityModItems.GOLD_WATER_BUCKET_1,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_2), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
+		);
+		map2.put(
+				PucksParityModItems.GOLD_WATER_BUCKET_2,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_3), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL)
 		);
         map3.put(
-			PucksParityModItems.COPPER_BUCKET,
-			(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(
-					state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.COPPER_LAVA_BUCKET), statex -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA
-				)
+				PucksParityModItems.COPPER_BUCKET,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.COPPER_LAVA_BUCKET), statex -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA)
+		);
+		map3.put(
+				PucksParityModItems.GOLD_BUCKET,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_LAVA_BUCKET_1), statex -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA)
+		);
+		map3.put(
+				PucksParityModItems.GOLD_LAVA_BUCKET_1,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_LAVA_BUCKET_2), statex -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA)
+		);
+		map3.put(
+				PucksParityModItems.GOLD_LAVA_BUCKET_2,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_LAVA_BUCKET_3), statex -> true, SoundEvents.ITEM_BUCKET_FILL_LAVA)
 		);
         map4.put(
 			PucksParityModItems.COPPER_BUCKET,
-			(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(
-					state,
-					world,
-					pos,
-					player,
-					hand,
-					stack,
-					new ItemStack(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET),
-					statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3,
-					SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW
-				)
+			(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW)
 		);
     }
     @ModifyArg(method = "fillCauldron", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;<init>(Lnet/minecraft/item/ItemConvertible;)V"))
     private static ItemConvertible bucketItem(ItemConvertible original, @Local(argsOnly = true) ItemStack stack) {
-        if(stack.isOf(PucksParityModItems.COPPER_LAVA_BUCKET) || stack.isOf(PucksParityModItems.COPPER_WATER_BUCKET) || stack.isOf(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET)) {
-            return PucksParityModItems.COPPER_BUCKET;
+        if(stack.getItem() instanceof PucksParityModBucket item) {
+            return item.pucks_Parity_Mod$getEmptied();
         }
         return original;
     }

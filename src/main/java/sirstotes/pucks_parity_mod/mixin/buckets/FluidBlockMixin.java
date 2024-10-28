@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,4 +36,9 @@ public class FluidBlockMixin implements FluidDrainableMixinAccessor {
         }
         return ItemStack.EMPTY;
     } //Can only do it this way if I make every single other FluidDrainable class also have a mixin for this.. Then other mod compatibility is out the window.
+
+    @Override
+    public boolean pucks_Parity_Mod$fluidEquals(Fluid _fluid) {
+        return fluid == _fluid;
+    }
 }
