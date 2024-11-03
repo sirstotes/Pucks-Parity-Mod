@@ -7,6 +7,7 @@ import net.minecraft.block.FluidFillable;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -21,7 +22,6 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import sirstotes.pucks_parity_mod.accessors.FluidDrainableMixinAccessor;
-import sirstotes.pucks_parity_mod.mixin.buckets.WaterloggableMixin;
 
 public class CopperBucketItem extends BucketItem implements PucksParityModBucket {
 
@@ -83,10 +83,11 @@ public class CopperBucketItem extends BucketItem implements PucksParityModBucket
         }
     }
 
-    public ItemStack pucks_Parity_Mod$getEmptiedStack(ItemStack stack, PlayerEntity player) {
-        return !player.isInCreativeMode() ? new ItemStack(PucksParityModItems.COPPER_BUCKET) : stack;
-    }
     public static ItemStack getEmptiedStack(ItemStack stack, PlayerEntity player) {
+        if (stack.getItem() instanceof CopperBucketItem bucket && bucket.fluid == Fluids.LAVA) {
+            player.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + player.getRandom().nextFloat() * 0.4F);
+            return !player.isInCreativeMode() ? ItemStack.EMPTY : stack;
+        }
         return !player.isInCreativeMode() ? new ItemStack(PucksParityModItems.COPPER_BUCKET) : stack;
     }
 

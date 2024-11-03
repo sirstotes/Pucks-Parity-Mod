@@ -1,6 +1,7 @@
 package sirstotes.pucks_parity_mod;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
@@ -26,8 +27,12 @@ import sirstotes.pucks_parity_mod.accessors.FluidDrainableMixinAccessor;
 
 public class PucksParityModItems {
     public static void initialize() {
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS)
-		.register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_NUGGET));
+        FuelRegistry.INSTANCE.add(COPPER_LAVA_BUCKET, 20000);
+        FuelRegistry.INSTANCE.add(GOLD_LAVA_BUCKET_1, 20000);
+        FuelRegistry.INSTANCE.add(GOLD_LAVA_BUCKET_2, 20000);
+        FuelRegistry.INSTANCE.add(GOLD_LAVA_BUCKET_3, 20000);
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_NUGGET));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_SHEARS));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_BUCKET));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> itemGroup.add(PucksParityModItems.COPPER_WATER_BUCKET));
@@ -38,7 +43,7 @@ public class PucksParityModItems {
         
 		DispenserBlock.registerBehavior(COPPER_SHEARS.asItem(), new ShearsDispenserBehavior());
         DispenserBlock.registerBehavior(GOLD_SHEARS.asItem(), new ShearsDispenserBehavior());
-
+        //Dispenser behavior for placing lava then destroying the bucket.
         DispenserBehavior dispenserBehavior = new ItemDispenserBehavior() {
             private final ItemDispenserBehavior fallbackBehavior = new ItemDispenserBehavior();
 
@@ -56,6 +61,7 @@ public class PucksParityModItems {
             }
         };
         DispenserBlock.registerBehavior(PucksParityModItems.COPPER_LAVA_BUCKET, dispenserBehavior);
+        //Dispenser behavior for just dispensing liquids
         DispenserBehavior dispenserBehavior2 = new ItemDispenserBehavior() {
             private final ItemDispenserBehavior fallbackBehavior = new ItemDispenserBehavior();
 
@@ -66,7 +72,11 @@ public class PucksParityModItems {
                 World world = pointer.world();
                 if (fluidModificationItem.placeFluid(null, world, blockPos, null)) {
                     fluidModificationItem.onEmptied(null, world, stack, blockPos);
-                    return this.decrementStackWithRemainder(pointer, stack, new ItemStack(PucksParityModItems.COPPER_BUCKET));
+                    if (stack.getItem() instanceof PucksParityModBucket bucket) {
+                        return this.decrementStackWithRemainder(pointer, stack, new ItemStack(bucket.pucks_Parity_Mod$getEmptied()));
+                    } else {
+                        return this.decrementStackWithRemainder(pointer, stack, ItemStack.EMPTY);
+                    }
                 } else {
                     return this.fallbackBehavior.dispense(pointer, stack);
                 }
@@ -74,14 +84,18 @@ public class PucksParityModItems {
         };
         DispenserBlock.registerBehavior(PucksParityModItems.COPPER_WATER_BUCKET, dispenserBehavior2);
         DispenserBlock.registerBehavior(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET, dispenserBehavior2);
-        DispenserBlock.registerBehavior(PucksParityModItems.COPPER_BUCKET, new ItemDispenserBehavior() {
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_WATER_BUCKET_3, dispenserBehavior2);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_LAVA_BUCKET_3, dispenserBehavior2);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_3, dispenserBehavior2);
+        //Dispenser behavior for just filling liquids
+        DispenserBehavior dispenserBehavior3 = new ItemDispenserBehavior() {
             @Override
             public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
                 WorldAccess worldAccess = pointer.world();
                 BlockPos blockPos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
                 BlockState blockState = worldAccess.getBlockState(blockPos);
                 if (blockState.getBlock() instanceof FluidDrainable fluidDrainable) {
-                    ItemStack itemStack = ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$tryDrainFluid(PucksParityModItems.COPPER_BUCKET, worldAccess, blockPos, blockState);
+                    ItemStack itemStack = ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$tryDrainFluid(stack.getItem(), worldAccess, blockPos, blockState);
                     if (itemStack.isEmpty()) {
                         return super.dispenseSilently(pointer, stack);
                     } else {
@@ -93,7 +107,45 @@ public class PucksParityModItems {
                     return super.dispenseSilently(pointer, stack);
                 }
             }
-        });
+        };
+        DispenserBlock.registerBehavior(PucksParityModItems.COPPER_BUCKET, dispenserBehavior3);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_BUCKET, dispenserBehavior3);
+        //Dispenser behavior for filling and emptying liquids
+        DispenserBehavior dispenserBehavior4 = new ItemDispenserBehavior() {
+            private final ItemDispenserBehavior fallbackBehavior = new ItemDispenserBehavior();
+            @Override
+            public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
+                World world = pointer.world();
+                BlockPos blockPos = pointer.pos().offset(pointer.state().get(DispenserBlock.FACING));
+                BlockState blockState = world.getBlockState(blockPos);
+                FluidModificationItem fluidModificationItem = (FluidModificationItem)stack.getItem();
+                if (blockState.getBlock() instanceof FluidDrainable fluidDrainable) {
+                    ItemStack itemStack = ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$tryDrainFluid(stack.getItem(), world, blockPos, blockState);
+                    if (itemStack.isEmpty()) {
+                        return super.dispenseSilently(pointer, stack);
+                    } else {
+                        world.emitGameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
+                        Item item = itemStack.getItem();
+                        return this.decrementStackWithRemainder(pointer, stack, new ItemStack(item));
+                    }
+                } else if (fluidModificationItem.placeFluid(null, world, blockPos, null)) {
+                    fluidModificationItem.onEmptied(null, world, stack, blockPos);
+                    if (stack.getItem() instanceof PucksParityModBucket bucket) {
+                        return this.decrementStackWithRemainder(pointer, stack, new ItemStack(bucket.pucks_Parity_Mod$getEmptied()));
+                    } else {
+                        return this.decrementStackWithRemainder(pointer, stack, ItemStack.EMPTY);
+                    }
+                } else {
+                    return this.fallbackBehavior.dispense(pointer, stack);
+                }
+            }
+        };
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_WATER_BUCKET_1, dispenserBehavior4);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_WATER_BUCKET_2, dispenserBehavior4);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_LAVA_BUCKET_1, dispenserBehavior4);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_LAVA_BUCKET_2, dispenserBehavior4);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_1, dispenserBehavior4);
+        DispenserBlock.registerBehavior(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_2, dispenserBehavior4);
     }
     public static Item register(Item item, String id) {
 		// Create the identifier for the item.
@@ -112,13 +164,14 @@ public class PucksParityModItems {
         new CopperShearsItem(new Item.Settings().maxDamage(138).component(DataComponentTypes.TOOL, CopperShearsItem.createToolComponent())), "copper_shears"
 	);
     public static final Item GOLD_SHEARS = register(
-            new GoldShearsItem(new Item.Settings().maxDamage(120).component(DataComponentTypes.TOOL, GoldShearsItem.createToolComponent())), "gold_shears"
+            new GoldShearsItem(new Item.Settings().maxDamage(200).component(DataComponentTypes.TOOL, GoldShearsItem.createToolComponent())), "gold_shears"
     );
 
     public static final Item COPPER_BUCKET = register(new CopperBucketItem(Fluids.EMPTY, new Item.Settings().maxCount(16)), "copper_bucket");
 	public static final Item COPPER_WATER_BUCKET = register(new CopperBucketItem(Fluids.WATER, new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_water_bucket");
-	public static final Item COPPER_LAVA_BUCKET = register(new CopperBucketItem(Fluids.LAVA, new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_lava_bucket");
-	public static final Item COPPER_MILK_BUCKET = register(new CopperMilkBucketItem(new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_milk_bucket");
+	public static final Item COPPER_LAVA_BUCKET = register(new CopperBucketItem(Fluids.LAVA, new Item.Settings()), "copper_lava_bucket");
+
+    public static final Item COPPER_MILK_BUCKET = register(new CopperMilkBucketItem(new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_milk_bucket");
 	public static final Item COPPER_POWDER_SNOW_BUCKET = register(new CopperPowderSnowBucketItem(Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "copper_powder_snow_bucket");
 
     public static final Item GOLD_BUCKET = register(new GoldBucketItem(Fluids.EMPTY, null, 0, new Item.Settings().maxCount(16)), "gold_bucket");

@@ -12,6 +12,6 @@ import sirstotes.pucks_parity_mod.PucksParityModItems;
 public class FurnaceFuelSlotMixin {
     @ModifyReturnValue(method = "isBucket", at = @At("RETURN"))
     private static boolean allowOtherBuckets(boolean original, @Local ItemStack stack) {
-        return original || stack.isOf(PucksParityModItems.COPPER_BUCKET);
+        return original || stack.isIn(PucksParityModItems.BUCKETS);
     }
 }

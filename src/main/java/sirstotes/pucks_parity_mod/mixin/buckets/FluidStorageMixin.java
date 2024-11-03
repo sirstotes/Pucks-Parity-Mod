@@ -40,6 +40,21 @@ public abstract class FluidStorageMixin {
 
 			return null;
 		});
+
+		combinedItemApiProvider(PucksParityModItems.GOLD_BUCKET).register(EmptyBucketStorage::new);
+		// Register full bucket storage
+		GENERAL_COMBINED_PROVIDER.register(context -> {
+			if (context.getItemVariant().getItem() instanceof BucketItem bucketItem) {
+				Fluid bucketFluid = ((BucketItemAccessor) bucketItem).fabric_getFluid();
+
+				// Make sure the mapping is bidirectional.
+				if (bucketFluid != null && bucketFluid.getBucketItem() == bucketItem) {
+					return new FullItemFluidStorage(context, PucksParityModItems.GOLD_BUCKET, FluidVariant.of(bucketFluid), FluidConstants.BUCKET);
+				}
+			}
+
+			return null;
+		});
     }
     @Shadow
     public static Event<CombinedItemApiProvider> combinedItemApiProvider(Item item) {   

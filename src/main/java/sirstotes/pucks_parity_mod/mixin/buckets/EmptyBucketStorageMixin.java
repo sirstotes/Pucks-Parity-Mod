@@ -2,6 +2,7 @@ package sirstotes.pucks_parity_mod.mixin.buckets;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.minecraft.item.BucketItem;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,8 +26,8 @@ public abstract class EmptyBucketStorageMixin {
             cancellable = true,
             remap = false)
     public void includeAllBuckets(FluidVariant resource, long maxAmount, TransactionContext transaction, CallbackInfoReturnable<Long> cir) {
-        if (!this.context.getItemVariant().isOf(PucksParityModItems.COPPER_BUCKET)) {
+        if (!(this.context.getItemVariant() instanceof BucketItem)) {
             cir.setReturnValue(0L);
-        }//TODO: Make this generic and not hardcoded
+        }
     }
 }
