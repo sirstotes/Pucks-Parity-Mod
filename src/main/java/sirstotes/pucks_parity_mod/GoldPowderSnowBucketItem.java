@@ -69,6 +69,18 @@ public class GoldPowderSnowBucketItem extends PowderSnowBucketItem implements Pu
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
+        if (context.getWorld().isClient) {
+            return ActionResult.SUCCESS;
+        }
+        if (context.shouldCancelInteraction()) {
+            ActionResult actionResult = this.place(new ItemPlacementContext(context));
+
+            PlayerEntity playerEntity = context.getPlayer();
+            if (actionResult.isAccepted() && playerEntity != null) {
+                playerEntity.setStackInHand(context.getHand(), pucks_Parity_Mod$getEmptiedStack(context.getStack(), playerEntity));
+            }
+            return actionResult;
+        }
         TypedActionResult<ItemStack> typedActionResult = use(context.getWorld(), context.getPlayer(), context.getHand());
         if (typedActionResult.getResult() == ActionResult.PASS) {
             ActionResult actionResult = this.place(new ItemPlacementContext(context));
@@ -82,12 +94,6 @@ public class GoldPowderSnowBucketItem extends PowderSnowBucketItem implements Pu
         context.getPlayer().setStackInHand(context.getHand(), typedActionResult.getValue());
         return typedActionResult.getResult();
     }
-
-//    @Override
-//    protected BlockState getPlacementState(ItemPlacementContext context) {
-//        BlockState blockState = this.getBlock().getPlacementState(context);
-//        return blockState != null && this.canPlace(context, blockState) ? blockState : null;
-//    }
 
     public ItemStack pucks_Parity_Mod$getEmptiedStack(ItemStack stack, PlayerEntity player) {
         return !player.isInCreativeMode() ? new ItemStack(emptiedItem) : stack;
