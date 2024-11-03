@@ -76,6 +76,9 @@ public abstract interface CauldronBehaviorMixin {
 		behavior.put(PucksParityModItems.GOLD_LAVA_BUCKET_1, CauldronBehavior.FILL_WITH_LAVA);
 		behavior.put(PucksParityModItems.GOLD_LAVA_BUCKET_2, CauldronBehavior.FILL_WITH_LAVA);
 		behavior.put(PucksParityModItems.GOLD_LAVA_BUCKET_3, CauldronBehavior.FILL_WITH_LAVA);
+		behavior.put(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_1, CauldronBehavior.FILL_WITH_POWDER_SNOW);
+		behavior.put(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_2, CauldronBehavior.FILL_WITH_POWDER_SNOW);
+		behavior.put(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_3, CauldronBehavior.FILL_WITH_POWDER_SNOW);
     }
 
     @Inject(method = "registerBehavior", at = @At("TAIL"))
@@ -115,6 +118,18 @@ public abstract interface CauldronBehaviorMixin {
         map4.put(
 			PucksParityModItems.COPPER_BUCKET,
 			(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.COPPER_POWDER_SNOW_BUCKET), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW)
+		);
+		map4.put(
+				PucksParityModItems.GOLD_BUCKET,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_1), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW)
+		);
+		map4.put(
+				PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_1,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_2), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW)
+		);
+		map4.put(
+				PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_2,
+				(CauldronBehavior)(state, world, pos, player, hand, stack) -> emptyCauldron(state, world, pos, player, hand, stack, new ItemStack(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_3), statex -> (Integer)statex.get(LeveledCauldronBlock.LEVEL) == 3, SoundEvents.ITEM_BUCKET_FILL_POWDER_SNOW)
 		);
     }
     @ModifyArg(method = "fillCauldron", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;<init>(Lnet/minecraft/item/ItemConvertible;)V"))

@@ -129,7 +129,9 @@ public class PucksParityModItems {
     public static final Item GOLD_LAVA_BUCKET_2 = register(new GoldBucketItem(Fluids.LAVA, GOLD_LAVA_BUCKET_1, 2, new Item.Settings().recipeRemainder(GOLD_LAVA_BUCKET_1).maxCount(1)), "gold_lava_bucket_2");
     public static final Item GOLD_LAVA_BUCKET_3 = register(new GoldBucketItem(Fluids.LAVA, GOLD_LAVA_BUCKET_2, 3, new Item.Settings().recipeRemainder(GOLD_LAVA_BUCKET_2).maxCount(1)), "gold_lava_bucket_3");
     public static final Item GOLD_MILK_BUCKET_1 = register(new GoldMilkBucketItem(GOLD_BUCKET, 1, new Item.Settings().recipeRemainder(GOLD_BUCKET).maxCount(1)), "gold_milk_bucket_1");
-    public static final Item GOLD_MILK_BUCKET_2 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_1, 1, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_1).maxCount(1)), "gold_milk_bucket_2");
-    public static final Item GOLD_MILK_BUCKET_3 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_2, 1, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_2).maxCount(1)), "gold_milk_bucket_3");
-
+    public static final Item GOLD_MILK_BUCKET_2 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_1, 2, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_1).maxCount(1)), "gold_milk_bucket_2");
+    public static final Item GOLD_MILK_BUCKET_3 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_2, 3, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_2).maxCount(1)), "gold_milk_bucket_3");
+    public static final Item GOLD_POWDER_SNOW_BUCKET_1 = register(new GoldPowderSnowBucketItem(GOLD_BUCKET, 1, Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "gold_powder_snow_bucket_1");
+    public static final Item GOLD_POWDER_SNOW_BUCKET_2 = register(new GoldPowderSnowBucketItem(GOLD_POWDER_SNOW_BUCKET_1, 2, Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "gold_powder_snow_bucket_2");
+    public static final Item GOLD_POWDER_SNOW_BUCKET_3 = register(new GoldPowderSnowBucketItem(GOLD_POWDER_SNOW_BUCKET_2, 3, Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "gold_powder_snow_bucket_3");
 }

@@ -32,7 +32,7 @@ public class BubbleColumnBlockMixin implements FluidDrainableMixinAccessor {
     }
 
     @Override
-    public boolean pucks_Parity_Mod$fluidEquals(Fluid fluid) {
-        return fluid == Fluids.WATER;
+    public boolean pucks_Parity_Mod$fluidEquals(Fluid fluid, BlockState state) {
+        return (fluid == Fluids.WATER || fluid == Fluids.FLOWING_WATER);
     }
 }

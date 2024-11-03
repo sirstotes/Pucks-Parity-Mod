@@ -10,6 +10,7 @@ import net.minecraft.item.ItemUsage;
 import net.minecraft.item.MilkBucketItem;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
 public class GoldMilkBucketItem extends MilkBucketItem implements PucksParityModBucket {
@@ -53,7 +54,7 @@ public class GoldMilkBucketItem extends MilkBucketItem implements PucksParityMod
 
     @Override
     public Item pucks_Parity_Mod$getEmptied() {
-        return null;
+        return emptiedItem;
     }
 
     @Override

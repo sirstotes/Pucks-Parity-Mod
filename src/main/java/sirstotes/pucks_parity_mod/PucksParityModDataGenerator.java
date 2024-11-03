@@ -86,6 +86,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(PucksParityModItems.GOLD_MILK_BUCKET_1, Models.GENERATED);
 			itemModelGenerator.register(PucksParityModItems.GOLD_MILK_BUCKET_2, Models.GENERATED);
 			itemModelGenerator.register(PucksParityModItems.GOLD_MILK_BUCKET_3, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_1, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_2, Models.GENERATED);
+			itemModelGenerator.register(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_3, Models.GENERATED);
 			itemModelGenerator.register(PucksParityModItems.GOLD_SHEARS, Models.GENERATED);
 
 			itemModelGenerator.register(COPPER_CHAIN.asItem(), Models.GENERATED);

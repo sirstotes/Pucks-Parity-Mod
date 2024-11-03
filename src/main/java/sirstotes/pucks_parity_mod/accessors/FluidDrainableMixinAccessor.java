@@ -9,5 +9,8 @@ import net.minecraft.world.WorldAccess;
 
 public interface FluidDrainableMixinAccessor {
     ItemStack pucks_Parity_Mod$tryDrainFluid(Item item, WorldAccess world, BlockPos pos, BlockState state);
-    boolean pucks_Parity_Mod$fluidEquals(Fluid fluid);
+    boolean pucks_Parity_Mod$fluidEquals(Fluid fluid, BlockState state);
+    default boolean pucks_Parity_Mod$isPowderSnow() {
+        return false;
+    }
 }

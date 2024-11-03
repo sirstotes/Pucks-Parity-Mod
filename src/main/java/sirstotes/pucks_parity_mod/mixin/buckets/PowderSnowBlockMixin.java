@@ -16,6 +16,7 @@ import net.minecraft.world.WorldEvents;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import sirstotes.pucks_parity_mod.GoldPowderSnowBucketItem;
 import sirstotes.pucks_parity_mod.PucksParityModBucket;
 import sirstotes.pucks_parity_mod.accessors.FluidDrainableMixinAccessor;
 
@@ -30,11 +31,19 @@ public class PowderSnowBlockMixin implements FluidDrainableMixinAccessor {
         if (item instanceof PucksParityModBucket pItem) {
             return new ItemStack(pItem.pucks_Parity_Mod$getPowderedSnow());
         }
+        if (item instanceof GoldPowderSnowBucketItem pItem) {
+            return new ItemStack(pItem.pucks_Parity_Mod$getPowderedSnow());
+        }
         return new ItemStack(Items.POWDER_SNOW_BUCKET);
     }
 
     @Override
-    public boolean pucks_Parity_Mod$fluidEquals(Fluid fluid) {
+    public boolean pucks_Parity_Mod$fluidEquals(Fluid fluid, BlockState state) {
         return false;
+    }
+
+    @Override
+    public boolean pucks_Parity_Mod$isPowderSnow() {
+        return true;
     }
 }

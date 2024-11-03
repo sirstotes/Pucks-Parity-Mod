@@ -51,22 +51,22 @@ public class GoldBucketItem extends BucketItem implements PucksParityModBucket {
             BlockPos blockPos2 = blockPos.offset(direction);
             if (world.canPlayerModifyAt(user, blockPos) && user.canPlaceOn(blockPos2, direction, itemStack)) {
                 BlockState blockState = world.getBlockState(blockPos);
-                if (blockState.getBlock() instanceof FluidDrainable fluidDrainable) {
-                    if ((this.fluid == Fluids.EMPTY || ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$fluidEquals(fluid))) {
-                        ItemStack itemStack2 = ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$tryDrainFluid(this, world, blockPos, blockState);
-                        if (!itemStack2.isEmpty()) {
-                            user.incrementStat(Stats.USED.getOrCreateStat(this));
-                            fluidDrainable.getBucketFillSound().ifPresent(sound -> user.playSound(sound, 1.0F, 1.0F));
-                            world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);
-                            ItemStack itemStack3 = ItemUsage.exchangeStack(itemStack, user, itemStack2);
-                            if (!world.isClient) {
-                                Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)user, itemStack2);
-                            }
-
-                            return TypedActionResult.success(itemStack3, world.isClient());
+                if (blockState.getBlock() instanceof FluidDrainable fluidDrainable && (fluidLevel == 0 || ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$fluidEquals(this.fluid, blockState))) {
+                    System.out.println("TRY TO DRAIN");
+                    ItemStack itemStack2 = ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$tryDrainFluid(this, world, blockPos, blockState);
+                    if (!itemStack2.isEmpty()) {
+                        user.incrementStat(Stats.USED.getOrCreateStat(this));
+                        fluidDrainable.getBucketFillSound().ifPresent(sound -> user.playSound(sound, 1.0F, 1.0F));
+                        world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);
+                        ItemStack itemStack3 = ItemUsage.exchangeStack(itemStack, user, itemStack2);
+                        if (!world.isClient) {
+                            Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)user, itemStack2);
                         }
+
+                        return TypedActionResult.success(itemStack3, world.isClient());
                     }
                 } else {
+                    System.out.println("TRY TO PLACE");
                     BlockPos blockPos3 = blockState.getBlock() instanceof FluidFillable && this.fluid == Fluids.WATER ? blockPos : blockPos2;
                     if (this.placeFluid(user, world, blockPos3, blockHitResult)) {
                         this.onEmptied(user, world, itemStack, blockPos3);
@@ -122,7 +122,7 @@ public class GoldBucketItem extends BucketItem implements PucksParityModBucket {
     }
 
     public Item pucks_Parity_Mod$getPowderedSnow() {
-        return PucksParityModItems.COPPER_POWDER_SNOW_BUCKET;
+        return PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_1;
     }
 
     public Item pucks_Parity_Mod$getMilk() {

@@ -35,10 +35,10 @@ public class FluidBlockMixin implements FluidDrainableMixinAccessor {
             return new ItemStack(this.fluid.getBucketItem());
         }
         return ItemStack.EMPTY;
-    } //Can only do it this way if I make every single other FluidDrainable class also have a mixin for this.. Then other mod compatibility is out the window.
+    }
 
     @Override
-    public boolean pucks_Parity_Mod$fluidEquals(Fluid _fluid) {
+    public boolean pucks_Parity_Mod$fluidEquals(Fluid _fluid, BlockState state) {
         return fluid == _fluid;
     }
 }

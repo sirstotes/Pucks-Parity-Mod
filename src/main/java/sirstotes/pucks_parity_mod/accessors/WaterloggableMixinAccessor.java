@@ -26,7 +26,7 @@ public interface WaterloggableMixinAccessor extends FluidDrainableMixinAccessor,
             return ItemStack.EMPTY;
         }
     }
-    default boolean pucks_Parity_Mod$fluidEquals(Fluid fluid) {
-        return fluid == Fluids.WATER || fluid == Fluids.FLOWING_WATER;
+    default boolean pucks_Parity_Mod$fluidEquals(Fluid fluid, BlockState state) {
+        return (fluid == Fluids.WATER || fluid == Fluids.FLOWING_WATER) && (Boolean) state.get(Properties.WATERLOGGED);
     }
 }
