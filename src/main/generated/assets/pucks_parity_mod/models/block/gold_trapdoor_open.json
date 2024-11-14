@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_trapdoor_open",
+  "textures": {
+    "texture": "pucks_parity_mod:block/gold_trapdoor"
+  }
+}

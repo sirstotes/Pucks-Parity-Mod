@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "pucks_parity_mod:block/iron_bulb",
+    "east": "pucks_parity_mod:block/iron_bulb_side_powered",
+    "north": "pucks_parity_mod:block/iron_bulb_side_powered",
+    "particle": "pucks_parity_mod:block/iron_bulb",
+    "south": "pucks_parity_mod:block/iron_bulb_side_powered",
+    "up": "pucks_parity_mod:block/iron_bulb_top",
+    "west": "pucks_parity_mod:block/iron_bulb_side_powered"
+  }
+}

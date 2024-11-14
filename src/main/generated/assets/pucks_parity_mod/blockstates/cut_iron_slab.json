@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pucks_parity_mod:block/cut_iron_slab"
+    },
+    "type=double": {
+      "model": "pucks_parity_mod:block/cut_iron"
+    },
+    "type=top": {
+      "model": "pucks_parity_mod:block/cut_iron_slab_top"
+    }
+  }
+}

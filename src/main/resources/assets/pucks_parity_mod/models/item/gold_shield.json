@@ -1,0 +1,11 @@
+{
+  "parent":"fabricshieldlib:item/fabric_banner_shield",
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1
+      },
+      "model": "pucks_parity_mod:item/gold_shield"
+    }
+  ]
+}

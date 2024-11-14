@@ -1,0 +1,6 @@
+{
+  "parent": "pucks_parity_mod:block/template_bars_side",
+  "textures": {
+    "#texture": "pucks_parity_mod:block/gold_bars"
+  }
+}

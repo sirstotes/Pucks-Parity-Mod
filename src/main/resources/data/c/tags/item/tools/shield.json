@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:shield",
+    "pucks_parity_mod:copper_shield",
+    "pucks_parity_mod:gold_shield"
+  ]
+}

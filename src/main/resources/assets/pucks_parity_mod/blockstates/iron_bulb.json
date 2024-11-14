@@ -1,0 +1,33 @@
+{
+  "variants": {
+    "lit=false,powered=false,facing=north": {"model": "pucks_parity_mod:block/iron_bulb", "x": 270},
+    "lit=false,powered=true,facing=north": {"model": "pucks_parity_mod:block/iron_bulb_powered", "x": 270},
+    "lit=true,powered=false,facing=north": {"model": "pucks_parity_mod:block/iron_bulb_lit", "x": 270},
+    "lit=true,powered=true,facing=north": {"model": "pucks_parity_mod:block/iron_bulb_powered_lit", "x": 270},
+
+    "lit=false,powered=false,facing=south": {"model": "pucks_parity_mod:block/iron_bulb", "x":  90},
+    "lit=false,powered=true,facing=south": {"model": "pucks_parity_mod:block/iron_bulb_powered", "x":  90},
+    "lit=true,powered=false,facing=south": {"model": "pucks_parity_mod:block/iron_bulb_lit", "x":  90},
+    "lit=true,powered=true,facing=south": {"model": "pucks_parity_mod:block/iron_bulb_powered_lit", "x":  90},
+
+    "lit=false,powered=false,facing=east": {"model": "pucks_parity_mod:block/iron_bulb", "x":  270, "y":  90},
+    "lit=false,powered=true,facing=east": {"model": "pucks_parity_mod:block/iron_bulb_powered", "x":  270, "y":  90},
+    "lit=true,powered=false,facing=east": {"model": "pucks_parity_mod:block/iron_bulb_lit", "x":  270, "y":  90},
+    "lit=true,powered=true,facing=east": {"model": "pucks_parity_mod:block/iron_bulb_powered_lit", "x":  270, "y":  90},
+
+    "lit=false,powered=false,facing=west": {"model": "pucks_parity_mod:block/iron_bulb", "x":  90, "y":  90},
+    "lit=false,powered=true,facing=west": {"model": "pucks_parity_mod:block/iron_bulb_powered", "x":  90, "y":  90},
+    "lit=true,powered=false,facing=west": {"model": "pucks_parity_mod:block/iron_bulb_lit", "x":  90, "y":  90},
+    "lit=true,powered=true,facing=west": {"model": "pucks_parity_mod:block/iron_bulb_powered_lit", "x":  90, "y":  90},
+
+    "lit=false,powered=false,facing=up": {"model": "pucks_parity_mod:block/iron_bulb", "x":  180},
+    "lit=false,powered=true,facing=up": {"model": "pucks_parity_mod:block/iron_bulb_powered", "x":  180},
+    "lit=true,powered=false,facing=up": {"model": "pucks_parity_mod:block/iron_bulb_lit", "x":  180},
+    "lit=true,powered=true,facing=up": {"model": "pucks_parity_mod:block/iron_bulb_powered_lit", "x":  180},
+
+    "lit=false,powered=false,facing=down": {"model": "pucks_parity_mod:block/iron_bulb"},
+    "lit=false,powered=true,facing=down": {"model": "pucks_parity_mod:block/iron_bulb_powered"},
+    "lit=true,powered=false,facing=down": {"model": "pucks_parity_mod:block/iron_bulb_lit"},
+    "lit=true,powered=true,facing=down": {"model": "pucks_parity_mod:block/iron_bulb_powered_lit"}
+  }
+}

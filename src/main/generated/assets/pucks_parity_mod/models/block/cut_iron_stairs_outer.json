@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/cut_iron",
+    "side": "pucks_parity_mod:block/cut_iron",
+    "top": "pucks_parity_mod:block/cut_iron"
+  }
+}

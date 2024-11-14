@@ -3,7 +3,7 @@
 	"package": "sirstotes.pucks_parity_mod.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+
 	],
 	"injectors": {
 		"defaultRequire": 1

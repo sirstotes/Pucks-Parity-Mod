@@ -18,6 +18,8 @@
     "pucks_parity_mod:waxed_copper_bars",
     "pucks_parity_mod:waxed_exposed_copper_bars",
     "pucks_parity_mod:waxed_weathered_copper_bars",
-    "pucks_parity_mod:waxed_oxidized_copper_bars"
+    "pucks_parity_mod:waxed_oxidized_copper_bars",
+    "pucks_parity_mod:gold_trapdoor",
+    "pucks_parity_mod:gold_door"
   ]
 }
