@@ -1,0 +1,7 @@
+{
+	"parent": "pucks_parity_mod:block/gate_open_flipped_base",
+	"textures": {
+		"0": "pucks_parity_mod:block/exposed_copper_gate",
+		"particle": "pucks_parity_mod:block/exposed_copper_gate"
+	}
+}

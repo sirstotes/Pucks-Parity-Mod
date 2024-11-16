@@ -149,6 +149,40 @@ public class PucksParityModItems {
         DispenserBlock.registerBehavior(PucksParityModItems.GOLD_LAVA_BUCKET_2, dispenserBehavior4);
         DispenserBlock.registerBehavior(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_1, dispenserBehavior4);
         DispenserBlock.registerBehavior(PucksParityModItems.GOLD_POWDER_SNOW_BUCKET_2, dispenserBehavior4);
+
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
+            itemGroup.addBefore(Items.BUCKET, new ItemStack[] {new ItemStack(COPPER_BUCKET),
+                    new ItemStack(COPPER_WATER_BUCKET),
+                    new ItemStack(COPPER_LAVA_BUCKET),
+                    new ItemStack(COPPER_POWDER_SNOW_BUCKET),
+                    new ItemStack(COPPER_MILK_BUCKET)});
+            itemGroup.addAfter(Items.MILK_BUCKET, new ItemStack[] {new ItemStack(GOLD_BUCKET),
+                    new ItemStack(GOLD_WATER_BUCKET_3),
+                    new ItemStack(GOLD_LAVA_BUCKET_3),
+                    new ItemStack(GOLD_POWDER_SNOW_BUCKET_3),
+                    new ItemStack(GOLD_MILK_BUCKET_3)});
+            itemGroup.addBefore(Items.FLINT_AND_STEEL, COPPER_FIRE_STARTER);
+            itemGroup.addAfter(Items.FLINT_AND_STEEL, GOLD_FIRE_STARTER);
+            itemGroup.addBefore(Items.SHEARS, COPPER_SHEARS);
+            itemGroup.addAfter(Items.SHEARS, GOLD_SHEARS);
+            itemGroup.addAfter(Items.BRUSH, new ItemStack[] {new ItemStack(IRON_BRUSH), new ItemStack(GOLD_BRUSH)});
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
+            itemGroup.addBefore(Items.SHIELD, COPPER_SHIELD);
+            itemGroup.addAfter(Items.SHIELD, GOLD_SHIELD);
+            itemGroup.addAfter(Items.LEATHER_HORSE_ARMOR, COPPER_HORSE_ARMOR);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register((itemGroup) -> {
+            itemGroup.addBefore(Items.MILK_BUCKET, COPPER_MILK_BUCKET);
+            itemGroup.addAfter(Items.MILK_BUCKET, GOLD_MILK_BUCKET_3);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
+            itemGroup.addAfter(Items.IRON_NUGGET, COPPER_NUGGET);
+        });
     }
     public static Item register(Item item, String id) {
 		// Create the identifier for the item.

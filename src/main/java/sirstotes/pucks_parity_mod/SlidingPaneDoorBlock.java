@@ -45,8 +45,11 @@ public class SlidingPaneDoorBlock extends Block {
     public static final BooleanProperty OPEN = Properties.OPEN;
     public static final EnumProperty<DoorHinge> HINGE = Properties.DOOR_HINGE;
     public static final BooleanProperty POWERED = Properties.POWERED;
-    protected static final VoxelShape NORTH_SHAPE = Block.createCuboidShape(0.0, 0.0, 7.0, 16.0, 16.0, 9.0);
-    protected static final VoxelShape EAST_SHAPE = Block.createCuboidShape(7.0, 0.0, 0.0, 9.0, 16.0, 16.0);
+    protected static final VoxelShape NORTH_SHAPE = Block.createCuboidShape(0, 0, 7, 16, 16, 9);
+    protected static final VoxelShape SOUTH_SHAPE = Block.createCuboidShape(0, 0, 7, 16, 16, 9);
+    protected static final VoxelShape EAST_SHAPE = Block.createCuboidShape(7, 0, 0, 9, 16, 16);
+    protected static final VoxelShape WEST_SHAPE = Block.createCuboidShape(7, 0, 0, 9, 16, 16);
+    protected static final VoxelShape OPEN_SHAPE = Block.createCuboidShape(7, 0, 7, 9, 16, 9);
     private final BlockSetType blockSetType;
 
     @Override
@@ -76,10 +79,10 @@ public class SlidingPaneDoorBlock extends Block {
         Direction direction = state.get(FACING);
 
         return switch (direction) {
-            case SOUTH -> NORTH_SHAPE.offset(state.get(OPEN).booleanValue() ? 15 : 0, 0, 0);
-            case WEST -> EAST_SHAPE.offset(0, 0, state.get(OPEN).booleanValue() ? 15 : 0);
-            case NORTH -> NORTH_SHAPE.offset(state.get(OPEN).booleanValue() ? -15 : 0, 0, 0);
-            default -> EAST_SHAPE.offset(0, 0, state.get(OPEN).booleanValue() ? -15 : 0);
+            case SOUTH -> state.get(OPEN) ? SOUTH_SHAPE.offset(state.get(HINGE) == DoorHinge.LEFT ? 0.875 : -0.875, 0, -0.125): SOUTH_SHAPE;
+            case WEST -> state.get(OPEN) ? WEST_SHAPE.offset(0.125, 0, state.get(HINGE) == DoorHinge.LEFT ? 0.875 : -0.875): WEST_SHAPE;
+            case NORTH -> state.get(OPEN) ? NORTH_SHAPE.offset(state.get(HINGE) == DoorHinge.LEFT ? -0.875 : 0.875, 0, 0.125): NORTH_SHAPE;
+            default -> state.get(OPEN) ? EAST_SHAPE.offset(-0.125, 0, state.get(HINGE) == DoorHinge.LEFT ? -0.875 : 0.875): EAST_SHAPE;
         };
     }
 
@@ -172,9 +175,12 @@ public class SlidingPaneDoorBlock extends Block {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        System.out.println("USE");
         if (!this.blockSetType.canOpenByHand()) {
+            System.out.println("IGNORE");
             return ActionResult.PASS;
         } else {
+            System.out.println("OPEN");
             state = state.cycle(OPEN);
             world.setBlockState(pos, state, Block.NOTIFY_LISTENERS | Block.REDRAW_ON_MAIN_THREAD);
             this.playOpenCloseSound(player, world, pos, (Boolean)state.get(OPEN));

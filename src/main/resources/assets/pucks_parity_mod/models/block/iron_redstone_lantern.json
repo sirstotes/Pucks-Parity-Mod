@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_lantern",
+  "textures": {
+    "lantern": "pucks_parity_mod:block/iron_redstone_lantern"
+  }
+}

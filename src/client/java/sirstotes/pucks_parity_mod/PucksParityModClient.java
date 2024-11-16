@@ -36,6 +36,7 @@ public class PucksParityModClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_EXPOSED_COPPER_CHAIN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_WEATHERED_COPPER_CHAIN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_OXIDIZED_COPPER_CHAIN, RenderLayer.getCutout());
+
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.COPPER_BARS, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.EXPOSED_COPPER_BARS, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WEATHERED_COPPER_BARS, RenderLayer.getCutout());
@@ -44,11 +45,7 @@ public class PucksParityModClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_EXPOSED_COPPER_BARS, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_WEATHERED_COPPER_BARS, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_OXIDIZED_COPPER_BARS, RenderLayer.getCutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_CHAIN, RenderLayer.getCutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_BARS, RenderLayer.getCutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_LANTERN, RenderLayer.getCutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_GRATE, RenderLayer.getCutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_GRATE, RenderLayer.getCutout());
+
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.COPPER_LANTERN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_COPPER_LANTERN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.EXPOSED_COPPER_LANTERN, RenderLayer.getCutout());
@@ -57,6 +54,45 @@ public class PucksParityModClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_WEATHERED_COPPER_LANTERN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.OXIDIZED_COPPER_LANTERN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_OXIDIZED_COPPER_LANTERN, RenderLayer.getCutout());
+
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.EXPOSED_COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_EXPOSED_COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WEATHERED_COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_WEATHERED_COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.OXIDIZED_COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_OXIDIZED_COPPER_SOUL_LANTERN, RenderLayer.getCutout());
+
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.EXPOSED_COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_EXPOSED_COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WEATHERED_COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_WEATHERED_COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.OXIDIZED_COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN, RenderLayer.getCutout());
+
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.COPPER_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_COPPER_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.EXPOSED_COPPER_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_EXPOSED_COPPER_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WEATHERED_COPPER_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_WEATHERED_COPPER_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.OXIDIZED_COPPER_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WAXED_OXIDIZED_COPPER_GATE, RenderLayer.getCutout());
+
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_CHAIN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_BARS, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_SOUL_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_REDSTONE_LANTERN, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_GRATE, RenderLayer.getCutout());
+		
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_GATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_GRATE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_REDSTONE_LANTERN, RenderLayer.getCutout());
 
 		EntityModelLayerRegistry.registerModelLayer(GOLD_SHIELD_MODEL_LAYER, ShieldEntityModel::getTexturedModelData);
 

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "pucks_parity_mod:block/gold_soul_lantern"
+    },
+    "hanging=true": {
+      "model": "pucks_parity_mod:block/gold_soul_lantern_hanging"
+    }
+  }
+}

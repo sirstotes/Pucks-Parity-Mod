@@ -1,6 +1,7 @@
 {
-  "parent": "pucks_parity_mod:block/template_bars_side",
-  "textures": {
-    "#texture": "pucks_parity_mod:block/gold_bars"
-  }
+	"parent": "pucks_parity_mod:block/gate_base",
+	"textures": {
+		"0": "pucks_parity_mod:block/gold_gate",
+		"particle": "pucks_parity_mod:block/gold_gate"
+	}
 }

@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "hanging=false,facing=north": {"model": "pucks_parity_mod:block/copper_soul_lantern"},
+    "hanging=true,facing=north": {"model": "pucks_parity_mod:block/copper_soul_lantern_hanging"},
+    "hanging=false,facing=east": {"model": "pucks_parity_mod:block/copper_soul_lantern", "y": 90},
+    "hanging=true,facing=east": {"model": "pucks_parity_mod:block/copper_soul_lantern_hanging", "y": 90},
+    "hanging=false,facing=south": {"model": "pucks_parity_mod:block/copper_soul_lantern"},
+    "hanging=true,facing=south": {"model": "pucks_parity_mod:block/copper_soul_lantern_hanging"},
+    "hanging=false,facing=west": {"model": "pucks_parity_mod:block/copper_soul_lantern", "y": 90},
+    "hanging=true,facing=west": {"model": "pucks_parity_mod:block/copper_soul_lantern_hanging", "y": 90}
+  }
+}

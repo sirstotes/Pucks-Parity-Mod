@@ -12,6 +12,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+
 public class PucksParityModBlocks {
     public static Block register(String name, Block block, boolean shouldRegisterItem) {
         Identifier id = Identifier.of(PucksParityMod.MOD_ID, name);
@@ -49,6 +51,22 @@ public class PucksParityModBlocks {
         OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_LANTERN, WAXED_WEATHERED_COPPER_LANTERN);
         OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_LANTERN, WAXED_OXIDIZED_COPPER_LANTERN);
 
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(COPPER_SOUL_LANTERN, EXPOSED_COPPER_SOUL_LANTERN);
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(EXPOSED_COPPER_SOUL_LANTERN, WEATHERED_COPPER_SOUL_LANTERN);
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(WEATHERED_COPPER_SOUL_LANTERN, OXIDIZED_COPPER_SOUL_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(COPPER_SOUL_LANTERN, WAXED_COPPER_SOUL_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_SOUL_LANTERN, WAXED_EXPOSED_COPPER_SOUL_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_SOUL_LANTERN, WAXED_WEATHERED_COPPER_SOUL_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_SOUL_LANTERN, WAXED_OXIDIZED_COPPER_SOUL_LANTERN);
+
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(COPPER_REDSTONE_LANTERN, EXPOSED_COPPER_REDSTONE_LANTERN);
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(EXPOSED_COPPER_REDSTONE_LANTERN, WEATHERED_COPPER_REDSTONE_LANTERN);
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(WEATHERED_COPPER_REDSTONE_LANTERN, OXIDIZED_COPPER_REDSTONE_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(COPPER_REDSTONE_LANTERN, WAXED_COPPER_REDSTONE_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_REDSTONE_LANTERN, WAXED_EXPOSED_COPPER_REDSTONE_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_REDSTONE_LANTERN, WAXED_WEATHERED_COPPER_REDSTONE_LANTERN);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_REDSTONE_LANTERN, WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN);
+
         OxidizableBlocksRegistry.registerOxidizableBlockPair(PLAYER_PRESSURE_PLATE, EXPOSED_PLAYER_PRESSURE_PLATE);
         OxidizableBlocksRegistry.registerOxidizableBlockPair(EXPOSED_PLAYER_PRESSURE_PLATE, WEATHERED_PLAYER_PRESSURE_PLATE);
         OxidizableBlocksRegistry.registerOxidizableBlockPair(WEATHERED_PLAYER_PRESSURE_PLATE, OXIDIZED_PLAYER_PRESSURE_PLATE);
@@ -57,27 +75,85 @@ public class PucksParityModBlocks {
         OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_PLAYER_PRESSURE_PLATE, WAXED_WEATHERED_PLAYER_PRESSURE_PLATE);
         OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_PLAYER_PRESSURE_PLATE, WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE);
 
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(COPPER_GATE, EXPOSED_COPPER_GATE);
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(EXPOSED_COPPER_GATE, WEATHERED_COPPER_GATE);
+        OxidizableBlocksRegistry.registerOxidizableBlockPair(WEATHERED_COPPER_GATE, OXIDIZED_COPPER_GATE);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(COPPER_GATE, WAXED_COPPER_GATE);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_GATE, WAXED_EXPOSED_COPPER_GATE);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_GATE, WAXED_WEATHERED_COPPER_GATE);
+        OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_GATE, WAXED_OXIDIZED_COPPER_GATE);
+
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((itemGroup) -> {
-            itemGroup.add(GOLD_CHAIN.asItem());
-            itemGroup.add(GOLD_DOOR.asItem());
-            itemGroup.add(GOLD_TRAPDOOR.asItem());
-            itemGroup.add(COPPER_CHAIN.asItem());
-            itemGroup.add(EXPOSED_COPPER_CHAIN.asItem());
-            itemGroup.add(WEATHERED_COPPER_CHAIN.asItem());
-            itemGroup.add(OXIDIZED_COPPER_CHAIN.asItem());
-            itemGroup.add(WAXED_COPPER_CHAIN.asItem());
-            itemGroup.add(WAXED_EXPOSED_COPPER_CHAIN.asItem());
-            itemGroup.add(WAXED_WEATHERED_COPPER_CHAIN.asItem());
-            itemGroup.add(WAXED_OXIDIZED_COPPER_CHAIN.asItem());
-            itemGroup.add(GOLD_BARS.asItem());
-            itemGroup.add(COPPER_BARS.asItem());
-            itemGroup.add(EXPOSED_COPPER_BARS.asItem());
-            itemGroup.add(WEATHERED_COPPER_BARS.asItem());
-            itemGroup.add(OXIDIZED_COPPER_BARS.asItem());
-            itemGroup.add(WAXED_COPPER_BARS.asItem());
-            itemGroup.add(WAXED_EXPOSED_COPPER_BARS.asItem());
-            itemGroup.add(WAXED_WEATHERED_COPPER_BARS.asItem());
-            itemGroup.add(WAXED_OXIDIZED_COPPER_BARS.asItem());
+            itemGroup.addAfter(Items.IRON_BLOCK, new ItemStack[] {new ItemStack(CHISELED_IRON),
+                    new ItemStack(IRON_GRATE),
+                    new ItemStack(CUT_IRON),
+                    new ItemStack(CUT_IRON_STAIRS),
+                    new ItemStack(CUT_IRON_SLAB)});
+            itemGroup.addAfter(Items.IRON_BARS, IRON_GATE);
+            itemGroup.addAfter(Items.IRON_TRAPDOOR, IRON_BULB);
+            itemGroup.addAfter(Items.GOLD_BLOCK, new ItemStack[] {new ItemStack(CHISELED_GOLD),
+                    new ItemStack(GOLD_GRATE),
+                    new ItemStack(CUT_GOLD),
+                    new ItemStack(CUT_GOLD_STAIRS),
+                    new ItemStack(CUT_GOLD_SLAB),
+                    new ItemStack(GOLD_BARS),
+                    new ItemStack(GOLD_GATE),
+                    new ItemStack(GOLD_DOOR),
+                    new ItemStack(GOLD_TRAPDOOR)});
+            itemGroup.addAfter(Items.HEAVY_WEIGHTED_PRESSURE_PLATE, GOLD_CHAIN);
+            itemGroup.addAfter(Items.CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(COPPER_BARS), new ItemStack(COPPER_GATE)});
+            itemGroup.addAfter(Items.COPPER_BULB, new ItemStack[] {new ItemStack(PLAYER_PRESSURE_PLATE), new ItemStack(COPPER_CHAIN)});
+            itemGroup.addAfter(Items.EXPOSED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(EXPOSED_COPPER_BARS), new ItemStack(EXPOSED_COPPER_GATE)});
+            itemGroup.addAfter(Items.EXPOSED_COPPER_BULB, new ItemStack[] {new ItemStack(EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(EXPOSED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.WEATHERED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WEATHERED_COPPER_BARS), new ItemStack(WEATHERED_COPPER_GATE)});
+            itemGroup.addAfter(Items.WEATHERED_COPPER_BULB, new ItemStack[] {new ItemStack(WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WEATHERED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.OXIDIZED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(OXIDIZED_COPPER_BARS), new ItemStack(OXIDIZED_COPPER_GATE)});
+            itemGroup.addAfter(Items.OXIDIZED_COPPER_BULB, new ItemStack[] {new ItemStack(OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(OXIDIZED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.WAXED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_COPPER_BARS), new ItemStack(WAXED_COPPER_GATE)});
+            itemGroup.addAfter(Items.WAXED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.WAXED_EXPOSED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_EXPOSED_COPPER_BARS), new ItemStack(WAXED_EXPOSED_COPPER_GATE)});
+            itemGroup.addAfter(Items.WAXED_EXPOSED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_EXPOSED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.WAXED_WEATHERED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_WEATHERED_COPPER_BARS), new ItemStack(WAXED_WEATHERED_COPPER_GATE)});
+            itemGroup.addAfter(Items.WAXED_WEATHERED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_WEATHERED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.WAXED_OXIDIZED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_OXIDIZED_COPPER_BARS), new ItemStack(WAXED_OXIDIZED_COPPER_GATE)});
+            itemGroup.addAfter(Items.WAXED_OXIDIZED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN)});
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> {
+            itemGroup.addAfter(Items.SOUL_LANTERN, new ItemStack[] {new ItemStack(IRON_REDSTONE_LANTERN),
+                    new ItemStack(GOLD_LANTERN),
+                    new ItemStack(GOLD_SOUL_LANTERN),
+                    new ItemStack(GOLD_REDSTONE_LANTERN),
+                    new ItemStack(COPPER_LANTERN), new ItemStack(COPPER_SOUL_LANTERN), new ItemStack(COPPER_REDSTONE_LANTERN),
+                    new ItemStack(EXPOSED_COPPER_LANTERN), new ItemStack(EXPOSED_COPPER_SOUL_LANTERN), new ItemStack(EXPOSED_COPPER_REDSTONE_LANTERN),
+                    new ItemStack(WEATHERED_COPPER_LANTERN), new ItemStack(WEATHERED_COPPER_SOUL_LANTERN), new ItemStack(WEATHERED_COPPER_REDSTONE_LANTERN),
+                    new ItemStack(OXIDIZED_COPPER_LANTERN), new ItemStack(OXIDIZED_COPPER_SOUL_LANTERN), new ItemStack(OXIDIZED_COPPER_REDSTONE_LANTERN),
+                    new ItemStack(WAXED_COPPER_LANTERN), new ItemStack(WAXED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_COPPER_REDSTONE_LANTERN),
+                    new ItemStack(WAXED_EXPOSED_COPPER_LANTERN), new ItemStack(WAXED_EXPOSED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_EXPOSED_COPPER_REDSTONE_LANTERN),
+                    new ItemStack(WAXED_WEATHERED_COPPER_LANTERN), new ItemStack(WAXED_WEATHERED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_WEATHERED_COPPER_REDSTONE_LANTERN),
+                    new ItemStack(WAXED_OXIDIZED_COPPER_LANTERN), new ItemStack(WAXED_OXIDIZED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN)});
+            itemGroup.addAfter(Items.CHAIN, new ItemStack[] {new ItemStack(GOLD_CHAIN),
+                    new ItemStack(COPPER_CHAIN),
+                    new ItemStack(EXPOSED_COPPER_CHAIN),
+                    new ItemStack(WEATHERED_COPPER_CHAIN),
+                    new ItemStack(OXIDIZED_COPPER_CHAIN),
+                    new ItemStack(WAXED_COPPER_CHAIN),
+                    new ItemStack(WAXED_EXPOSED_COPPER_CHAIN),
+                    new ItemStack(WAXED_WEATHERED_COPPER_CHAIN),
+                    new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.REDSTONE_LAMP, new ItemStack[] {new ItemStack(IRON_BULB), new ItemStack(GOLD_BULB)});
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((itemGroup) -> {
+            itemGroup.addAfter(Items.LIGHT_WEIGHTED_PRESSURE_PLATE, new ItemStack[] {
+                    new ItemStack (WAXED_PLAYER_PRESSURE_PLATE),
+                    new ItemStack (WAXED_EXPOSED_PLAYER_PRESSURE_PLATE),
+                    new ItemStack (WAXED_WEATHERED_PLAYER_PRESSURE_PLATE),
+                    new ItemStack (WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE)
+            });
+            itemGroup.addAfter(Items.IRON_DOOR, GOLD_DOOR);
+            itemGroup.addAfter(Items.OAK_FENCE_GATE, new ItemStack[] {new ItemStack(WAXED_COPPER_GATE), new ItemStack(IRON_GATE), new ItemStack(GOLD_GATE)});
+            itemGroup.addAfter(Items.IRON_TRAPDOOR, GOLD_TRAPDOOR);
         });
     }
 
@@ -89,6 +165,7 @@ public class PucksParityModBlocks {
     public static final Block WAXED_WEATHERED_COPPER_CHAIN = register("waxed_weathered_copper_chain", new ChainBlock(AbstractBlock.Settings.copy(COPPER_CHAIN)), true);
     public static final Block OXIDIZED_COPPER_CHAIN = register("oxidized_copper_chain", new OxidizableChainBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.create().solid().requiresTool().strength(4.0F, 3.0F).sounds(BlockSoundGroup.CHAIN).nonOpaque()), true);
     public static final Block WAXED_OXIDIZED_COPPER_CHAIN = register("waxed_oxidized_copper_chain", new ChainBlock(AbstractBlock.Settings.copy(COPPER_CHAIN)), true);
+
     public static final Block COPPER_BARS = register("copper_bars", new OxidizablePaneBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.create().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
     public static final Block WAXED_COPPER_BARS = register("waxed_copper_bars", new PaneBlock(AbstractBlock.Settings.copy(COPPER_BARS)), true);
     public static final Block EXPOSED_COPPER_BARS = register("exposed_copper_bars", new OxidizablePaneBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.create().requiresTool().strength(4.0F, 5.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
@@ -97,6 +174,7 @@ public class PucksParityModBlocks {
     public static final Block WAXED_WEATHERED_COPPER_BARS = register("waxed_weathered_copper_bars", new PaneBlock(AbstractBlock.Settings.copy(WEATHERED_COPPER_BARS)), true);
     public static final Block OXIDIZED_COPPER_BARS = register("oxidized_copper_bars", new OxidizablePaneBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.create().requiresTool().strength(4.0F, 3.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
     public static final Block WAXED_OXIDIZED_COPPER_BARS = register("waxed_oxidized_copper_bars", new PaneBlock(AbstractBlock.Settings.copy(OXIDIZED_COPPER_BARS)), true);
+
     public static final Block COPPER_LANTERN = register("copper_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
     public static final Block WAXED_COPPER_LANTERN = register("waxed_copper_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
     public static final Block EXPOSED_COPPER_LANTERN = register("exposed_copper_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
@@ -105,6 +183,24 @@ public class PucksParityModBlocks {
     public static final Block WAXED_WEATHERED_COPPER_LANTERN = register("waxed_weathered_copper_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
     public static final Block OXIDIZED_COPPER_LANTERN = register("oxidized_copper_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
     public static final Block WAXED_OXIDIZED_COPPER_LANTERN = register("waxed_oxidized_copper_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+
+    public static final Block COPPER_SOUL_LANTERN = register("copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_COPPER_SOUL_LANTERN = register("waxed_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block EXPOSED_COPPER_SOUL_LANTERN = register("exposed_copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_EXPOSED_COPPER_SOUL_LANTERN = register("waxed_exposed_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WEATHERED_COPPER_SOUL_LANTERN = register("weathered_copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_WEATHERED_COPPER_SOUL_LANTERN = register("waxed_weathered_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block OXIDIZED_COPPER_SOUL_LANTERN = register("oxidized_copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_OXIDIZED_COPPER_SOUL_LANTERN = register("waxed_oxidized_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+
+    public static final Block COPPER_REDSTONE_LANTERN = register("copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_COPPER_REDSTONE_LANTERN = register("waxed_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block EXPOSED_COPPER_REDSTONE_LANTERN = register("exposed_copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_EXPOSED_COPPER_REDSTONE_LANTERN = register("waxed_exposed_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WEATHERED_COPPER_REDSTONE_LANTERN = register("weathered_copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_WEATHERED_COPPER_REDSTONE_LANTERN = register("waxed_weathered_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block OXIDIZED_COPPER_REDSTONE_LANTERN = register("oxidized_copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN = register("waxed_oxidized_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
 
     public static final Block PLAYER_PRESSURE_PLATE = register(
             "player_pressure_plate",
@@ -182,6 +278,14 @@ public class PucksParityModBlocks {
             ),
             true
     );
+    public static final Block COPPER_GATE = register("copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    public static final Block WAXED_COPPER_GATE = register("waxed_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    public static final Block EXPOSED_COPPER_GATE = register("exposed_copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    public static final Block WAXED_EXPOSED_COPPER_GATE = register("waxed_exposed_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    public static final Block WEATHERED_COPPER_GATE = register("weathered_copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    public static final Block WAXED_WEATHERED_COPPER_GATE = register("waxed_weathered_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    public static final Block OXIDIZED_COPPER_GATE = register("oxidized_copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    public static final Block WAXED_OXIDIZED_COPPER_GATE = register("waxed_oxidized_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
 
     public static final Block GOLD_CHAIN = register("gold_chain", new ChainBlock(AbstractBlock.Settings.create().solid().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.CHAIN).nonOpaque()), true);
     public static final Block GOLD_BARS = register("gold_bars", new PaneBlock(AbstractBlock.Settings.create().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
@@ -193,6 +297,8 @@ public class PucksParityModBlocks {
     public static final Block CUT_GOLD_STAIRS = register("cut_gold_stairs", new StairsBlock(CUT_GOLD.getDefaultState(), AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK)), true);
     public static final Block GOLD_GRATE = register("gold_grate", new GrateBlock(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK).nonOpaque()), true);
     public static final Block GOLD_LANTERN = register("gold_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block GOLD_SOUL_LANTERN = register("gold_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block GOLD_REDSTONE_LANTERN = register("gold_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
     public static final Block GOLD_BULB = register("gold_bulb", new BulbBlock(AbstractBlock.Settings.create()
         .mapColor(Blocks.GOLD_BLOCK.getDefaultMapColor())
         .strength(3.0F, 6.0F)
@@ -200,7 +306,7 @@ public class PucksParityModBlocks {
         .requiresTool()
         .solidBlock(Blocks::never)
         .luminance(Blocks.createLightLevelFromLitBlockState(15))), true);
-    public static final Block GOLD_GATE = register("gold_gate", new SlidingPaneDoorBlock(BlockSetType.GOLD, AbstractBlock.Settings.create()), true);
+    public static final Block GOLD_GATE = register("gold_gate", new GoldSlidingPaneDoorBlock(BlockSetType.GOLD, AbstractBlock.Settings.copy(GOLD_DOOR)), true);
 
     public static final Block CHISELED_IRON = register("chiseled_iron", new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK)), true);
     public static final Block CUT_IRON = register("cut_iron", new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK)), true);
@@ -214,4 +320,6 @@ public class PucksParityModBlocks {
             .requiresTool()
             .solidBlock(Blocks::never)
             .luminance(Blocks.createLightLevelFromLitBlockState(15))), true);
+    public static final Block IRON_GATE = register("iron_gate", new SlidingPaneDoorBlock(BlockSetType.IRON, AbstractBlock.Settings.copy(Blocks.IRON_DOOR)), true);
+    public static final Block IRON_REDSTONE_LANTERN = register("iron_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
 }

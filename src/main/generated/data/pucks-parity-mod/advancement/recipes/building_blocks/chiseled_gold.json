@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_cut_gold_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "pucks_parity_mod:cut_gold"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "pucks_parity_mod:chiseled_gold"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_cut_gold_block"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "pucks_parity_mod:chiseled_gold"
+    ]
+  }
+}
