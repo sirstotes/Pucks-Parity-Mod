@@ -175,12 +175,9 @@ public class SlidingPaneDoorBlock extends Block {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        System.out.println("USE");
         if (!this.blockSetType.canOpenByHand()) {
-            System.out.println("IGNORE");
             return ActionResult.PASS;
         } else {
-            System.out.println("OPEN");
             state = state.cycle(OPEN);
             world.setBlockState(pos, state, Block.NOTIFY_LISTENERS | Block.REDRAW_ON_MAIN_THREAD);
             this.playOpenCloseSound(player, world, pos, (Boolean)state.get(OPEN));
@@ -257,5 +254,10 @@ public class SlidingPaneDoorBlock extends Block {
         }
 
         return false;
+    }
+
+    @Override
+    protected boolean hasSidedTransparency(BlockState state) {
+        return true;
     }
 }

@@ -3,6 +3,7 @@
   "package": "sirstotes.pucks_parity_mod.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "PaneBlockMixin",
     "brush.BrushableBlockEntityMixin",
     "brush.BrushItemMixin",
     "buckets.BubbleColumnBlockMixin",

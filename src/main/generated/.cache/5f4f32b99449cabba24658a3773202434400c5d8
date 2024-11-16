@@ -1,4 +1,4 @@
-// 1.21.1	2024-11-16T00:06:34.6412522	Puck's Parity Mod/Recipes
+// 1.21.1	2024-11-16T14:46:16.3435962	Puck's Parity Mod/Recipes
 986706ec51637d96ef807a2d4f2aa319a69a23dc data\pucks-parity-mod\advancement\recipes\redstone\gold_bulb.json
 09a994a821f81633a1aeaaecbc5c1627be5fc961 data\pucks-parity-mod\recipe\copper_nugget_from_smelting.json
 633593002e40ad870d8840ca08093f934c3e6c37 data\pucks-parity-mod\recipe\chiseled_gold_from_gold_block_stonecutting.json
@@ -53,7 +53,7 @@ f5c34f8adc9d82b4f743e100ce1f79dc1d161ca8 data\pucks-parity-mod\recipe\cut_iron.j
 d7c28fd038308e462103cddcf927fd202b58e742 data\pucks-parity-mod\recipe\copper_soul_lantern.json
 57ef2e538dd5281a0d88bf79cb73f8d9c423c983 data\pucks-parity-mod\advancement\recipes\misc\copper_ingot_from_nuggets.json
 be2cf3ede411637a8a97cf3fedfe1d1b0cbcd8a3 data\pucks-parity-mod\advancement\recipes\building_blocks\iron_bars.json
-7cdb54fc26cde01a1a00e641587e42b503986306 data\pucks-parity-mod\recipe\chiseled_gold.json
+8229711be5afdfacea1d7a0e102f8c39774edd38 data\pucks-parity-mod\recipe\chiseled_gold.json
 44b95a2c7cdcd1c87cbd0fb9c2f0cb5ad604ac09 data\pucks-parity-mod\recipe\cut_gold_slab.json
 489d11c2c77f4959527f7fb0b58bae6197275729 data\pucks-parity-mod\recipe\cut_iron_stairs_from_iron_block_stonecutting.json
 6a6fed30dcf455e587232e4748f6a91ac01236b3 data\pucks-parity-mod\advancement\recipes\building_blocks\chiseled_iron.json
@@ -108,7 +108,7 @@ a35615fde84d8d9695969b8b69b6aa766494403a data\pucks-parity-mod\recipe\copper_gat
 6b1624f157c08079e06736653837f08b28f0b563 data\pucks-parity-mod\advancement\recipes\redstone\gold_trapdoor.json
 51956910b416931995294154eb856f7df429a075 data\pucks-parity-mod\recipe\cut_iron_stairs.json
 998f3ebd6bc61447dc4f1e4e63b39e02e280af80 data\pucks-parity-mod\recipe\chiseled_iron_from_iron_block_stonecutting.json
-f6fe09608024e8ad05181b428f4f47be123db84a data\pucks-parity-mod\recipe\chiseled_iron.json
+35d7f58183e94d05decff7ad2e1ddbe34f7c5550 data\pucks-parity-mod\recipe\chiseled_iron.json
 52f9a2e428042040b9e80241a2731f6bc6ce8a37 data\pucks-parity-mod\recipe\iron_gate.json
 3a2fc27645384d4f6669d62ee92e1feedea7f409 data\pucks-parity-mod\recipe\player_pressure_plate.json
 83ec7aa123f7be6512ea1337c22cb006380cf13c data\pucks-parity-mod\advancement\recipes\tools\iron_brush.json

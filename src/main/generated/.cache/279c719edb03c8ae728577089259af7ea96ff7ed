@@ -1,9 +1,10 @@
-// 1.21.1	2024-11-16T00:06:34.6442443	Puck's Parity Mod/Block Loot Tables
+// 1.21.1	2024-11-16T14:46:16.346587	Puck's Parity Mod/Block Loot Tables
 a4c315e75b0ae4725454ec2100dad24fe219bc19 data\pucks_parity_mod\loot_table\blocks\waxed_copper_bars.json
 7968c67db5b32f5775859a4158fae2192e97501f data\pucks_parity_mod\loot_table\blocks\iron_bulb.json
 851146ed78595c6fd7ff34193037f6e9a0767681 data\pucks_parity_mod\loot_table\blocks\waxed_copper_soul_lantern.json
 576b9582ad19df7bde10be6c6b318e4f78e3e0af data\pucks_parity_mod\loot_table\blocks\weathered_copper_redstone_lantern.json
 d7a754126ab4d8a91df42763efcca31cef53eab9 data\pucks_parity_mod\loot_table\blocks\copper_gate.json
+1011536677f347cc0fd2e6ae1c00b19c08e542f8 data\pucks_parity_mod\loot_table\blocks\gold_chain.json
 7acf8601fd57338ff60de70f954ba4cc63210b80 data\pucks_parity_mod\loot_table\blocks\chiseled_gold.json
 25fcdb2bf8d4e96d506765755138471c387fba51 data\pucks_parity_mod\loot_table\blocks\gold_redstone_lantern.json
 d4c41a8f0d6bc4a68642f51412215dcb159a41b4 data\pucks_parity_mod\loot_table\blocks\copper_lantern.json

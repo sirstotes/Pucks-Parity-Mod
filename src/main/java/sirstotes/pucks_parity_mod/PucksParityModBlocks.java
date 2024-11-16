@@ -1,18 +1,14 @@
 package sirstotes.pucks_parity_mod;
 
-import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.*;
-import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-
-import java.util.ArrayList;
 
 public class PucksParityModBlocks {
     public static Block register(String name, Block block, boolean shouldRegisterItem) {
@@ -175,32 +171,32 @@ public class PucksParityModBlocks {
     public static final Block OXIDIZED_COPPER_BARS = register("oxidized_copper_bars", new OxidizablePaneBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.create().requiresTool().strength(4.0F, 3.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
     public static final Block WAXED_OXIDIZED_COPPER_BARS = register("waxed_oxidized_copper_bars", new PaneBlock(AbstractBlock.Settings.copy(OXIDIZED_COPPER_BARS)), true);
 
-    public static final Block COPPER_LANTERN = register("copper_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_COPPER_LANTERN = register("waxed_copper_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block EXPOSED_COPPER_LANTERN = register("exposed_copper_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_EXPOSED_COPPER_LANTERN = register("waxed_exposed_copper_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WEATHERED_COPPER_LANTERN = register("weathered_copper_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_WEATHERED_COPPER_LANTERN = register("waxed_weathered_copper_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block OXIDIZED_COPPER_LANTERN = register("oxidized_copper_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_OXIDIZED_COPPER_LANTERN = register("waxed_oxidized_copper_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block COPPER_LANTERN = register("copper_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_COPPER_LANTERN = register("waxed_copper_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block EXPOSED_COPPER_LANTERN = register("exposed_copper_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_EXPOSED_COPPER_LANTERN = register("waxed_exposed_copper_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WEATHERED_COPPER_LANTERN = register("weathered_copper_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_WEATHERED_COPPER_LANTERN = register("waxed_weathered_copper_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block OXIDIZED_COPPER_LANTERN = register("oxidized_copper_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_OXIDIZED_COPPER_LANTERN = register("waxed_oxidized_copper_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
 
-    public static final Block COPPER_SOUL_LANTERN = register("copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_COPPER_SOUL_LANTERN = register("waxed_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block EXPOSED_COPPER_SOUL_LANTERN = register("exposed_copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_EXPOSED_COPPER_SOUL_LANTERN = register("waxed_exposed_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WEATHERED_COPPER_SOUL_LANTERN = register("weathered_copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_WEATHERED_COPPER_SOUL_LANTERN = register("waxed_weathered_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block OXIDIZED_COPPER_SOUL_LANTERN = register("oxidized_copper_soul_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_OXIDIZED_COPPER_SOUL_LANTERN = register("waxed_oxidized_copper_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block COPPER_SOUL_LANTERN = register("copper_soul_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_COPPER_SOUL_LANTERN = register("waxed_copper_soul_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block EXPOSED_COPPER_SOUL_LANTERN = register("exposed_copper_soul_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_EXPOSED_COPPER_SOUL_LANTERN = register("waxed_exposed_copper_soul_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WEATHERED_COPPER_SOUL_LANTERN = register("weathered_copper_soul_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_WEATHERED_COPPER_SOUL_LANTERN = register("waxed_weathered_copper_soul_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block OXIDIZED_COPPER_SOUL_LANTERN = register("oxidized_copper_soul_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_OXIDIZED_COPPER_SOUL_LANTERN = register("waxed_oxidized_copper_soul_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
 
-    public static final Block COPPER_REDSTONE_LANTERN = register("copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_COPPER_REDSTONE_LANTERN = register("waxed_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block EXPOSED_COPPER_REDSTONE_LANTERN = register("exposed_copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_EXPOSED_COPPER_REDSTONE_LANTERN = register("waxed_exposed_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WEATHERED_COPPER_REDSTONE_LANTERN = register("weathered_copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_WEATHERED_COPPER_REDSTONE_LANTERN = register("waxed_weathered_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block OXIDIZED_COPPER_REDSTONE_LANTERN = register("oxidized_copper_redstone_lantern", new OxidizableLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN = register("waxed_oxidized_copper_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block COPPER_REDSTONE_LANTERN = register("copper_redstone_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_COPPER_REDSTONE_LANTERN = register("waxed_copper_redstone_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block EXPOSED_COPPER_REDSTONE_LANTERN = register("exposed_copper_redstone_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_EXPOSED_COPPER_REDSTONE_LANTERN = register("waxed_exposed_copper_redstone_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WEATHERED_COPPER_REDSTONE_LANTERN = register("weathered_copper_redstone_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_WEATHERED_COPPER_REDSTONE_LANTERN = register("waxed_weathered_copper_redstone_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block OXIDIZED_COPPER_REDSTONE_LANTERN = register("oxidized_copper_redstone_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN = register("waxed_oxidized_copper_redstone_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
 
     public static final Block PLAYER_PRESSURE_PLATE = register(
             "player_pressure_plate",

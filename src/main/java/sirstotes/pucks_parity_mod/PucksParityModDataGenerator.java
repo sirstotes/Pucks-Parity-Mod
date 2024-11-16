@@ -254,7 +254,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.criterion("has_cut_gold_block", conditionsFromItem(CUT_GOLD))
 					.offerTo(exporter);
 			ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, 1)
-					.input('X', CUT_GOLD)
+					.input('X', CUT_GOLD_SLAB)
 					.pattern("X")
 					.pattern("X")
 					.criterion("has_cut_gold_block", conditionsFromItem(CUT_GOLD))
@@ -318,7 +318,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.criterion("has_cut_gold_block", conditionsFromItem(CUT_IRON))
 					.offerTo(exporter);
 			ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, 1)
-					.input('X', CUT_IRON)
+					.input('X', CUT_IRON_SLAB)
 					.pattern("X")
 					.pattern("X")
 					.criterion("has_cut_gold_block", conditionsFromItem(CUT_IRON))
@@ -408,6 +408,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(GOLD_REDSTONE_LANTERN, drops(GOLD_REDSTONE_LANTERN.asItem()));
 			addDrop(GOLD_BARS, drops(GOLD_BARS.asItem()));
 			addDrop(GOLD_GATE, drops(GOLD_GATE.asItem()));
+			addDrop(GOLD_CHAIN, drops(GOLD_CHAIN.asItem()));
 
 			addDrop(IRON_BULB, drops(IRON_BULB.asItem()));
 			addDrop(CUT_IRON, drops(CUT_IRON.asItem()));
