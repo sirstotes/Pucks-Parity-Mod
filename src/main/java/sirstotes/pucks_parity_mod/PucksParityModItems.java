@@ -12,8 +12,6 @@ import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.block.dispenser.ShearsDispenserBehavior;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.BannerPatternsComponent;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
@@ -46,6 +44,7 @@ public class PucksParityModItems {
 
 		DispenserBlock.registerBehavior(COPPER_SHEARS.asItem(), new ShearsDispenserBehavior());
         DispenserBlock.registerBehavior(GOLD_SHEARS.asItem(), new ShearsDispenserBehavior());
+
         //Dispenser behavior for placing lava then destroying the bucket.
         DispenserBehavior dispenserBehavior = new ItemDispenserBehavior() {
             private final ItemDispenserBehavior fallbackBehavior = new ItemDispenserBehavior();
@@ -152,21 +151,21 @@ public class PucksParityModItems {
 
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((itemGroup) -> {
-            itemGroup.addBefore(Items.BUCKET, new ItemStack[] {new ItemStack(COPPER_BUCKET),
+            itemGroup.addBefore(Items.BUCKET, new ItemStack(COPPER_BUCKET),
                     new ItemStack(COPPER_WATER_BUCKET),
                     new ItemStack(COPPER_LAVA_BUCKET),
                     new ItemStack(COPPER_POWDER_SNOW_BUCKET),
-                    new ItemStack(COPPER_MILK_BUCKET)});
-            itemGroup.addAfter(Items.MILK_BUCKET, new ItemStack[] {new ItemStack(GOLD_BUCKET),
+                    new ItemStack(COPPER_MILK_BUCKET));
+            itemGroup.addAfter(Items.MILK_BUCKET, new ItemStack(GOLD_BUCKET),
                     new ItemStack(GOLD_WATER_BUCKET_3),
                     new ItemStack(GOLD_LAVA_BUCKET_3),
                     new ItemStack(GOLD_POWDER_SNOW_BUCKET_3),
-                    new ItemStack(GOLD_MILK_BUCKET_3)});
+                    new ItemStack(GOLD_MILK_BUCKET_3));
             itemGroup.addBefore(Items.FLINT_AND_STEEL, COPPER_FIRE_STARTER);
             itemGroup.addAfter(Items.FLINT_AND_STEEL, GOLD_FIRE_STARTER);
             itemGroup.addBefore(Items.SHEARS, COPPER_SHEARS);
             itemGroup.addAfter(Items.SHEARS, GOLD_SHEARS);
-            itemGroup.addAfter(Items.BRUSH, new ItemStack[] {new ItemStack(IRON_BRUSH), new ItemStack(GOLD_BRUSH)});
+            itemGroup.addAfter(Items.BRUSH, new ItemStack(IRON_BRUSH), new ItemStack(GOLD_BRUSH));
         });
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((itemGroup) -> {
@@ -180,19 +179,11 @@ public class PucksParityModItems {
             itemGroup.addAfter(Items.MILK_BUCKET, GOLD_MILK_BUCKET_3);
         });
 
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
-            itemGroup.addAfter(Items.IRON_NUGGET, COPPER_NUGGET);
-        });
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> itemGroup.addAfter(Items.IRON_NUGGET, COPPER_NUGGET));
     }
     public static Item register(Item item, String id) {
-		// Create the identifier for the item.
 		Identifier itemID = Identifier.of(PucksParityMod.MOD_ID, id);
-
-		// Register the item.
-		Item registeredItem = Registry.register(Registries.ITEM, itemID, item);
-
-		// Return the registered item!
-		return registeredItem;
+		return Registry.register(Registries.ITEM, itemID, item);
 	}
     public static final Item COPPER_NUGGET = register(new Item(new Item.Settings()), "copper_nugget");
     public static final TagKey<Item> SHEARS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "tools/shear"));
@@ -236,7 +227,7 @@ public class PucksParityModItems {
         }
     }, "gold_brush");
 
-    public static final RegistryEntry<ArmorMaterial> COPPER_ARMOR = registerArmor("copper", Util.make(new EnumMap(ArmorItem.Type.class), map -> {
+    public static final RegistryEntry<ArmorMaterial> COPPER_ARMOR = registerArmor("copper", Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 2);
         map.put(ArmorItem.Type.LEGGINGS, 4);
         map.put(ArmorItem.Type.CHESTPLATE, 5);
@@ -268,10 +259,10 @@ public class PucksParityModItems {
             Supplier<Ingredient> repairIngredient,
             List<ArmorMaterial.Layer> layers
     ) {
-        EnumMap<ArmorItem.Type, Integer> enumMap = new EnumMap(ArmorItem.Type.class);
+        EnumMap<ArmorItem.Type, Integer> enumMap = new EnumMap<>(ArmorItem.Type.class);
 
         for (ArmorItem.Type type : ArmorItem.Type.values()) {
-            enumMap.put(type, (Integer)defense.get(type));
+            enumMap.put(type, defense.get(type));
         }
 
         return Registry.registerReference(

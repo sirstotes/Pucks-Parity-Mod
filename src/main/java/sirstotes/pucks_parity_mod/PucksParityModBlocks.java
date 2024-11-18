@@ -80,14 +80,14 @@ public class PucksParityModBlocks {
         OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_GATE, WAXED_OXIDIZED_COPPER_GATE);
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((itemGroup) -> {
-            itemGroup.addAfter(Items.IRON_BLOCK, new ItemStack[] {new ItemStack(CHISELED_IRON),
+            itemGroup.addAfter(Items.IRON_BLOCK, new ItemStack(CHISELED_IRON),
                     new ItemStack(IRON_GRATE),
                     new ItemStack(CUT_IRON),
                     new ItemStack(CUT_IRON_STAIRS),
-                    new ItemStack(CUT_IRON_SLAB)});
+                    new ItemStack(CUT_IRON_SLAB));
             itemGroup.addAfter(Items.IRON_BARS, IRON_GATE);
             itemGroup.addAfter(Items.IRON_TRAPDOOR, IRON_BULB);
-            itemGroup.addAfter(Items.GOLD_BLOCK, new ItemStack[] {new ItemStack(CHISELED_GOLD),
+            itemGroup.addAfter(Items.GOLD_BLOCK, new ItemStack(CHISELED_GOLD),
                     new ItemStack(GOLD_GRATE),
                     new ItemStack(CUT_GOLD),
                     new ItemStack(CUT_GOLD_STAIRS),
@@ -95,60 +95,50 @@ public class PucksParityModBlocks {
                     new ItemStack(GOLD_BARS),
                     new ItemStack(GOLD_GATE),
                     new ItemStack(GOLD_DOOR),
-                    new ItemStack(GOLD_TRAPDOOR)});
+                    new ItemStack(GOLD_TRAPDOOR));
             itemGroup.addAfter(Items.HEAVY_WEIGHTED_PRESSURE_PLATE, GOLD_CHAIN);
-            itemGroup.addAfter(Items.CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(COPPER_BARS), new ItemStack(COPPER_GATE)});
-            itemGroup.addAfter(Items.COPPER_BULB, new ItemStack[] {new ItemStack(PLAYER_PRESSURE_PLATE), new ItemStack(COPPER_CHAIN)});
-            itemGroup.addAfter(Items.EXPOSED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(EXPOSED_COPPER_BARS), new ItemStack(EXPOSED_COPPER_GATE)});
-            itemGroup.addAfter(Items.EXPOSED_COPPER_BULB, new ItemStack[] {new ItemStack(EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(EXPOSED_COPPER_CHAIN)});
-            itemGroup.addAfter(Items.WEATHERED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WEATHERED_COPPER_BARS), new ItemStack(WEATHERED_COPPER_GATE)});
-            itemGroup.addAfter(Items.WEATHERED_COPPER_BULB, new ItemStack[] {new ItemStack(WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WEATHERED_COPPER_CHAIN)});
-            itemGroup.addAfter(Items.OXIDIZED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(OXIDIZED_COPPER_BARS), new ItemStack(OXIDIZED_COPPER_GATE)});
-            itemGroup.addAfter(Items.OXIDIZED_COPPER_BULB, new ItemStack[] {new ItemStack(OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(OXIDIZED_COPPER_CHAIN)});
-            itemGroup.addAfter(Items.WAXED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_COPPER_BARS), new ItemStack(WAXED_COPPER_GATE)});
-            itemGroup.addAfter(Items.WAXED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_COPPER_CHAIN)});
-            itemGroup.addAfter(Items.WAXED_EXPOSED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_EXPOSED_COPPER_BARS), new ItemStack(WAXED_EXPOSED_COPPER_GATE)});
-            itemGroup.addAfter(Items.WAXED_EXPOSED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_EXPOSED_COPPER_CHAIN)});
-            itemGroup.addAfter(Items.WAXED_WEATHERED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_WEATHERED_COPPER_BARS), new ItemStack(WAXED_WEATHERED_COPPER_GATE)});
-            itemGroup.addAfter(Items.WAXED_WEATHERED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_WEATHERED_COPPER_CHAIN)});
-            itemGroup.addAfter(Items.WAXED_OXIDIZED_CUT_COPPER_SLAB, new ItemStack[] {new ItemStack(WAXED_OXIDIZED_COPPER_BARS), new ItemStack(WAXED_OXIDIZED_COPPER_GATE)});
-            itemGroup.addAfter(Items.WAXED_OXIDIZED_COPPER_BULB, new ItemStack[] {new ItemStack(WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN)});
+            itemGroup.addAfter(Items.CUT_COPPER_SLAB, new ItemStack(COPPER_BARS), new ItemStack(COPPER_GATE));
+            itemGroup.addAfter(Items.COPPER_BULB, new ItemStack(PLAYER_PRESSURE_PLATE), new ItemStack(COPPER_CHAIN));
+            itemGroup.addAfter(Items.EXPOSED_CUT_COPPER_SLAB, new ItemStack(EXPOSED_COPPER_BARS), new ItemStack(EXPOSED_COPPER_GATE));
+            itemGroup.addAfter(Items.EXPOSED_COPPER_BULB, new ItemStack(EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(EXPOSED_COPPER_CHAIN));
+            itemGroup.addAfter(Items.WEATHERED_CUT_COPPER_SLAB, new ItemStack(WEATHERED_COPPER_BARS), new ItemStack(WEATHERED_COPPER_GATE));
+            itemGroup.addAfter(Items.WEATHERED_COPPER_BULB, new ItemStack(WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WEATHERED_COPPER_CHAIN));
+            itemGroup.addAfter(Items.OXIDIZED_CUT_COPPER_SLAB, new ItemStack(OXIDIZED_COPPER_BARS), new ItemStack(OXIDIZED_COPPER_GATE));
+            itemGroup.addAfter(Items.OXIDIZED_COPPER_BULB, new ItemStack(OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(OXIDIZED_COPPER_CHAIN));
+            itemGroup.addAfter(Items.WAXED_CUT_COPPER_SLAB, new ItemStack(WAXED_COPPER_BARS), new ItemStack(WAXED_COPPER_GATE));
+            itemGroup.addAfter(Items.WAXED_COPPER_BULB, new ItemStack(WAXED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_COPPER_CHAIN));
+            itemGroup.addAfter(Items.WAXED_EXPOSED_CUT_COPPER_SLAB, new ItemStack(WAXED_EXPOSED_COPPER_BARS), new ItemStack(WAXED_EXPOSED_COPPER_GATE));
+            itemGroup.addAfter(Items.WAXED_EXPOSED_COPPER_BULB, new ItemStack(WAXED_EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_EXPOSED_COPPER_CHAIN));
+            itemGroup.addAfter(Items.WAXED_WEATHERED_CUT_COPPER_SLAB, new ItemStack(WAXED_WEATHERED_COPPER_BARS), new ItemStack(WAXED_WEATHERED_COPPER_GATE));
+            itemGroup.addAfter(Items.WAXED_WEATHERED_COPPER_BULB, new ItemStack(WAXED_WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_WEATHERED_COPPER_CHAIN));
+            itemGroup.addAfter(Items.WAXED_OXIDIZED_CUT_COPPER_SLAB, new ItemStack(WAXED_OXIDIZED_COPPER_BARS), new ItemStack(WAXED_OXIDIZED_COPPER_GATE));
+            itemGroup.addAfter(Items.WAXED_OXIDIZED_COPPER_BULB, new ItemStack(WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN));
         });
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> {
-            itemGroup.addAfter(Items.SOUL_LANTERN, new ItemStack[] {new ItemStack(IRON_REDSTONE_LANTERN),
+            itemGroup.addAfter(Items.SOUL_LANTERN, new ItemStack(IRON_REDSTONE_LANTERN),
                     new ItemStack(GOLD_LANTERN),
                     new ItemStack(GOLD_SOUL_LANTERN),
                     new ItemStack(GOLD_REDSTONE_LANTERN),
-                    new ItemStack(COPPER_LANTERN), new ItemStack(COPPER_SOUL_LANTERN), new ItemStack(COPPER_REDSTONE_LANTERN),
-                    new ItemStack(EXPOSED_COPPER_LANTERN), new ItemStack(EXPOSED_COPPER_SOUL_LANTERN), new ItemStack(EXPOSED_COPPER_REDSTONE_LANTERN),
-                    new ItemStack(WEATHERED_COPPER_LANTERN), new ItemStack(WEATHERED_COPPER_SOUL_LANTERN), new ItemStack(WEATHERED_COPPER_REDSTONE_LANTERN),
-                    new ItemStack(OXIDIZED_COPPER_LANTERN), new ItemStack(OXIDIZED_COPPER_SOUL_LANTERN), new ItemStack(OXIDIZED_COPPER_REDSTONE_LANTERN),
                     new ItemStack(WAXED_COPPER_LANTERN), new ItemStack(WAXED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_COPPER_REDSTONE_LANTERN),
                     new ItemStack(WAXED_EXPOSED_COPPER_LANTERN), new ItemStack(WAXED_EXPOSED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_EXPOSED_COPPER_REDSTONE_LANTERN),
                     new ItemStack(WAXED_WEATHERED_COPPER_LANTERN), new ItemStack(WAXED_WEATHERED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_WEATHERED_COPPER_REDSTONE_LANTERN),
-                    new ItemStack(WAXED_OXIDIZED_COPPER_LANTERN), new ItemStack(WAXED_OXIDIZED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN)});
-            itemGroup.addAfter(Items.CHAIN, new ItemStack[] {new ItemStack(GOLD_CHAIN),
-                    new ItemStack(COPPER_CHAIN),
-                    new ItemStack(EXPOSED_COPPER_CHAIN),
-                    new ItemStack(WEATHERED_COPPER_CHAIN),
-                    new ItemStack(OXIDIZED_COPPER_CHAIN),
+                    new ItemStack(WAXED_OXIDIZED_COPPER_LANTERN), new ItemStack(WAXED_OXIDIZED_COPPER_SOUL_LANTERN), new ItemStack(WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN));
+            itemGroup.addAfter(Items.CHAIN, new ItemStack(GOLD_CHAIN),
                     new ItemStack(WAXED_COPPER_CHAIN),
                     new ItemStack(WAXED_EXPOSED_COPPER_CHAIN),
                     new ItemStack(WAXED_WEATHERED_COPPER_CHAIN),
-                    new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN)});
-            itemGroup.addAfter(Items.REDSTONE_LAMP, new ItemStack[] {new ItemStack(IRON_BULB), new ItemStack(GOLD_BULB)});
+                    new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN));
+            itemGroup.addAfter(Items.REDSTONE_LAMP, new ItemStack(IRON_BULB), new ItemStack(GOLD_BULB));
         });
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((itemGroup) -> {
-            itemGroup.addAfter(Items.LIGHT_WEIGHTED_PRESSURE_PLATE, new ItemStack[] {
-                    new ItemStack (WAXED_PLAYER_PRESSURE_PLATE),
+            itemGroup.addAfter(Items.LIGHT_WEIGHTED_PRESSURE_PLATE, new ItemStack (WAXED_PLAYER_PRESSURE_PLATE),
                     new ItemStack (WAXED_EXPOSED_PLAYER_PRESSURE_PLATE),
                     new ItemStack (WAXED_WEATHERED_PLAYER_PRESSURE_PLATE),
-                    new ItemStack (WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE)
-            });
+                    new ItemStack (WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE));
             itemGroup.addAfter(Items.IRON_DOOR, GOLD_DOOR);
-            itemGroup.addAfter(Items.OAK_FENCE_GATE, new ItemStack[] {new ItemStack(WAXED_COPPER_GATE), new ItemStack(IRON_GATE), new ItemStack(GOLD_GATE)});
+            itemGroup.addAfter(Items.OAK_FENCE_GATE, new ItemStack(WAXED_COPPER_GATE), new ItemStack(IRON_GATE), new ItemStack(GOLD_GATE));
             itemGroup.addAfter(Items.IRON_TRAPDOOR, GOLD_TRAPDOOR);
         });
     }

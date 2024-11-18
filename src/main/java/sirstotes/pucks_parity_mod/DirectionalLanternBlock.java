@@ -12,7 +12,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.Direction;
 
 public class DirectionalLanternBlock extends LanternBlock {
-    public static final DirectionProperty FACING = Properties.FACING;
+    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
     public DirectionalLanternBlock(Settings settings) {
         super(settings);
@@ -26,9 +26,9 @@ public class DirectionalLanternBlock extends LanternBlock {
 
         for (Direction direction : ctx.getPlacementDirections()) {
             if (direction.getAxis() == Direction.Axis.Y) {
-                blockState = blockState.with(HANGING, Boolean.valueOf(direction == Direction.UP));
+                blockState = blockState.with(HANGING, direction == Direction.UP);
                 if (blockState.canPlaceAt(ctx.getWorld(), ctx.getBlockPos())) {
-                    return blockState.with(WATERLOGGED, Boolean.valueOf(fluidState.getFluid() == Fluids.WATER));
+                    return blockState.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
                 }
             }
         }

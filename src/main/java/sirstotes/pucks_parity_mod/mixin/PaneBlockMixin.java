@@ -10,7 +10,7 @@ import sirstotes.pucks_parity_mod.SlidingPaneDoorBlock;
 @Mixin(PaneBlock.class)
 public class PaneBlockMixin {
     @ModifyReturnValue(method = "connectsTo", at = @At("RETURN"))
-    public boolean includePaneDoors (boolean original, BlockState state, boolean sideSolidFullSquare) {
+    public boolean includePaneDoors (boolean original, BlockState state, boolean sideSolidFullSquare) {//TODO: Only connect to side of the door.
         return original || state.getBlock() instanceof SlidingPaneDoorBlock;
     }
 }

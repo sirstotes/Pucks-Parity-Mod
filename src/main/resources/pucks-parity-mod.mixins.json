@@ -18,7 +18,13 @@
     "buckets.PowderSnowBlockMixin",
     "buckets.WaterFluid$StillMixin",
     "buckets.WaterloggableMixin",
-    "shears.ItemStackMixin"
+    "shears.BeehiveBlockMixin",
+    "shears.MooshroomEntityMixin",
+    "shears.PumpkinBlockMixin",
+    "shears.SheepEntityMixin",
+    "shears.SnowGolemEntityMixin",
+    "shears.TripwireBlockMixin",
+    "shears.WolfEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
