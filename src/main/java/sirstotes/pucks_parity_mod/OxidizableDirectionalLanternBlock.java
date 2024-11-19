@@ -6,6 +6,9 @@ import net.minecraft.block.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 
 public class OxidizableDirectionalLanternBlock extends DirectionalLanternBlock implements Oxidizable {
     public static final MapCodec<OxidizableDirectionalLanternBlock> CODEC = RecordCodecBuilder.mapCodec(
@@ -15,6 +18,8 @@ public class OxidizableDirectionalLanternBlock extends DirectionalLanternBlock i
 
     private final Oxidizable.OxidationLevel oxidationLevel;
 
+    protected static final VoxelShape STANDING_SHAPE = VoxelShapes.union(Block.createCuboidShape(5.0, 0.0, 5.0, 11.0, 2.0, 11.0), Block.createCuboidShape(6.0, 2.0, 6.0, 10.0, 8.0, 10.0));
+    protected static final VoxelShape HANGING_SHAPE = STANDING_SHAPE.offset(0.0, (1.0/16.0), 0.0);
     public OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel oxidationLevel, AbstractBlock.Settings settings) {
         super(settings);
         this.oxidationLevel = oxidationLevel;
@@ -32,5 +37,9 @@ public class OxidizableDirectionalLanternBlock extends DirectionalLanternBlock i
 
     public Oxidizable.OxidationLevel getDegradationLevel() {
         return this.oxidationLevel;
+    }
+    @Override
+    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
     }
 }

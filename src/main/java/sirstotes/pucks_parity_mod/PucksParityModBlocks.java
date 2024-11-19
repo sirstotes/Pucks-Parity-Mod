@@ -9,6 +9,10 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 
 public class PucksParityModBlocks {
     public static Block register(String name, Block block, boolean shouldRegisterItem) {
@@ -282,9 +286,27 @@ public class PucksParityModBlocks {
     public static final Block CUT_GOLD_SLAB = register("cut_gold_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK)), true);
     public static final Block CUT_GOLD_STAIRS = register("cut_gold_stairs", new StairsBlock(CUT_GOLD.getDefaultState(), AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK)), true);
     public static final Block GOLD_GRATE = register("gold_grate", new GrateBlock(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK).nonOpaque()), true);
-    public static final Block GOLD_LANTERN = register("gold_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block GOLD_SOUL_LANTERN = register("gold_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
-    public static final Block GOLD_REDSTONE_LANTERN = register("gold_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+    public static final Block GOLD_LANTERN = register("gold_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)) {
+        protected static final VoxelShape STANDING_SHAPE = VoxelShapes.union(Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 1.0, 10.0), Block.createCuboidShape(4.0, 1.0, 4.0, 12.0, 6.0, 12.0), Block.createCuboidShape(6.0, 6.0, 6.0, 10.0, 7.0, 10.0));
+        protected static final VoxelShape HANGING_SHAPE = STANDING_SHAPE.offset(0.0, 7.0*(1.0/16.0), 0.0);
+        @Override
+        protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+            return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
+        }}, true);
+    public static final Block GOLD_SOUL_LANTERN = register("gold_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)) {
+        protected static final VoxelShape STANDING_SHAPE = VoxelShapes.union(Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 1.0, 10.0), Block.createCuboidShape(4.0, 1.0, 4.0, 12.0, 6.0, 12.0), Block.createCuboidShape(6.0, 6.0, 6.0, 10.0, 7.0, 10.0));
+        protected static final VoxelShape HANGING_SHAPE = STANDING_SHAPE.offset(0.0, 7.0*(1.0/16.0), 0.0);
+        @Override
+        protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+            return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
+        }}, true);
+    public static final Block GOLD_REDSTONE_LANTERN = register("gold_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)) {
+        protected static final VoxelShape STANDING_SHAPE = VoxelShapes.union(Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 1.0, 10.0), Block.createCuboidShape(4.0, 1.0, 4.0, 12.0, 6.0, 12.0), Block.createCuboidShape(6.0, 6.0, 6.0, 10.0, 7.0, 10.0));
+        protected static final VoxelShape HANGING_SHAPE = STANDING_SHAPE.offset(0.0, 7.0*(1.0/16.0), 0.0);
+        @Override
+        protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+            return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
+        }}, true);
     public static final Block GOLD_BULB = register("gold_bulb", new BulbBlock(AbstractBlock.Settings.create()
         .mapColor(Blocks.GOLD_BLOCK.getDefaultMapColor())
         .strength(3.0F, 6.0F)
