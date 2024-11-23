@@ -186,9 +186,6 @@ public class PucksParityModItems {
 		return Registry.register(Registries.ITEM, itemID, item);
 	}
     public static final Item COPPER_NUGGET = register(new Item(new Item.Settings()), "copper_nugget");
-    public static final TagKey<Item> SHEARS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "tools/shear"));
-    public static final TagKey<Item> BUCKETS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "tools/bucket"));
-    public static final TagKey<Item> SHIELDS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "tools/shield"));
     public static final Item COPPER_SHEARS = register(new ShearsItem(new Item.Settings().maxDamage(138).component(DataComponentTypes.TOOL, ShearsItem.createToolComponent())), "copper_shears");
     public static final Item GOLD_SHEARS = register(new ShearsItem(new Item.Settings().maxDamage(200).component(DataComponentTypes.TOOL, ShearsItem.createToolComponent())), "gold_shears");
 
