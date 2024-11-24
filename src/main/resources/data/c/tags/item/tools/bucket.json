@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:bucket",
     "pucks_parity_mod:copper_bucket",
     "pucks_parity_mod:gold_bucket"
   ]

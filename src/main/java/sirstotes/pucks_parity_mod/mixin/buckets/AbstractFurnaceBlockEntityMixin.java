@@ -3,6 +3,7 @@ package sirstotes.pucks_parity_mod.mixin.buckets;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.fluid.Fluids;
@@ -36,16 +37,16 @@ public class AbstractFurnaceBlockEntityMixin {
     @ModifyReturnValue(method = "canExtract", at = @At("RETURN"))
     public boolean canExtractNewBuckets(boolean original, int slot, ItemStack stack, Direction dir) {
         if (!original) {
-            return dir == Direction.DOWN && slot == 1 ? stack.isIn(PucksParityModItems.BUCKETS) && (((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.WATER || ((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.EMPTY) : true;
+            return dir == Direction.DOWN && slot == 1 ? stack.isIn(ConventionalItemTags.BUCKETS) && (((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.WATER || ((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.EMPTY) : true;
         }
         return false;
     }
     @ModifyExpressionValue(method = "isValid", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z", ordinal = 0))
     public boolean checkOtherBuckets1(boolean original, @Local(ordinal = 0) ItemStack stack) {
-        return original || stack.isIn(PucksParityModItems.BUCKETS);
+        return original || stack.isIn(ConventionalItemTags.BUCKETS);
     }
     @ModifyExpressionValue(method = "isValid", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z", ordinal = 1))
     public boolean checkOtherBuckets2(boolean original, @Local(ordinal = 1) ItemStack stack) {
-        return original || stack.isIn(PucksParityModItems.BUCKETS);
+        return original || stack.isIn(ConventionalItemTags.BUCKETS);
     }
 }
