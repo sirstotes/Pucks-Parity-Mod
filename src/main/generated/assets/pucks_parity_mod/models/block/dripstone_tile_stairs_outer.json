@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/dripstone_tiles",
+    "side": "pucks_parity_mod:block/dripstone_tiles",
+    "top": "pucks_parity_mod:block/dripstone_tiles"
+  }
+}

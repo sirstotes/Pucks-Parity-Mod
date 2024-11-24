@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/polished_white_terracotta",
+    "side": "pucks_parity_mod:block/polished_white_terracotta",
+    "top": "pucks_parity_mod:block/polished_white_terracotta"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/barnacled_dark_prismarine",
+    "side": "pucks_parity_mod:block/barnacled_dark_prismarine",
+    "top": "pucks_parity_mod:block/barnacled_dark_prismarine"
+  }
+}

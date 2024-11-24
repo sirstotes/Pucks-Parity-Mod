@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "pucks_parity_mod:block/mossy_mud_bricks"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pucks_parity_mod:block/barnacled_prismarine_slab"
+    },
+    "type=double": {
+      "model": "pucks_parity_mod:block/barnacled_prismarine"
+    },
+    "type=top": {
+      "model": "pucks_parity_mod:block/barnacled_prismarine_slab_top"
+    }
+  }
+}

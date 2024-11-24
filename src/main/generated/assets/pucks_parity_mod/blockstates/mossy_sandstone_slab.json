@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pucks_parity_mod:block/mossy_sandstone_slab"
+    },
+    "type=double": {
+      "model": "pucks_parity_mod:block/mossy_sandstone"
+    },
+    "type=top": {
+      "model": "pucks_parity_mod:block/mossy_sandstone_slab_top"
+    }
+  }
+}

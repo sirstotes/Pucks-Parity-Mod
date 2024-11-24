@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_wall_side_tall",
+  "textures": {
+    "wall": "pucks_parity_mod:block/mossy_orange_terracotta_bricks"
+  }
+}

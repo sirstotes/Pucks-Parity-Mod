@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pucks_parity_mod:block/polished_red_hardened_netherack_slab"
+    },
+    "type=double": {
+      "model": "pucks_parity_mod:block/polished_red_hardened_netherack"
+    },
+    "type=top": {
+      "model": "pucks_parity_mod:block/polished_red_hardened_netherack_slab_top"
+    }
+  }
+}

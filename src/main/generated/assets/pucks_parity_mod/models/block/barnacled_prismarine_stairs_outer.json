@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/barnacled_prismarine",
+    "side": "pucks_parity_mod:block/barnacled_prismarine",
+    "top": "pucks_parity_mod:block/barnacled_prismarine"
+  }
+}

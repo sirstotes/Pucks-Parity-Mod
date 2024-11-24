@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pucks_parity_mod:block/stone_tile_slab"
+    },
+    "type=double": {
+      "model": "pucks_parity_mod:block/stone_tiles"
+    },
+    "type=top": {
+      "model": "pucks_parity_mod:block/stone_tile_slab_top"
+    }
+  }
+}

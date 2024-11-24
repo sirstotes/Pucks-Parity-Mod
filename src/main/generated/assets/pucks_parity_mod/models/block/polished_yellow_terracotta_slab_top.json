@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/polished_yellow_terracotta",
+    "side": "pucks_parity_mod:block/polished_yellow_terracotta",
+    "top": "pucks_parity_mod:block/polished_yellow_terracotta"
+  }
+}

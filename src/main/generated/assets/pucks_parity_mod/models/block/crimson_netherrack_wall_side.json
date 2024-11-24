@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_wall_side",
+  "textures": {
+    "wall": "pucks_parity_mod:block/crimson_netherrack"
+  }
+}

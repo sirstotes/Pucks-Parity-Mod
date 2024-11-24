@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/smooth_prismarine",
+    "side": "pucks_parity_mod:block/smooth_prismarine",
+    "top": "pucks_parity_mod:block/smooth_prismarine"
+  }
+}

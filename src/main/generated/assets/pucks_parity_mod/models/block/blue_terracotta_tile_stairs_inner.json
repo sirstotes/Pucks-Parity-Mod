@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/blue_terracotta_tiles",
+    "side": "pucks_parity_mod:block/blue_terracotta_tiles",
+    "top": "pucks_parity_mod:block/blue_terracotta_tiles"
+  }
+}

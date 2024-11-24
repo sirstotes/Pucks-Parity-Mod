@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "pucks_parity_mod:block/red_terracotta_pillar_top",
+    "side": "pucks_parity_mod:block/red_terracotta_pillar_side"
+  }
+}

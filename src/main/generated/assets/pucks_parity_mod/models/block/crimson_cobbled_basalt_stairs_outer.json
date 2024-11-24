@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/crimson_cobbled_basalt",
+    "side": "pucks_parity_mod:block/crimson_cobbled_basalt",
+    "top": "pucks_parity_mod:block/crimson_cobbled_basalt"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "pucks_parity_mod:block/mossy_cobbled_deepslate",
+    "side": "pucks_parity_mod:block/mossy_cobbled_deepslate",
+    "top": "pucks_parity_mod:block/mossy_cobbled_deepslate"
+  }
+}

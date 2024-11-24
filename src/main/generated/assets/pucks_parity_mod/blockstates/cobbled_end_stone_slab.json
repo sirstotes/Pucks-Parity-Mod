@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pucks_parity_mod:block/cobbled_end_stone_slab"
+    },
+    "type=double": {
+      "model": "pucks_parity_mod:block/cobbled_end_stone"
+    },
+    "type=top": {
+      "model": "pucks_parity_mod:block/cobbled_end_stone_slab_top"
+    }
+  }
+}
