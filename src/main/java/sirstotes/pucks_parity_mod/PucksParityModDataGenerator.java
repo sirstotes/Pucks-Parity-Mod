@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,26 +17,234 @@ import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.RecipeExporter;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.UnaryOperator;
 
 import static sirstotes.pucks_parity_mod.PucksParityModBlocks.*;
-import static sirstotes.pucks_parity_mod.PucksParityModBlocks.CHISELED_PACKED_MUD;
+import static sirstotes.pucks_parity_mod.PucksParityModBlocks.BARNACLED_PRISMARINE_BRICK_WALL;
 import static sirstotes.pucks_parity_mod.PucksParityModItems.*;
 
 public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
+	private static class TagGenerator extends FabricTagProvider<Block> {
+		public TagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, RegistryKeys.BLOCK, registriesFuture);
+		}
+
+		@Override
+		protected void configure(RegistryWrapper.WrapperLookup lookup) {
+			getOrCreateTagBuilder(BlockTags.WALLS)
+					.add(STONE_WALL)
+					.add(POLISHED_STONE_WALL)
+					.add(STONE_TILE_WALL)
+					.add(COBBLED_TUFF_WALL)
+					.add(MOSSY_COBBLED_TUFF_WALL)
+					.add(MOSSY_TUFF_BRICK_WALL)
+					.add(TUFF_TILE_WALL)
+					.add(MOSSY_COBBLED_DEEPSLATE_WALL)
+					.add(DEEPSLATE_WALL)
+					.add(MOSSY_DEEPSLATE_BRICK_WALL)
+					.add(COBBLED_GRANITE_WALL)
+					.add(MOSSY_COBBLED_GRANITE_WALL)
+					.add(GRANITE_BRICK_WALL)
+					.add(MOSSY_GRANITE_BRICK_WALL)
+					.add(POLISHED_GRANITE_WALL)
+					.add(GRANITE_TILE_WALL)
+					.add(COBBLED_ANDESITE_WALL)
+					.add(MOSSY_COBBLED_ANDESITE_WALL)
+					.add(ANDESITE_BRICK_WALL)
+					.add(MOSSY_ANDESITE_BRICK_WALL)
+					.add(POLISHED_ANDESITE_WALL)
+					.add(ANDESITE_TILE_WALL)
+					.add(COBBLED_DIORITE_WALL)
+					.add(MOSSY_COBBLED_DIORITE_WALL)
+					.add(DIORITE_BRICK_WALL)
+					.add(MOSSY_DIORITE_BRICK_WALL)
+					.add(POLISHED_DIORITE_WALL)
+					.add(DIORITE_TILE_WALL)
+					.add(COBBLED_BLACKSTONE_WALL)
+					.add(CRIMSON_COBBLED_BLACKSTONE_WALL)
+					.add(CRIMSON_BLACKSTONE_BRICK_WALL)
+					.add(BLACKSTONE_TILE_WALL)
+					.add(COBBLED_END_STONE_WALL)
+					.add(END_STONE_WALL)
+					.add(MOLDY_COBBLED_END_STONE_WALL)
+					.add(MOLDY_END_STONE_BRICK_WALL)
+					.add(POLISHED_END_STONE_WALL)
+					.add(END_STONE_TILE_WALL)
+					.add(MOSSY_SANDSTONE_WALL)
+					.add(SMOOTH_SANDSTONE_WALL)
+					.add(SANDSTONE_BRICK_WALL)
+					.add(MOSSY_SANDSTONE_BRICK_WALL)
+					.add(CUT_SANDSTONE_WALL)
+					.add(SANDSTONE_TILE_WALL)
+					.add(MOSSY_RED_SANDSTONE_WALL)
+					.add(SMOOTH_RED_SANDSTONE_WALL)
+					.add(RED_SANDSTONE_BRICK_WALL)
+					.add(MOSSY_RED_SANDSTONE_BRICK_WALL)
+					.add(CUT_RED_SANDSTONE_WALL)
+					.add(RED_SANDSTONE_TILE_WALL)
+					.add(BARNACLED_PRISMARINE_WALL)
+					.add(SMOOTH_PRISMARINE_WALL)
+					.add(PRISMARINE_BRICK_WALL)
+					.add(BARNACLED_PRISMARINE_BRICK_WALL)
+					.add(POLISHED_PRISMARINE_WALL)
+					.add(PRISMARINE_TILE_WALL)
+					.add(DARK_PRISMARINE_WALL)
+					.add(BARNACLED_DARK_PRISMARINE_WALL)
+					.add(SMOOTH_DARK_PRISMARINE_WALL)
+					.add(DARK_PRISMARINE_BRICK_WALL)
+					.add(BARNACLED_DARK_PRISMARINE_BRICK_WALL)
+					.add(POLISHED_DARK_PRISMARINE_WALL)
+					.add(DARK_PRISMARINE_TILE_WALL)
+					.add(NETHERRACK_WALL)
+					.add(CRIMSON_NETHERRACK_WALL)
+					.add(HARDENED_NETHERRACK_WALL)
+					.add(NETHER_BRICK_WALL)
+					.add(CRIMSON_NETHER_BRICK_WALL)
+					.add(POLISHED_HARDENED_NETHERRACK_WALL)
+					.add(NETHER_TILE_WALL)
+					.add(COBBLED_BASALT_WALL)
+					.add(CRIMSON_COBBLED_BASALT_WALL)
+					.add(SMOOTH_BASALT_WALL)
+					.add(BASALT_BRICK_WALL)
+					.add(CRIMSON_BASALT_BRICK_WALL)
+					.add(POLISHED_BASALT_WALL)
+					.add(BASALT_TILE_WALL)
+					.add(COBBLED_CALCITE_WALL)
+					.add(MOSSY_COBBLED_CALCITE_WALL)
+					.add(CALCITE_WALL)
+					.add(CALCITE_BRICK_WALL)
+					.add(MOSSY_CALCITE_BRICK_WALL)
+					.add(POLISHED_CALCITE_WALL)
+					.add(CALCITE_TILE_WALL)
+					.add(COBBLED_DRIPSTONE_WALL)
+					.add(MOSSY_COBBLED_DRIPSTONE_WALL)
+					.add(DRIPSTONE_WALL)
+					.add(DRIPSTONE_BRICK_WALL)
+					.add(MOSSY_DRIPSTONE_BRICK_WALL)
+					.add(POLISHED_DRIPSTONE_WALL)
+					.add(DRIPSTONE_TILE_WALL)
+					.add(SMOOTH_STONE_WALL)
+					.add(SMOOTH_STONE_BRICK_WALL)
+					.add(MOSSY_SMOOTH_STONE_BRICK_WALL)
+					.add(POLISHED_SMOOTH_STONE_WALL)
+					.add(SMOOTH_STONE_TILE_WALL)
+					.add(RED_HARDENED_NETHERRACK_WALL)
+					.add(CRIMSON_RED_NETHER_BRICK_WALL)
+					.add(POLISHED_RED_HARDENED_NETHERRACK_WALL)
+					.add(RED_NETHER_TILE_WALL)
+					.add(QUARTZ_WALL)
+					.add(QUARTZ_BRICK_WALL)
+					.add(MOSSY_QUARTZ_BRICK_WALL)
+					.add(POLISHED_QUARTZ_WALL)
+					.add(QUARTZ_TILE_WALL)
+					.add(PACKED_MUD_WALL)
+					.add(MOSSY_MUD_BRICK_WALL)
+					.add(POLISHED_PACKED_MUD_WALL)
+					.add(MUD_TILE_WALL)
+					.add(TERRACOTTA_WALL)
+					.add(MOSSY_BRICK_WALL)
+					.add(POLISHED_TERRACOTTA_WALL)
+					.add(TERRACOTTA_TILE_WALL)
+					.add(RED_TERRACOTTA_WALL)
+					.add(RED_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_RED_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_RED_TERRACOTTA_WALL)
+					.add(RED_TERRACOTTA_TILE_WALL)
+					.add(ORANGE_TERRACOTTA_WALL)
+					.add(ORANGE_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_ORANGE_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_ORANGE_TERRACOTTA_WALL)
+					.add(ORANGE_TERRACOTTA_TILE_WALL)
+					.add(YELLOW_TERRACOTTA_WALL)
+					.add(YELLOW_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_YELLOW_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_YELLOW_TERRACOTTA_WALL)
+					.add(YELLOW_TERRACOTTA_TILE_WALL)
+					.add(LIME_TERRACOTTA_WALL)
+					.add(LIME_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_LIME_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_LIME_TERRACOTTA_WALL)
+					.add(LIME_TERRACOTTA_TILE_WALL)
+					.add(GREEN_TERRACOTTA_WALL)
+					.add(GREEN_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_GREEN_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_GREEN_TERRACOTTA_WALL)
+					.add(GREEN_TERRACOTTA_TILE_WALL)
+					.add(CYAN_TERRACOTTA_WALL)
+					.add(CYAN_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_CYAN_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_CYAN_TERRACOTTA_WALL)
+					.add(CYAN_TERRACOTTA_TILE_WALL)
+					.add(LIGHT_BLUE_TERRACOTTA_WALL)
+					.add(LIGHT_BLUE_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_LIGHT_BLUE_TERRACOTTA_WALL)
+					.add(LIGHT_BLUE_TERRACOTTA_TILE_WALL)
+					.add(BLUE_TERRACOTTA_WALL)
+					.add(BLUE_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_BLUE_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_BLUE_TERRACOTTA_WALL)
+					.add(BLUE_TERRACOTTA_TILE_WALL)
+					.add(PURPLE_TERRACOTTA_WALL)
+					.add(PURPLE_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_PURPLE_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_PURPLE_TERRACOTTA_WALL)
+					.add(PURPLE_TERRACOTTA_TILE_WALL)
+					.add(MAGENTA_TERRACOTTA_WALL)
+					.add(MAGENTA_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_MAGENTA_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_MAGENTA_TERRACOTTA_WALL)
+					.add(MAGENTA_TERRACOTTA_TILE_WALL)
+					.add(PINK_TERRACOTTA_WALL)
+					.add(PINK_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_PINK_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_PINK_TERRACOTTA_WALL)
+					.add(PINK_TERRACOTTA_TILE_WALL)
+					.add(BROWN_TERRACOTTA_WALL)
+					.add(BROWN_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_BROWN_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_BROWN_TERRACOTTA_WALL)
+					.add(BROWN_TERRACOTTA_TILE_WALL)
+					.add(WHITE_TERRACOTTA_WALL)
+					.add(WHITE_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_WHITE_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_WHITE_TERRACOTTA_WALL)
+					.add(WHITE_TERRACOTTA_TILE_WALL)
+					.add(LIGHT_GRAY_TERRACOTTA_WALL)
+					.add(LIGHT_GRAY_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_LIGHT_GRAY_TERRACOTTA_WALL)
+					.add(LIGHT_GRAY_TERRACOTTA_TILE_WALL)
+					.add(GRAY_TERRACOTTA_WALL)
+					.add(GRAY_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_GRAY_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_GRAY_TERRACOTTA_WALL)
+					.add(GRAY_TERRACOTTA_TILE_WALL)
+					.add(BLACK_TERRACOTTA_WALL)
+					.add(BLACK_TERRACOTTA_BRICK_WALL)
+					.add(MOSSY_BLACK_TERRACOTTA_BRICK_WALL)
+					.add(POLISHED_BLACK_TERRACOTTA_WALL)
+					.add(BLACK_TERRACOTTA_TILE_WALL);
+		}
+	}
+
 	private static class RecipeGenerator extends FabricRecipeProvider {
 		private RecipeGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, registriesFuture);
@@ -621,37 +830,42 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, POLISHED_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, POLISHED_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, POLISHED_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_SLAB, DARK_PRISMARINE, 2);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_STAIRS, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_WALL, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICKS, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_SLAB, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_STAIRS, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_WALL, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_BRICKS, DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 2);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_WALL, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICKS, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_SLAB, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_WALL, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_BRICKS, SMOOTH_DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_SLAB, DARK_PRISMARINE_BRICKS, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_STAIRS, DARK_PRISMARINE_BRICKS, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_WALL, DARK_PRISMARINE_BRICKS, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_BRICKS, DARK_PRISMARINE_BRICKS, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_TILE_WALL, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_TILES, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_SLAB, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_STAIRS, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_WALL, DARK_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_TILE_WALL, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_TILES, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_WALL, SMOOTH_DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_SLAB, POLISHED_DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_STAIRS, POLISHED_DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_WALL, POLISHED_DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, DARK_PRISMARINE, 1);
-			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, SMOOTH_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, SMOOTH_DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, DARK_PRISMARINE_BRICKS, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, DARK_PRISMARINE_BRICKS, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, DARK_PRISMARINE_BRICKS, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, POLISHED_DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, POLISHED_DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, POLISHED_DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, Blocks.DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, Blocks.DARK_PRISMARINE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, Blocks.DARK_PRISMARINE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_SLAB, HARDENED_NETHERRACK, 2);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_STAIRS, HARDENED_NETHERRACK, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_WALL, HARDENED_NETHERRACK, 1);
@@ -1519,6 +1733,197 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, POLISHED_BLACK_TERRACOTTA, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, POLISHED_BLACK_TERRACOTTA, 1);
 
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_SLAB, COBBLED_TUFF, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_STAIRS, COBBLED_TUFF, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_WALL, COBBLED_TUFF, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_SLAB, MOSSY_COBBLED_TUFF, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_STAIRS, MOSSY_COBBLED_TUFF, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_WALL, MOSSY_COBBLED_TUFF, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_SLAB, MOSSY_COBBLED_DEEPSLATE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_STAIRS, MOSSY_COBBLED_DEEPSLATE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_WALL, MOSSY_COBBLED_DEEPSLATE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_SLAB, COBBLED_GRANITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_STAIRS, COBBLED_GRANITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_WALL, COBBLED_GRANITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_SLAB, MOSSY_COBBLED_GRANITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_STAIRS, MOSSY_COBBLED_GRANITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_WALL, MOSSY_COBBLED_GRANITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_SLAB, COBBLED_ANDESITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_STAIRS, COBBLED_ANDESITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_WALL, COBBLED_ANDESITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_SLAB, MOSSY_COBBLED_ANDESITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_STAIRS, MOSSY_COBBLED_ANDESITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_WALL, MOSSY_COBBLED_ANDESITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_SLAB, COBBLED_DIORITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_STAIRS, COBBLED_DIORITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_WALL, COBBLED_DIORITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_SLAB, MOSSY_COBBLED_DIORITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_STAIRS, MOSSY_COBBLED_DIORITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_WALL, MOSSY_COBBLED_DIORITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_SLAB, COBBLED_BLACKSTONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_STAIRS, COBBLED_BLACKSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_WALL, COBBLED_BLACKSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_SLAB, CRIMSON_COBBLED_BLACKSTONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_STAIRS, CRIMSON_COBBLED_BLACKSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_WALL, CRIMSON_COBBLED_BLACKSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_SLAB, COBBLED_END_STONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_STAIRS, COBBLED_END_STONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_WALL, COBBLED_END_STONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_SLAB, MOLDY_COBBLED_END_STONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_STAIRS, MOLDY_COBBLED_END_STONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_WALL, MOLDY_COBBLED_END_STONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_SLAB, MOSSY_SANDSTONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_STAIRS, MOSSY_SANDSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_WALL, MOSSY_SANDSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_SLAB, MOSSY_RED_SANDSTONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_STAIRS, MOSSY_RED_SANDSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_WALL, MOSSY_RED_SANDSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_SLAB, BARNACLED_PRISMARINE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_STAIRS, BARNACLED_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_WALL, BARNACLED_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_SLAB, DARK_PRISMARINE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_STAIRS, DARK_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_WALL, DARK_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_SLAB, BARNACLED_DARK_PRISMARINE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_STAIRS, BARNACLED_DARK_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_WALL, BARNACLED_DARK_PRISMARINE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHERRACK_SLAB, Blocks.NETHERRACK, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHERRACK_STAIRS, Blocks.NETHERRACK, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHERRACK_WALL, Blocks.NETHERRACK, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_SLAB, CRIMSON_NETHERRACK, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_STAIRS, CRIMSON_NETHERRACK, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_WALL, CRIMSON_NETHERRACK, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_SLAB, COBBLED_BASALT, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_STAIRS, COBBLED_BASALT, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_WALL, COBBLED_BASALT, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_SLAB, CRIMSON_COBBLED_BASALT, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_STAIRS, CRIMSON_COBBLED_BASALT, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_WALL, CRIMSON_COBBLED_BASALT, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_SLAB, COBBLED_CALCITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_STAIRS, COBBLED_CALCITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_WALL, COBBLED_CALCITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_SLAB, MOSSY_COBBLED_CALCITE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_STAIRS, MOSSY_COBBLED_CALCITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_WALL, MOSSY_COBBLED_CALCITE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_SLAB, COBBLED_DRIPSTONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_STAIRS, COBBLED_DRIPSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_WALL, COBBLED_DRIPSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_SLAB, MOSSY_COBBLED_DRIPSTONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_STAIRS, MOSSY_COBBLED_DRIPSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_WALL, MOSSY_COBBLED_DRIPSTONE, 1);
+
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_SLAB, MOSSY_TUFF_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_STAIRS, MOSSY_TUFF_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_WALL, MOSSY_TUFF_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_SLAB, MOSSY_DEEPSLATE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_STAIRS, MOSSY_DEEPSLATE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_WALL, MOSSY_DEEPSLATE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_SLAB, MOSSY_GRANITE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_STAIRS, MOSSY_GRANITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_WALL, MOSSY_GRANITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_SLAB, MOSSY_ANDESITE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_STAIRS, MOSSY_ANDESITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_WALL, MOSSY_ANDESITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_SLAB, MOSSY_DIORITE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_STAIRS, MOSSY_DIORITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_WALL, MOSSY_DIORITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_SLAB, CRIMSON_BLACKSTONE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_STAIRS, CRIMSON_BLACKSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_WALL, CRIMSON_BLACKSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_SLAB, MOLDY_END_STONE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_STAIRS, MOLDY_END_STONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_WALL, MOLDY_END_STONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_SLAB, MOSSY_SANDSTONE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_STAIRS, MOSSY_SANDSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_WALL, MOSSY_SANDSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_SLAB, MOSSY_RED_SANDSTONE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_STAIRS, MOSSY_RED_SANDSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_WALL, MOSSY_RED_SANDSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_SLAB, BARNACLED_PRISMARINE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_STAIRS, BARNACLED_PRISMARINE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_WALL, BARNACLED_PRISMARINE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_SLAB, BARNACLED_DARK_PRISMARINE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_STAIRS, BARNACLED_DARK_PRISMARINE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_WALL, BARNACLED_DARK_PRISMARINE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_SLAB, CRIMSON_NETHER_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_STAIRS, CRIMSON_NETHER_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_WALL, CRIMSON_NETHER_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_SLAB, CRIMSON_BASALT_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_STAIRS, CRIMSON_BASALT_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_WALL, CRIMSON_BASALT_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_SLAB, MOSSY_CALCITE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_STAIRS, MOSSY_CALCITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_WALL, MOSSY_CALCITE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_SLAB, MOSSY_DRIPSTONE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_STAIRS, MOSSY_DRIPSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_WALL, MOSSY_DRIPSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_SLAB, MOSSY_MUD_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_STAIRS, MOSSY_MUD_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_WALL, MOSSY_MUD_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_SLAB, MOSSY_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_STAIRS, MOSSY_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_WALL, MOSSY_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_SLAB, MOSSY_RED_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_STAIRS, MOSSY_RED_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_WALL, MOSSY_RED_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_SLAB, MOSSY_ORANGE_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_STAIRS, MOSSY_ORANGE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_WALL, MOSSY_ORANGE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_SLAB, MOSSY_YELLOW_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_STAIRS, MOSSY_YELLOW_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_WALL, MOSSY_YELLOW_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_SLAB, MOSSY_LIME_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_STAIRS, MOSSY_LIME_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_WALL, MOSSY_LIME_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_SLAB, MOSSY_GREEN_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_STAIRS, MOSSY_GREEN_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_WALL, MOSSY_GREEN_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_SLAB, MOSSY_CYAN_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_STAIRS, MOSSY_CYAN_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_WALL, MOSSY_CYAN_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_SLAB, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_STAIRS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_WALL, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_SLAB, MOSSY_BLUE_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_STAIRS, MOSSY_BLUE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_WALL, MOSSY_BLUE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_SLAB, MOSSY_PURPLE_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_STAIRS, MOSSY_PURPLE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_WALL, MOSSY_PURPLE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_SLAB, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_STAIRS, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_WALL, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_SLAB, MOSSY_PINK_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_STAIRS, MOSSY_PINK_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_WALL, MOSSY_PINK_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_SLAB, MOSSY_BROWN_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_STAIRS, MOSSY_BROWN_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_WALL, MOSSY_BROWN_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_SLAB, MOSSY_WHITE_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_STAIRS, MOSSY_WHITE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_WALL, MOSSY_WHITE_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_SLAB, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_STAIRS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_WALL, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_SLAB, MOSSY_GRAY_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_STAIRS, MOSSY_GRAY_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_WALL, MOSSY_GRAY_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_SLAB, MOSSY_BLACK_TERRACOTTA_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_STAIRS, MOSSY_BLACK_TERRACOTTA_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_WALL, MOSSY_BLACK_TERRACOTTA_BRICKS, 1);
+
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_TUFF), RecipeCategory.BUILDING_BLOCKS, Blocks.TUFF.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_TUFF)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_GRANITE), RecipeCategory.BUILDING_BLOCKS, Blocks.GRANITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_GRANITE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_ANDESITE), RecipeCategory.BUILDING_BLOCKS, Blocks.ANDESITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_ANDESITE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_DIORITE), RecipeCategory.BUILDING_BLOCKS, Blocks.DIORITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_DIORITE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_BLACKSTONE), RecipeCategory.BUILDING_BLOCKS, Blocks.BLACKSTONE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_BLACKSTONE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_END_STONE), RecipeCategory.BUILDING_BLOCKS, Blocks.END_STONE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_END_STONE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_PRISMARINE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(Blocks.PRISMARINE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(DARK_PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(DARK_PRISMARINE)).offerTo(exporter);
+			//CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.NETHERRACK), RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK.asItem(), 0.0F, 200).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_BASALT), RecipeCategory.BUILDING_BLOCKS, Blocks.BASALT.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_BASALT)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_CALCITE), RecipeCategory.BUILDING_BLOCKS, Blocks.CALCITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_CALCITE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_DRIPSTONE), RecipeCategory.BUILDING_BLOCKS, Blocks.DRIPSTONE_BLOCK.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_DRIPSTONE)).offerTo(exporter);
 		}
 	}
 
@@ -3253,6 +3658,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(BlockLootTableProvider::new);
 		pack.addProvider(ModelGenerator::new);
 		pack.addProvider(RecipeGenerator::new);
+		pack.addProvider(TagGenerator::new);
 	}
 
 }

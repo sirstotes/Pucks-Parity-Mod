@@ -1,7 +1,7 @@
 {
   "type": "minecraft:stonecutting",
   "ingredient": {
-    "item": "minecraft:dark_prismarine"
+    "item": "pucks_parity_mod:smooth_dark_prismarine"
   },
   "result": {
     "count": 1,

@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_dark_prismarine": {
+    "has_smooth_dark_prismarine": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:dark_prismarine"
+            "items": "pucks_parity_mod:smooth_dark_prismarine"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:chiseled_dark_prismarine_pillar_from_dark_prismarine_stonecutting"
+        "recipe": "minecraft:cracked_dark_prismarine_tiles_from_smooth_dark_prismarine_stonecutting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_dark_prismarine"
+      "has_smooth_dark_prismarine"
     ]
   ],
   "rewards": {
     "recipes": [
-      "minecraft:chiseled_dark_prismarine_pillar_from_dark_prismarine_stonecutting"
+      "minecraft:cracked_dark_prismarine_tiles_from_smooth_dark_prismarine_stonecutting"
     ]
   }
 }
