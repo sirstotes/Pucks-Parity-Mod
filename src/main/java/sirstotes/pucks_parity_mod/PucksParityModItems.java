@@ -278,6 +278,6 @@ public class PucksParityModItems {
     public static final RegistryKey<ItemGroup> CUSTOM_ITEM_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(PucksParityMod.MOD_ID, "item_group"));
     public static final ItemGroup CUSTOM_ITEM_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(PucksParityModBlocks.BLUE_TERRACOTTA_BRICKS))
-            .displayName(Text.translatable("itemGroup.fabric_docs_reference"))
+            .displayName(Text.translatable("itemGroup.parity_stones"))
             .build();
 }

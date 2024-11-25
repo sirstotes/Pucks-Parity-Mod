@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/polished_red_hardened_netherack",
-    "side": "pucks_parity_mod:block/polished_red_hardened_netherack",
-    "top": "pucks_parity_mod:block/polished_red_hardened_netherack"
-  }
-}

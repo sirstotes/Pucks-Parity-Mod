@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "side": "pucks_parity_mod:block/chiseled_granite",
+    "end": "pucks_parity_mod:block/granite_pillar_top"
+  }
+}

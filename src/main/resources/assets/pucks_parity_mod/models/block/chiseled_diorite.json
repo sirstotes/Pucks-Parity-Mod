@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_column",
+  "textures": {
+    "side": "pucks_parity_mod:block/chiseled_diorite",
+    "end": "pucks_parity_mod:block/diorite_pillar_top"
+  }
+}

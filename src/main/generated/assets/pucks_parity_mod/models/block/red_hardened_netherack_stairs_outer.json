@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/red_hardened_netherack",
-    "side": "pucks_parity_mod:block/red_hardened_netherack",
-    "top": "pucks_parity_mod:block/red_hardened_netherack"
-  }
-}

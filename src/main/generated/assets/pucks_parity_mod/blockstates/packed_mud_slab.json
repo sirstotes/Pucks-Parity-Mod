@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "pucks_parity_mod:block/packed_mud_slab"
+    },
+    "type=double": {
+      "model": "minecraft:packed_mud"
+    },
+    "type=top": {
+      "model": "pucks_parity_mod:block/packed_mud_slab_top"
+    }
+  }
+}
