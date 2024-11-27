@@ -41,13 +41,49 @@ import static sirstotes.pucks_parity_mod.PucksParityModBlocks.BARNACLED_PRISMARI
 import static sirstotes.pucks_parity_mod.PucksParityModItems.*;
 
 public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
-	private static class TagGenerator extends FabricTagProvider<Block> {
-		public TagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+	@Override
+	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
+		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
+		pack.addProvider(BlockLootTableProvider::new);
+		pack.addProvider(ModelGenerator::new);
+		pack.addProvider(RecipeGenerator::new);
+		pack.addProvider(ItemTagGenerator::new);
+		pack.addProvider(BlockTagGenerator::new);
+	}
+
+	private static class ItemTagGenerator extends FabricTagProvider<Item> {
+		public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+			super(output, RegistryKeys.ITEM, registriesFuture);
+		}
+		@Override
+		protected void configure(RegistryWrapper.WrapperLookup lookup) {
+			getOrCreateTagBuilder(ItemTags.STONE_CRAFTING_MATERIALS)
+					.add(COBBLED_TUFF.asItem())
+					.add(COBBLED_GRANITE.asItem())
+					.add(COBBLED_ANDESITE.asItem())
+					.add(COBBLED_DIORITE.asItem())
+					.add(COBBLED_BASALT.asItem())
+					.add(COBBLED_CALCITE.asItem())
+					.add(COBBLED_DRIPSTONE.asItem());
+			getOrCreateTagBuilder(ItemTags.STONE_TOOL_MATERIALS)
+					.add(COBBLED_TUFF.asItem())
+					.add(COBBLED_GRANITE.asItem())
+					.add(COBBLED_ANDESITE.asItem())
+					.add(COBBLED_DIORITE.asItem())
+					.add(COBBLED_BASALT.asItem())
+					.add(COBBLED_CALCITE.asItem())
+					.add(COBBLED_DRIPSTONE.asItem());
+		}
+	}
+	private static class BlockTagGenerator extends FabricTagProvider<Block> {
+		public BlockTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, RegistryKeys.BLOCK, registriesFuture);
 		}
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup lookup) {
+			getOrCreateTagBuilder(BlockTags.INFINIBURN_OVERWORLD).add(NETHERRACK_SLAB, NETHERRACK_STAIRS, CRIMSON_NETHERRACK, CRIMSON_NETHERRACK_SLAB, CRIMSON_NETHERRACK_STAIRS);
+			getOrCreateTagBuilder(BlockTags.PRESSURE_PLATES).add(PLAYER_PRESSURE_PLATE, WAXED_PLAYER_PRESSURE_PLATE, EXPOSED_PLAYER_PRESSURE_PLATE, WAXED_EXPOSED_PLAYER_PRESSURE_PLATE, WEATHERED_PLAYER_PRESSURE_PLATE, WAXED_WEATHERED_PLAYER_PRESSURE_PLATE, OXIDIZED_PLAYER_PRESSURE_PLATE, WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE);
 			getOrCreateTagBuilder(BlockTags.WALLS)
 					.add(STONE_WALL)
 					.add(POLISHED_STONE_WALL)
@@ -1917,9 +1953,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_ANDESITE), RecipeCategory.BUILDING_BLOCKS, Blocks.ANDESITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_ANDESITE)).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_DIORITE), RecipeCategory.BUILDING_BLOCKS, Blocks.DIORITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_DIORITE)).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_BLACKSTONE), RecipeCategory.BUILDING_BLOCKS, Blocks.BLACKSTONE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_BLACKSTONE)).offerTo(exporter);
-			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_END_STONE), RecipeCategory.BUILDING_BLOCKS, Blocks.END_STONE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_END_STONE)).offerTo(exporter);
-			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_PRISMARINE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(Blocks.PRISMARINE)).offerTo(exporter);
-			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(DARK_PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(DARK_PRISMARINE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_END_STONE), RecipeCategory.BUILDING_BLOCKS, Blocks.END_STONE.asItem(), 0.0F, 200).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_PRISMARINE.asItem(), 0.0F, 200).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(DARK_PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE.asItem(), 0.0F, 200).offerTo(exporter);
 			//CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.NETHERRACK), RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK.asItem(), 0.0F, 200).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_BASALT), RecipeCategory.BUILDING_BLOCKS, Blocks.BASALT.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_BASALT)).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_CALCITE), RecipeCategory.BUILDING_BLOCKS, Blocks.CALCITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_CALCITE)).offerTo(exporter);
@@ -2237,7 +2273,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(BARNACLED_PRISMARINE_SLAB, drops(BARNACLED_PRISMARINE_SLAB.asItem()));
 			addDrop(BARNACLED_PRISMARINE_STAIRS, drops(BARNACLED_PRISMARINE_STAIRS.asItem()));
 			addDrop(BARNACLED_PRISMARINE_WALL, drops(BARNACLED_PRISMARINE_WALL.asItem()));
-			addDrop(SMOOTH_PRISMARINE, drops(SMOOTH_PRISMARINE.asItem()));
+			addDrop(SMOOTH_PRISMARINE, drops(Blocks.PRISMARINE.asItem()));
+			addDropWithSilkTouch(SMOOTH_PRISMARINE);
 			addDrop(SMOOTH_PRISMARINE_SLAB, drops(SMOOTH_PRISMARINE_SLAB.asItem()));
 			addDrop(SMOOTH_PRISMARINE_STAIRS, drops(SMOOTH_PRISMARINE_STAIRS.asItem()));
 			addDrop(SMOOTH_PRISMARINE_WALL, drops(SMOOTH_PRISMARINE_WALL.asItem()));
@@ -2267,7 +2304,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(BARNACLED_DARK_PRISMARINE_SLAB, drops(BARNACLED_DARK_PRISMARINE_SLAB.asItem()));
 			addDrop(BARNACLED_DARK_PRISMARINE_STAIRS, drops(BARNACLED_DARK_PRISMARINE_STAIRS.asItem()));
 			addDrop(BARNACLED_DARK_PRISMARINE_WALL, drops(BARNACLED_DARK_PRISMARINE_WALL.asItem()));
-			addDrop(SMOOTH_DARK_PRISMARINE, drops(SMOOTH_DARK_PRISMARINE.asItem()));
+			addDrop(SMOOTH_DARK_PRISMARINE, drops(DARK_PRISMARINE.asItem()));
+			addDropWithSilkTouch(SMOOTH_DARK_PRISMARINE);
 			addDrop(SMOOTH_DARK_PRISMARINE_SLAB, drops(SMOOTH_DARK_PRISMARINE_SLAB.asItem()));
 			addDrop(SMOOTH_DARK_PRISMARINE_STAIRS, drops(SMOOTH_DARK_PRISMARINE_STAIRS.asItem()));
 			addDrop(SMOOTH_DARK_PRISMARINE_WALL, drops(SMOOTH_DARK_PRISMARINE_WALL.asItem()));
@@ -3652,13 +3690,5 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 		}
 	}
 
-	@Override
-	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
-		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
-		pack.addProvider(BlockLootTableProvider::new);
-		pack.addProvider(ModelGenerator::new);
-		pack.addProvider(RecipeGenerator::new);
-		pack.addProvider(TagGenerator::new);
-	}
 
 }
