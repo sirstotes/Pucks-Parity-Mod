@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_cobblestone": {
+    "has_end_stone": {
       "conditions": {
         "items": [
           {
-            "items": "pucks_parity_mod:cobbled_end_stone"
+            "items": "minecraft:end_stone"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_cobblestone"
+      "has_end_stone"
     ]
   ],
   "rewards": {

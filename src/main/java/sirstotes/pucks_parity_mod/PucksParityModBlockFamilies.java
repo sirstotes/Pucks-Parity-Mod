@@ -166,6 +166,16 @@ public class PucksParityModBlockFamilies {
             .stairs(PucksParityModBlocks.CRIMSON_BLACKSTONE_BRICK_STAIRS)
             .wall(PucksParityModBlocks.CRIMSON_BLACKSTONE_BRICK_WALL)
             .build();
+    public static final BlockFamily WARPED_COBBLED_BLACKSTONE = register(PucksParityModBlocks.WARPED_COBBLED_BLACKSTONE)
+            .slab(PucksParityModBlocks.WARPED_COBBLED_BLACKSTONE_SLAB)
+            .stairs(PucksParityModBlocks.WARPED_COBBLED_BLACKSTONE_STAIRS)
+            .wall(PucksParityModBlocks.WARPED_COBBLED_BLACKSTONE_WALL)
+            .build();
+    public static final BlockFamily WARPED_BLACKSTONE_BRICKS = register(PucksParityModBlocks.WARPED_BLACKSTONE_BRICKS)
+            .slab(PucksParityModBlocks.WARPED_BLACKSTONE_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.WARPED_BLACKSTONE_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.WARPED_BLACKSTONE_BRICK_WALL)
+            .build();
     public static final BlockFamily BLACKSTONE_TILES = register(PucksParityModBlocks.BLACKSTONE_TILES)
             .slab(PucksParityModBlocks.BLACKSTONE_TILE_SLAB)
             .stairs(PucksParityModBlocks.BLACKSTONE_TILE_STAIRS)
@@ -200,6 +210,26 @@ public class PucksParityModBlockFamilies {
             .slab(PucksParityModBlocks.END_STONE_TILE_SLAB)
             .stairs(PucksParityModBlocks.END_STONE_TILE_STAIRS)
             .wall(PucksParityModBlocks.END_STONE_TILE_WALL)
+            .build();
+    public static final BlockFamily PURPUR = register(PucksParityModBlocks.PURPUR)
+        .slab(PucksParityModBlocks.PURPUR_SLAB)
+        .stairs(PucksParityModBlocks.PURPUR_STAIRS)
+        .wall(PucksParityModBlocks.PURPUR_WALL)
+        .build();
+    public static final BlockFamily PURPUR_BRICKS = register(PucksParityModBlocks.PURPUR_BRICKS)
+            .slab(PucksParityModBlocks.PURPUR_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.PURPUR_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.PURPUR_BRICK_WALL)
+            .build();
+    public static final BlockFamily MOLDY_PURPUR_BRICKS = register(PucksParityModBlocks.MOLDY_PURPUR_BRICKS)
+            .slab(PucksParityModBlocks.MOLDY_PURPUR_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.MOLDY_PURPUR_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.MOLDY_PURPUR_BRICK_WALL)
+            .build();
+    public static final BlockFamily POLISHED_PURPUR = register(PucksParityModBlocks.POLISHED_PURPUR)
+            .slab(PucksParityModBlocks.POLISHED_PURPUR_SLAB)
+            .stairs(PucksParityModBlocks.POLISHED_PURPUR_STAIRS)
+            .wall(PucksParityModBlocks.POLISHED_PURPUR_WALL)
             .build();
     public static final BlockFamily MOSSY_COBBLED_SANDSTONE = register(PucksParityModBlocks.MOSSY_SANDSTONE)
             .slab(PucksParityModBlocks.MOSSY_SANDSTONE_SLAB)
@@ -318,6 +348,11 @@ public class PucksParityModBlockFamilies {
             .stairs(PucksParityModBlocks.CRIMSON_NETHERRACK_STAIRS)
             .wall(PucksParityModBlocks.CRIMSON_NETHERRACK_WALL)
             .build();
+    public static final BlockFamily WARPED_NETHERRACK = register(PucksParityModBlocks.WARPED_NETHERRACK)
+            .slab(PucksParityModBlocks.WARPED_NETHERRACK_SLAB)
+            .stairs(PucksParityModBlocks.WARPED_NETHERRACK_STAIRS)
+            .wall(PucksParityModBlocks.WARPED_NETHERRACK_WALL)
+            .build();
     public static final BlockFamily HARDENED_NETHERRACK = register(PucksParityModBlocks.HARDENED_NETHERRACK)
             .slab(PucksParityModBlocks.HARDENED_NETHERRACK_SLAB)
             .stairs(PucksParityModBlocks.HARDENED_NETHERRACK_STAIRS)
@@ -330,6 +365,11 @@ public class PucksParityModBlockFamilies {
             .slab(PucksParityModBlocks.CRIMSON_NETHER_BRICK_SLAB)
             .stairs(PucksParityModBlocks.CRIMSON_NETHER_BRICK_STAIRS)
             .wall(PucksParityModBlocks.CRIMSON_NETHER_BRICK_WALL)
+            .build();
+    public static final BlockFamily WARPED_NETHER_BRICKS = register(PucksParityModBlocks.WARPED_NETHER_BRICKS)
+            .slab(PucksParityModBlocks.WARPED_NETHER_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.WARPED_NETHER_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.WARPED_NETHER_BRICK_WALL)
             .build();
     public static final BlockFamily POLISHED_HARDENED_NETHERRACK = register(PucksParityModBlocks.POLISHED_HARDENED_NETHERRACK)
             .slab(PucksParityModBlocks.POLISHED_HARDENED_NETHERRACK_SLAB)
@@ -351,6 +391,11 @@ public class PucksParityModBlockFamilies {
             .stairs(PucksParityModBlocks.CRIMSON_COBBLED_BASALT_STAIRS)
             .wall(PucksParityModBlocks.CRIMSON_COBBLED_BASALT_WALL)
             .build();
+    public static final BlockFamily WARPED_COBBLED_BASALT = register(PucksParityModBlocks.WARPED_COBBLED_BASALT)
+            .slab(PucksParityModBlocks.WARPED_COBBLED_BASALT_SLAB)
+            .stairs(PucksParityModBlocks.WARPED_COBBLED_BASALT_STAIRS)
+            .wall(PucksParityModBlocks.WARPED_COBBLED_BASALT_WALL)
+            .build();
 //    public static final BlockFamily SMOOTH_BASALT = register(Blocks.SMOOTH_BASALT)
 //            .slab(PucksParityModBlocks.SMOOTH_BASALT_SLAB)
 //            .stairs(PucksParityModBlocks.SMOOTH_BASALT_STAIRS)
@@ -370,6 +415,11 @@ public class PucksParityModBlockFamilies {
             .slab(PucksParityModBlocks.CRIMSON_BASALT_BRICK_SLAB)
             .stairs(PucksParityModBlocks.CRIMSON_BASALT_BRICK_STAIRS)
             .wall(PucksParityModBlocks.CRIMSON_BASALT_BRICK_WALL)
+            .build();
+    public static final BlockFamily WARPED_BASALT_BRICKS = register(PucksParityModBlocks.WARPED_BASALT_BRICKS)
+            .slab(PucksParityModBlocks.WARPED_BASALT_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.WARPED_BASALT_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.WARPED_BASALT_BRICK_WALL)
             .build();
     public static final BlockFamily BASALT_TILES = register(PucksParityModBlocks.BASALT_TILES)
             .slab(PucksParityModBlocks.BASALT_TILE_SLAB)
@@ -516,10 +566,15 @@ public static final BlockFamily POLISHED_CALCITE = register(PucksParityModBlocks
             .stairs(PucksParityModBlocks.MUD_TILE_STAIRS)
             .wall(PucksParityModBlocks.MUD_TILE_WALL)
             .build();
-    public static final BlockFamily MOSSY_QUARTZ_BRICKS = register(PucksParityModBlocks.MOSSY_QUARTZ_BRICKS)
-            .slab(PucksParityModBlocks.MOSSY_QUARTZ_BRICK_SLAB)
-            .stairs(PucksParityModBlocks.MOSSY_QUARTZ_BRICK_STAIRS)
-            .wall(PucksParityModBlocks.MOSSY_QUARTZ_BRICK_WALL)
+    public static final BlockFamily CRIMSON_QUARTZ_BRICKS = register(PucksParityModBlocks.CRIMSON_QUARTZ_BRICKS)
+            .slab(PucksParityModBlocks.CRIMSON_QUARTZ_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.CRIMSON_QUARTZ_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.CRIMSON_QUARTZ_BRICK_WALL)
+            .build();
+    public static final BlockFamily WARPED_QUARTZ_BRICKS = register(PucksParityModBlocks.WARPED_QUARTZ_BRICKS)
+            .slab(PucksParityModBlocks.WARPED_QUARTZ_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.WARPED_QUARTZ_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.WARPED_QUARTZ_BRICK_WALL)
             .build();
     public static final BlockFamily QUARTZ_TILES = register(PucksParityModBlocks.QUARTZ_TILES)
             .slab(PucksParityModBlocks.QUARTZ_TILE_SLAB)

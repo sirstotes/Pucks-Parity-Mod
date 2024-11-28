@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.UnaryOperator;
 
 import static sirstotes.pucks_parity_mod.PucksParityModBlocks.*;
-import static sirstotes.pucks_parity_mod.PucksParityModBlocks.BARNACLED_PRISMARINE_BRICK_WALL;
+import static sirstotes.pucks_parity_mod.PucksParityModBlocks.POLISHED_PURPUR;
 import static sirstotes.pucks_parity_mod.PucksParityModItems.*;
 
 public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
@@ -75,6 +75,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(COBBLED_DRIPSTONE.asItem());
 		}
 	}
+
 	private static class BlockTagGenerator extends FabricTagProvider<Block> {
 		public BlockTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, RegistryKeys.BLOCK, registriesFuture);
@@ -82,7 +83,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		protected void configure(RegistryWrapper.WrapperLookup lookup) {
-			getOrCreateTagBuilder(BlockTags.INFINIBURN_OVERWORLD).add(NETHERRACK_SLAB, NETHERRACK_STAIRS, CRIMSON_NETHERRACK, CRIMSON_NETHERRACK_SLAB, CRIMSON_NETHERRACK_STAIRS);
+			getOrCreateTagBuilder(BlockTags.INFINIBURN_OVERWORLD).add(NETHERRACK_SLAB, NETHERRACK_STAIRS, CRIMSON_NETHERRACK, CRIMSON_NETHERRACK_SLAB, CRIMSON_NETHERRACK_STAIRS, WARPED_NETHERRACK, WARPED_NETHERRACK_SLAB, WARPED_NETHERRACK_STAIRS);
 			getOrCreateTagBuilder(BlockTags.PRESSURE_PLATES).add(PLAYER_PRESSURE_PLATE, WAXED_PLAYER_PRESSURE_PLATE, EXPOSED_PLAYER_PRESSURE_PLATE, WAXED_EXPOSED_PLAYER_PRESSURE_PLATE, WEATHERED_PLAYER_PRESSURE_PLATE, WAXED_WEATHERED_PLAYER_PRESSURE_PLATE, OXIDIZED_PLAYER_PRESSURE_PLATE, WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE);
 			getOrCreateTagBuilder(BlockTags.WALLS)
 					.add(STONE_WALL)
@@ -116,6 +117,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(COBBLED_BLACKSTONE_WALL)
 					.add(CRIMSON_COBBLED_BLACKSTONE_WALL)
 					.add(CRIMSON_BLACKSTONE_BRICK_WALL)
+					.add(WARPED_COBBLED_BLACKSTONE_WALL)
+					.add(WARPED_BLACKSTONE_BRICK_WALL)
 					.add(BLACKSTONE_TILE_WALL)
 					.add(COBBLED_END_STONE_WALL)
 					.add(END_STONE_WALL)
@@ -123,6 +126,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(MOLDY_END_STONE_BRICK_WALL)
 					.add(POLISHED_END_STONE_WALL)
 					.add(END_STONE_TILE_WALL)
+					.add(PURPUR_WALL)
+					.add(PURPUR_TILE_WALL)
+					.add(PURPUR_BRICK_WALL)
+					.add(POLISHED_PURPUR_WALL)
 					.add(MOSSY_SANDSTONE_WALL)
 					.add(SMOOTH_SANDSTONE_WALL)
 					.add(SANDSTONE_BRICK_WALL)
@@ -150,16 +157,20 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(DARK_PRISMARINE_TILE_WALL)
 					.add(NETHERRACK_WALL)
 					.add(CRIMSON_NETHERRACK_WALL)
+					.add(WARPED_NETHERRACK_WALL)
 					.add(HARDENED_NETHERRACK_WALL)
 					.add(NETHER_BRICK_WALL)
 					.add(CRIMSON_NETHER_BRICK_WALL)
+					.add(WARPED_NETHER_BRICK_WALL)
 					.add(POLISHED_HARDENED_NETHERRACK_WALL)
 					.add(NETHER_TILE_WALL)
 					.add(COBBLED_BASALT_WALL)
 					.add(CRIMSON_COBBLED_BASALT_WALL)
+					.add(WARPED_COBBLED_BASALT_WALL)
 					.add(SMOOTH_BASALT_WALL)
 					.add(BASALT_BRICK_WALL)
 					.add(CRIMSON_BASALT_BRICK_WALL)
+					.add(WARPED_BASALT_BRICK_WALL)
 					.add(POLISHED_BASALT_WALL)
 					.add(BASALT_TILE_WALL)
 					.add(COBBLED_CALCITE_WALL)
@@ -183,11 +194,14 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(SMOOTH_STONE_TILE_WALL)
 					.add(RED_HARDENED_NETHERRACK_WALL)
 					.add(CRIMSON_RED_NETHER_BRICK_WALL)
+					.add(WARPED_RED_NETHER_BRICK_WALL)
 					.add(POLISHED_RED_HARDENED_NETHERRACK_WALL)
 					.add(RED_NETHER_TILE_WALL)
 					.add(QUARTZ_WALL)
 					.add(QUARTZ_BRICK_WALL)
-					.add(MOSSY_QUARTZ_BRICK_WALL)
+					.add(CRIMSON_QUARTZ_BRICK_WALL)
+					.add(WARPED_QUARTZ_BRICK_WALL)
+					.add(WARPED_QUARTZ_BRICK_WALL)
 					.add(POLISHED_QUARTZ_WALL)
 					.add(QUARTZ_TILE_WALL)
 					.add(PACKED_MUD_WALL)
@@ -777,6 +791,36 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, POLISHED_END_STONE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, POLISHED_END_STONE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, POLISHED_END_STONE, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_SLAB, PURPUR, 2);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_STAIRS, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_WALL, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR_BRICKS, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILES, PURPUR, 1);
+			//offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_SLAB, PURPUR, 1);
+			//offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_STAIRS, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_WALL, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_TILES, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_WALL, PURPUR_TILES, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_TILES, PURPUR_TILES, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_SLAB, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_STAIRS, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_WALL, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_SLAB, POLISHED_PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_STAIRS, POLISHED_PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_WALL, POLISHED_PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR_BRICKS, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, PURPUR_BRICKS, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR_BRICKS, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR_TILES, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR_TILES, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, POLISHED_PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, POLISHED_PURPUR, 1);
+			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, POLISHED_PURPUR, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICKS, Blocks.SANDSTONE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_SLAB, Blocks.SANDSTONE, 1);
 			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_STAIRS, Blocks.SANDSTONE, 1);
@@ -1802,6 +1846,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_SLAB, CRIMSON_COBBLED_BLACKSTONE, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_STAIRS, CRIMSON_COBBLED_BLACKSTONE, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_WALL, CRIMSON_COBBLED_BLACKSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_SLAB, WARPED_COBBLED_BLACKSTONE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_STAIRS, WARPED_COBBLED_BLACKSTONE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_WALL, WARPED_COBBLED_BLACKSTONE, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_SLAB, COBBLED_END_STONE, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_STAIRS, COBBLED_END_STONE, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_WALL, COBBLED_END_STONE, 1);
@@ -1829,12 +1876,18 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_SLAB, CRIMSON_NETHERRACK, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_STAIRS, CRIMSON_NETHERRACK, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_WALL, CRIMSON_NETHERRACK, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_SLAB, WARPED_NETHERRACK, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_STAIRS, WARPED_NETHERRACK, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_WALL, WARPED_NETHERRACK, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_SLAB, COBBLED_BASALT, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_STAIRS, COBBLED_BASALT, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_WALL, COBBLED_BASALT, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_SLAB, CRIMSON_COBBLED_BASALT, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_STAIRS, CRIMSON_COBBLED_BASALT, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_WALL, CRIMSON_COBBLED_BASALT, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_SLAB, WARPED_COBBLED_BASALT, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_STAIRS, WARPED_COBBLED_BASALT, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_WALL, WARPED_COBBLED_BASALT, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_SLAB, COBBLED_CALCITE, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_STAIRS, COBBLED_CALCITE, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_WALL, COBBLED_CALCITE, 1);
@@ -1866,9 +1919,15 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_SLAB, CRIMSON_BLACKSTONE_BRICKS, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_STAIRS, CRIMSON_BLACKSTONE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_WALL, CRIMSON_BLACKSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_SLAB, WARPED_BLACKSTONE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_STAIRS, WARPED_BLACKSTONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_WALL, WARPED_BLACKSTONE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_SLAB, MOLDY_END_STONE_BRICKS, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_STAIRS, MOLDY_END_STONE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_WALL, MOLDY_END_STONE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_SLAB, MOLDY_PURPUR_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_STAIRS, MOLDY_PURPUR_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_WALL, MOLDY_PURPUR_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_SLAB, MOSSY_SANDSTONE_BRICKS, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_STAIRS, MOSSY_SANDSTONE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_WALL, MOSSY_SANDSTONE_BRICKS, 1);
@@ -1887,6 +1946,12 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_SLAB, CRIMSON_BASALT_BRICKS, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_STAIRS, CRIMSON_BASALT_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_WALL, CRIMSON_BASALT_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_SLAB, WARPED_NETHER_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_STAIRS, WARPED_NETHER_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_WALL, WARPED_NETHER_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_SLAB, WARPED_BASALT_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_STAIRS, WARPED_BASALT_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_WALL, WARPED_BASALT_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_SLAB, MOSSY_CALCITE_BRICKS, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_STAIRS, MOSSY_CALCITE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_WALL, MOSSY_CALCITE_BRICKS, 1);
@@ -1953,9 +2018,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_ANDESITE), RecipeCategory.BUILDING_BLOCKS, Blocks.ANDESITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_ANDESITE)).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_DIORITE), RecipeCategory.BUILDING_BLOCKS, Blocks.DIORITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_DIORITE)).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_BLACKSTONE), RecipeCategory.BUILDING_BLOCKS, Blocks.BLACKSTONE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_BLACKSTONE)).offerTo(exporter);
-			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_END_STONE), RecipeCategory.BUILDING_BLOCKS, Blocks.END_STONE.asItem(), 0.0F, 200).offerTo(exporter);
-			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_PRISMARINE.asItem(), 0.0F, 200).offerTo(exporter);
-			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(DARK_PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE.asItem(), 0.0F, 200).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_END_STONE), RecipeCategory.BUILDING_BLOCKS, Blocks.END_STONE.asItem(), 0.0F, 200).criterion("has_end_stone", conditionsFromItem(Blocks.END_STONE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_PRISMARINE.asItem(), 0.0F, 200).criterion("has_prismarine", conditionsFromItem(Blocks.PRISMARINE)).offerTo(exporter);
+			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(DARK_PRISMARINE), RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE.asItem(), 0.0F, 200).criterion("has_dark_prismarine", conditionsFromItem(DARK_PRISMARINE)).offerTo(exporter);
 			//CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.NETHERRACK), RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK.asItem(), 0.0F, 200).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_BASALT), RecipeCategory.BUILDING_BLOCKS, Blocks.BASALT.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_BASALT)).offerTo(exporter);
 			CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_CALCITE), RecipeCategory.BUILDING_BLOCKS, Blocks.CALCITE.asItem(), 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_CALCITE)).offerTo(exporter);
@@ -2188,6 +2253,14 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRIMSON_BLACKSTONE_BRICK_SLAB, drops(CRIMSON_BLACKSTONE_BRICK_SLAB.asItem()));
 			addDrop(CRIMSON_BLACKSTONE_BRICK_STAIRS, drops(CRIMSON_BLACKSTONE_BRICK_STAIRS.asItem()));
 			addDrop(CRIMSON_BLACKSTONE_BRICK_WALL, drops(CRIMSON_BLACKSTONE_BRICK_WALL.asItem()));
+			addDrop(WARPED_COBBLED_BLACKSTONE, drops(WARPED_COBBLED_BLACKSTONE.asItem()));
+			addDrop(WARPED_COBBLED_BLACKSTONE_SLAB, drops(WARPED_COBBLED_BLACKSTONE_SLAB.asItem()));
+			addDrop(WARPED_COBBLED_BLACKSTONE_STAIRS, drops(WARPED_COBBLED_BLACKSTONE_STAIRS.asItem()));
+			addDrop(WARPED_COBBLED_BLACKSTONE_WALL, drops(WARPED_COBBLED_BLACKSTONE_WALL.asItem()));
+			addDrop(WARPED_BLACKSTONE_BRICKS, drops(WARPED_BLACKSTONE_BRICKS.asItem()));
+			addDrop(WARPED_BLACKSTONE_BRICK_SLAB, drops(WARPED_BLACKSTONE_BRICK_SLAB.asItem()));
+			addDrop(WARPED_BLACKSTONE_BRICK_STAIRS, drops(WARPED_BLACKSTONE_BRICK_STAIRS.asItem()));
+			addDrop(WARPED_BLACKSTONE_BRICK_WALL, drops(WARPED_BLACKSTONE_BRICK_WALL.asItem()));
 			addDrop(BLACKSTONE_TILES, drops(BLACKSTONE_TILES.asItem()));
 			addDrop(BLACKSTONE_TILE_SLAB, drops(BLACKSTONE_TILE_SLAB.asItem()));
 			addDrop(BLACKSTONE_TILE_STAIRS, drops(BLACKSTONE_TILE_STAIRS.asItem()));
@@ -2202,15 +2275,24 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(END_STONE_SLAB, drops(END_STONE_SLAB.asItem()));
 			addDrop(END_STONE_STAIRS, drops(END_STONE_STAIRS.asItem()));
 			addDrop(END_STONE_WALL, drops(END_STONE_WALL.asItem()));
+			addDrop(PURPUR, drops(PURPUR.asItem()));
+			addDrop(PURPUR_SLAB, drops(PURPUR_SLAB.asItem()));
+			addDrop(PURPUR_STAIRS, drops(PURPUR_STAIRS.asItem()));
+			addDrop(PURPUR_WALL, drops(PURPUR_WALL.asItem()));
 			addDrop(MOLDY_COBBLED_END_STONE, drops(MOLDY_COBBLED_END_STONE.asItem()));
 			addDrop(MOLDY_COBBLED_END_STONE_SLAB, drops(MOLDY_COBBLED_END_STONE_SLAB.asItem()));
 			addDrop(MOLDY_COBBLED_END_STONE_STAIRS, drops(MOLDY_COBBLED_END_STONE_STAIRS.asItem()));
 			addDrop(MOLDY_COBBLED_END_STONE_WALL, drops(MOLDY_COBBLED_END_STONE_WALL.asItem()));
 			addDrop(CRACKED_END_STONE_BRICKS, drops(CRACKED_END_STONE_BRICKS.asItem()));
+			addDrop(CRACKED_PURPUR_BRICKS, drops(CRACKED_PURPUR_BRICKS.asItem()));
 			addDrop(MOLDY_END_STONE_BRICKS, drops(MOLDY_END_STONE_BRICKS.asItem()));
 			addDrop(MOLDY_END_STONE_BRICK_SLAB, drops(MOLDY_END_STONE_BRICK_SLAB.asItem()));
 			addDrop(MOLDY_END_STONE_BRICK_STAIRS, drops(MOLDY_END_STONE_BRICK_STAIRS.asItem()));
 			addDrop(MOLDY_END_STONE_BRICK_WALL, drops(MOLDY_END_STONE_BRICK_WALL.asItem()));
+			addDrop(MOLDY_PURPUR_BRICKS, drops(MOLDY_PURPUR_BRICKS.asItem()));
+			addDrop(MOLDY_PURPUR_BRICK_SLAB, drops(MOLDY_PURPUR_BRICK_SLAB.asItem()));
+			addDrop(MOLDY_PURPUR_BRICK_STAIRS, drops(MOLDY_PURPUR_BRICK_STAIRS.asItem()));
+			addDrop(MOLDY_PURPUR_BRICK_WALL, drops(MOLDY_PURPUR_BRICK_WALL.asItem()));
 			addDrop(CHISELED_END_STONE, drops(CHISELED_END_STONE.asItem()));
 			addDrop(POLISHED_END_STONE, drops(POLISHED_END_STONE.asItem()));
 			addDrop(POLISHED_END_STONE_SLAB, drops(POLISHED_END_STONE_SLAB.asItem()));
@@ -2223,6 +2305,14 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRACKED_END_STONE_TILES, drops(CRACKED_END_STONE_TILES.asItem()));
 			addDrop(END_STONE_PILLAR, drops(END_STONE_PILLAR.asItem()));
 			addDrop(CHISELED_END_STONE_PILLAR, drops(CHISELED_END_STONE_PILLAR.asItem()));
+			addDrop(CHISELED_PURPUR, drops(CHISELED_PURPUR.asItem()));
+			addDrop(POLISHED_PURPUR, drops(POLISHED_PURPUR.asItem()));
+			addDrop(POLISHED_PURPUR_SLAB, drops(POLISHED_PURPUR_SLAB.asItem()));
+			addDrop(POLISHED_PURPUR_STAIRS, drops(POLISHED_PURPUR_STAIRS.asItem()));
+			addDrop(POLISHED_PURPUR_WALL, drops(POLISHED_PURPUR_WALL.asItem()));
+			addDrop(PURPUR_TILE_WALL, drops(PURPUR_TILE_WALL.asItem()));
+			addDrop(CRACKED_PURPUR_TILES, drops(CRACKED_PURPUR_TILES.asItem()));
+			addDrop(CHISELED_PURPUR_PILLAR, drops(CHISELED_PURPUR_PILLAR.asItem()));
 			addDrop(MOSSY_SANDSTONE, drops(MOSSY_SANDSTONE.asItem()));
 			addDrop(MOSSY_SANDSTONE_SLAB, drops(MOSSY_SANDSTONE_SLAB.asItem()));
 			addDrop(MOSSY_SANDSTONE_STAIRS, drops(MOSSY_SANDSTONE_STAIRS.asItem()));
@@ -2334,6 +2424,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRIMSON_NETHERRACK_SLAB, drops(CRIMSON_NETHERRACK_SLAB.asItem()));
 			addDrop(CRIMSON_NETHERRACK_STAIRS, drops(CRIMSON_NETHERRACK_STAIRS.asItem()));
 			addDrop(CRIMSON_NETHERRACK_WALL, drops(CRIMSON_NETHERRACK_WALL.asItem()));
+			addDrop(WARPED_NETHERRACK, drops(WARPED_NETHERRACK.asItem()));
+			addDrop(WARPED_NETHERRACK_SLAB, drops(WARPED_NETHERRACK_SLAB.asItem()));
+			addDrop(WARPED_NETHERRACK_STAIRS, drops(WARPED_NETHERRACK_STAIRS.asItem()));
+			addDrop(WARPED_NETHERRACK_WALL, drops(WARPED_NETHERRACK_WALL.asItem()));
 			addDrop(HARDENED_NETHERRACK, drops(HARDENED_NETHERRACK.asItem()));
 			addDrop(HARDENED_NETHERRACK_SLAB, drops(HARDENED_NETHERRACK_SLAB.asItem()));
 			addDrop(HARDENED_NETHERRACK_STAIRS, drops(HARDENED_NETHERRACK_STAIRS.asItem()));
@@ -2343,6 +2437,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRIMSON_NETHER_BRICK_SLAB, drops(CRIMSON_NETHER_BRICK_SLAB.asItem()));
 			addDrop(CRIMSON_NETHER_BRICK_STAIRS, drops(CRIMSON_NETHER_BRICK_STAIRS.asItem()));
 			addDrop(CRIMSON_NETHER_BRICK_WALL, drops(CRIMSON_NETHER_BRICK_WALL.asItem()));
+			addDrop(WARPED_NETHER_BRICKS, drops(WARPED_NETHER_BRICKS.asItem()));
+			addDrop(WARPED_NETHER_BRICK_SLAB, drops(WARPED_NETHER_BRICK_SLAB.asItem()));
+			addDrop(WARPED_NETHER_BRICK_STAIRS, drops(WARPED_NETHER_BRICK_STAIRS.asItem()));
+			addDrop(WARPED_NETHER_BRICK_WALL, drops(WARPED_NETHER_BRICK_WALL.asItem()));
 			addDrop(POLISHED_HARDENED_NETHERRACK, drops(POLISHED_HARDENED_NETHERRACK.asItem()));
 			addDrop(POLISHED_HARDENED_NETHERRACK_SLAB, drops(POLISHED_HARDENED_NETHERRACK_SLAB.asItem()));
 			addDrop(POLISHED_HARDENED_NETHERRACK_STAIRS, drops(POLISHED_HARDENED_NETHERRACK_STAIRS.asItem()));
@@ -2362,6 +2460,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRIMSON_COBBLED_BASALT_SLAB, drops(CRIMSON_COBBLED_BASALT_SLAB.asItem()));
 			addDrop(CRIMSON_COBBLED_BASALT_STAIRS, drops(CRIMSON_COBBLED_BASALT_STAIRS.asItem()));
 			addDrop(CRIMSON_COBBLED_BASALT_WALL, drops(CRIMSON_COBBLED_BASALT_WALL.asItem()));
+			addDrop(WARPED_COBBLED_BASALT, drops(WARPED_COBBLED_BASALT.asItem()));
+			addDrop(WARPED_COBBLED_BASALT_SLAB, drops(WARPED_COBBLED_BASALT_SLAB.asItem()));
+			addDrop(WARPED_COBBLED_BASALT_STAIRS, drops(WARPED_COBBLED_BASALT_STAIRS.asItem()));
+			addDrop(WARPED_COBBLED_BASALT_WALL, drops(WARPED_COBBLED_BASALT_WALL.asItem()));
 			addDrop(SMOOTH_BASALT_SLAB, drops(SMOOTH_BASALT_SLAB.asItem()));
 			addDrop(SMOOTH_BASALT_STAIRS, drops(SMOOTH_BASALT_STAIRS.asItem()));
 			addDrop(SMOOTH_BASALT_WALL, drops(SMOOTH_BASALT_WALL.asItem()));
@@ -2374,6 +2476,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRIMSON_BASALT_BRICK_SLAB, drops(CRIMSON_BASALT_BRICK_SLAB.asItem()));
 			addDrop(CRIMSON_BASALT_BRICK_STAIRS, drops(CRIMSON_BASALT_BRICK_STAIRS.asItem()));
 			addDrop(CRIMSON_BASALT_BRICK_WALL, drops(CRIMSON_BASALT_BRICK_WALL.asItem()));
+			addDrop(WARPED_BASALT_BRICKS, drops(WARPED_BASALT_BRICKS.asItem()));
+			addDrop(WARPED_BASALT_BRICK_SLAB, drops(WARPED_BASALT_BRICK_SLAB.asItem()));
+			addDrop(WARPED_BASALT_BRICK_STAIRS, drops(WARPED_BASALT_BRICK_STAIRS.asItem()));
+			addDrop(WARPED_BASALT_BRICK_WALL, drops(WARPED_BASALT_BRICK_WALL.asItem()));
 			addDrop(CHISELED_BASALT, drops(CHISELED_BASALT.asItem()));
 			addDrop(POLISHED_BASALT, drops(POLISHED_BASALT.asItem()));
 			addDrop(POLISHED_BASALT_SLAB, drops(POLISHED_BASALT_SLAB.asItem()));
@@ -2480,6 +2586,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRIMSON_RED_NETHER_BRICK_SLAB, drops(CRIMSON_RED_NETHER_BRICK_SLAB.asItem()));
 			addDrop(CRIMSON_RED_NETHER_BRICK_STAIRS, drops(CRIMSON_RED_NETHER_BRICK_STAIRS.asItem()));
 			addDrop(CRIMSON_RED_NETHER_BRICK_WALL, drops(CRIMSON_RED_NETHER_BRICK_WALL.asItem()));
+			addDrop(WARPED_RED_NETHER_BRICKS, drops(WARPED_RED_NETHER_BRICKS.asItem()));
+			addDrop(WARPED_RED_NETHER_BRICK_SLAB, drops(WARPED_RED_NETHER_BRICK_SLAB.asItem()));
+			addDrop(WARPED_RED_NETHER_BRICK_STAIRS, drops(WARPED_RED_NETHER_BRICK_STAIRS.asItem()));
+			addDrop(WARPED_RED_NETHER_BRICK_WALL, drops(WARPED_RED_NETHER_BRICK_WALL.asItem()));
 			addDrop(CRACKED_RED_NETHER_BRICKS, drops(CRACKED_RED_NETHER_BRICKS.asItem()));
 			addDrop(CHISELED_RED_HARDENED_NETHERRACK, drops(CHISELED_RED_HARDENED_NETHERRACK.asItem()));
 			addDrop(POLISHED_RED_HARDENED_NETHERRACK, drops(POLISHED_RED_HARDENED_NETHERRACK.asItem()));
@@ -2498,10 +2608,14 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(QUARTZ_BRICK_SLAB, drops(QUARTZ_BRICK_SLAB.asItem()));
 			addDrop(QUARTZ_BRICK_STAIRS, drops(QUARTZ_BRICK_STAIRS.asItem()));
 			addDrop(QUARTZ_BRICK_WALL, drops(QUARTZ_BRICK_WALL.asItem()));
-			addDrop(MOSSY_QUARTZ_BRICKS, drops(MOSSY_QUARTZ_BRICKS.asItem()));
-			addDrop(MOSSY_QUARTZ_BRICK_SLAB, drops(MOSSY_QUARTZ_BRICK_SLAB.asItem()));
-			addDrop(MOSSY_QUARTZ_BRICK_STAIRS, drops(MOSSY_QUARTZ_BRICK_STAIRS.asItem()));
-			addDrop(MOSSY_QUARTZ_BRICK_WALL, drops(MOSSY_QUARTZ_BRICK_WALL.asItem()));
+			addDrop(CRIMSON_QUARTZ_BRICKS, drops(CRIMSON_QUARTZ_BRICKS.asItem()));
+			addDrop(CRIMSON_QUARTZ_BRICK_SLAB, drops(CRIMSON_QUARTZ_BRICK_SLAB.asItem()));
+			addDrop(CRIMSON_QUARTZ_BRICK_STAIRS, drops(CRIMSON_QUARTZ_BRICK_STAIRS.asItem()));
+			addDrop(CRIMSON_QUARTZ_BRICK_WALL, drops(CRIMSON_QUARTZ_BRICK_WALL.asItem()));
+			addDrop(WARPED_QUARTZ_BRICKS, drops(WARPED_QUARTZ_BRICKS.asItem()));
+			addDrop(WARPED_QUARTZ_BRICK_SLAB, drops(WARPED_QUARTZ_BRICK_SLAB.asItem()));
+			addDrop(WARPED_QUARTZ_BRICK_STAIRS, drops(WARPED_QUARTZ_BRICK_STAIRS.asItem()));
+			addDrop(WARPED_QUARTZ_BRICK_WALL, drops(WARPED_QUARTZ_BRICK_WALL.asItem()));
 			addDrop(POLISHED_QUARTZ_WALL, drops(POLISHED_QUARTZ_WALL.asItem()));
 			addDrop(QUARTZ_TILES, drops(QUARTZ_TILES.asItem()));
 			addDrop(QUARTZ_TILE_SLAB, drops(QUARTZ_TILE_SLAB.asItem()));
@@ -2975,6 +3089,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Blocks.POLISHED_GRANITE)).wall(POLISHED_GRANITE_WALL);
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Blocks.END_STONE)).stairs(END_STONE_STAIRS).wall(END_STONE_WALL);
 			generateSlab(blockStateModelGenerator, END_STONE_SLAB, Blocks.END_STONE, Identifier.of("minecraft", "end_stone"));
+			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Identifier.of("minecraft:block/purpur_block"))).wall(PURPUR_TILE_WALL);
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Identifier.of("minecraft:block/sandstone_top"))).wall(SMOOTH_SANDSTONE_WALL);
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Blocks.CUT_SANDSTONE)).stairs(CUT_SANDSTONE_STAIRS).wall(CUT_SANDSTONE_WALL);
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Identifier.of("minecraft:block/red_sandstone_top"))).wall(SMOOTH_RED_SANDSTONE_WALL);
@@ -3044,6 +3159,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ANDESITE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DIORITE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_END_STONE_BRICKS);
+			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_PURPUR_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_SANDSTONE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_SANDSTONE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_PRISMARINE_BRICKS);
@@ -3080,6 +3196,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ANDESITE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DIORITE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_END_STONE_TILES);
+			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_PURPUR_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_SANDSTONE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_SANDSTONE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_PRISMARINE_TILES);
@@ -3111,6 +3228,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_SMOOTH_STONE);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_END_STONE);
+			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_PURPUR);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_PRISMARINE);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_DARK_PRISMARINE);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_RED_HARDENED_NETHERRACK);
@@ -3153,6 +3271,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerAxisRotated(CHISELED_BLACKSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(END_STONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_END_STONE_PILLAR, TexturedModel.CUBE_COLUMN);
+			blockStateModelGenerator.registerAxisRotated(CHISELED_PURPUR_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(SANDSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_SANDSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(RED_SANDSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
@@ -3257,6 +3376,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(COBBLED_BLACKSTONE.asItem(), Identifier.of("pucks_parity_mod:block/cobbled_blackstone"));
 			blockStateModelGenerator.registerParentedItemModel(CRIMSON_COBBLED_BLACKSTONE.asItem(), Identifier.of("pucks_parity_mod:block/crimson_cobbled_blackstone"));
 			blockStateModelGenerator.registerParentedItemModel(CRIMSON_BLACKSTONE_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/crimson_blackstone_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_COBBLED_BLACKSTONE.asItem(), Identifier.of("pucks_parity_mod:block/warped_cobbled_blackstone"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_BLACKSTONE_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/warped_blackstone_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(BLACKSTONE_TILES.asItem(), Identifier.of("pucks_parity_mod:block/blackstone_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_BLACKSTONE_TILES.asItem(), Identifier.of("pucks_parity_mod:block/cracked_blackstone_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(BLACKSTONE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/blackstone_pillar"));
@@ -3271,6 +3392,12 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_END_STONE_TILES.asItem(), Identifier.of("pucks_parity_mod:block/cracked_end_stone_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(END_STONE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/end_stone_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_END_STONE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_end_stone_pillar"));
+			blockStateModelGenerator.registerParentedItemModel(PURPUR_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/purpur_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(MOLDY_PURPUR_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/moldy_purpur_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(CHISELED_PURPUR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_purpur"));
+			blockStateModelGenerator.registerParentedItemModel(POLISHED_PURPUR.asItem(), Identifier.of("pucks_parity_mod:block/polished_purpur"));
+			blockStateModelGenerator.registerParentedItemModel(CRACKED_PURPUR_TILES.asItem(), Identifier.of("pucks_parity_mod:block/cracked_purpur_tiles"));
+			blockStateModelGenerator.registerParentedItemModel(CHISELED_PURPUR_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_purpur_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(MOSSY_SANDSTONE.asItem(), Identifier.of("pucks_parity_mod:block/mossy_sandstone"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_SANDSTONE_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/cracked_sandstone_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(SANDSTONE_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/sandstone_bricks"));
@@ -3309,8 +3436,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(DARK_PRISMARINE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/dark_prismarine_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_DARK_PRISMARINE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_dark_prismarine_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(CRIMSON_NETHERRACK.asItem(), Identifier.of("pucks_parity_mod:block/crimson_netherrack"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_NETHERRACK.asItem(), Identifier.of("pucks_parity_mod:block/warped_netherrack"));
 			blockStateModelGenerator.registerParentedItemModel(HARDENED_NETHERRACK.asItem(), Identifier.of("pucks_parity_mod:block/hardened_netherrack"));
 			blockStateModelGenerator.registerParentedItemModel(CRIMSON_NETHER_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/crimson_nether_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_NETHER_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/warped_nether_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(POLISHED_HARDENED_NETHERRACK.asItem(), Identifier.of("pucks_parity_mod:block/polished_hardened_netherrack"));
 			blockStateModelGenerator.registerParentedItemModel(NETHER_TILES.asItem(), Identifier.of("pucks_parity_mod:block/nether_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_NETHER_TILES.asItem(), Identifier.of("pucks_parity_mod:block/cracked_nether_tiles"));
@@ -3318,9 +3447,11 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_NETHER_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_nether_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(COBBLED_BASALT.asItem(), Identifier.of("pucks_parity_mod:block/cobbled_basalt"));
 			blockStateModelGenerator.registerParentedItemModel(CRIMSON_COBBLED_BASALT.asItem(), Identifier.of("pucks_parity_mod:block/crimson_cobbled_basalt"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_COBBLED_BASALT.asItem(), Identifier.of("pucks_parity_mod:block/warped_cobbled_basalt"));
 			blockStateModelGenerator.registerParentedItemModel(BASALT_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/basalt_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_BASALT_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/cracked_basalt_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(CRIMSON_BASALT_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/crimson_basalt_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_BASALT_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/warped_basalt_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_BASALT.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_basalt"));
 			blockStateModelGenerator.registerParentedItemModel(POLISHED_BASALT.asItem(), Identifier.of("pucks_parity_mod:block/polished_basalt"));
 			blockStateModelGenerator.registerParentedItemModel(BASALT_TILES.asItem(), Identifier.of("pucks_parity_mod:block/basalt_tiles"));
@@ -3359,6 +3490,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_SMOOTH_STONE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_smooth_stone_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(RED_HARDENED_NETHERRACK.asItem(), Identifier.of("pucks_parity_mod:block/red_hardened_netherrack"));
 			blockStateModelGenerator.registerParentedItemModel(CRIMSON_RED_NETHER_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/crimson_red_nether_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_RED_NETHER_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/warped_red_nether_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_RED_NETHER_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/cracked_red_nether_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_RED_HARDENED_NETHERRACK.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_red_hardened_netherrack"));
 			blockStateModelGenerator.registerParentedItemModel(POLISHED_RED_HARDENED_NETHERRACK.asItem(), Identifier.of("pucks_parity_mod:block/polished_red_hardened_netherrack"));
@@ -3367,7 +3499,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(RED_NETHER_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/red_nether_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_RED_NETHER_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_red_nether_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_QUARTZ_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/cracked_quartz_bricks"));
-			blockStateModelGenerator.registerParentedItemModel(MOSSY_QUARTZ_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/mossy_quartz_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(CRIMSON_QUARTZ_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/crimson_quartz_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(WARPED_QUARTZ_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/warped_quartz_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(QUARTZ_TILES.asItem(), Identifier.of("pucks_parity_mod:block/quartz_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_QUARTZ_TILES.asItem(), Identifier.of("pucks_parity_mod:block/cracked_quartz_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_QUARTZ_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_quartz_pillar"));

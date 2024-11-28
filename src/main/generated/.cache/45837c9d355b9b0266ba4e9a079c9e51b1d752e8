@@ -1,2 +1,4 @@
-// 1.21.1	2024-11-25T15:15:44.3387027	Puck's Parity Mod/Tags for minecraft:block
-dac35793fcd405eff8c00b3e934cd7d97066d960 data\minecraft\tags\block\walls.json
+// 1.21.1	2024-11-27T16:27:58.834638469	Puck's Parity Mod/Tags for minecraft:block
+5b5757b073c2dee33e7786127d33b6dbbd0bd448 data/minecraft/tags/block/infiniburn_overworld.json
+d6a16859b7e18fc57d9f1251553cc5ff88be6be0 data/minecraft/tags/block/walls.json
+dfd0fefe8003873b55721d47485d1818b41957a8 data/minecraft/tags/block/pressure_plates.json
