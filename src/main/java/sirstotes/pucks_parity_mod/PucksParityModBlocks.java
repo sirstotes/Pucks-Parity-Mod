@@ -1502,11 +1502,11 @@ public class PucksParityModBlocks {
     public static final Block MOSSY_DEEPSLATE_BRICKS = register("mossy_deepslate_bricks", new Block(AbstractBlock.Settings.copy(Blocks.DEEPSLATE_BRICKS)), true);
     public static final Block MOSSY_DEEPSLATE_BRICK_SLAB = register("mossy_deepslate_brick_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.DEEPSLATE_BRICKS)), true);
     public static final Block MOSSY_DEEPSLATE_BRICK_STAIRS = register("mossy_deepslate_brick_stairs", new StairsBlock(MOSSY_DEEPSLATE_BRICKS.getDefaultState(), AbstractBlock.Settings.copy(Blocks.DEEPSLATE_BRICKS)), true);
-    public static final Block MOSSY_DEEPSLATE_BRICK_WALL = register("skulky_deepslate_brick_wall", new WallBlock(AbstractBlock.Settings.copy(MOSSY_DEEPSLATE_BRICKS).solid()), true);
+    public static final Block MOSSY_DEEPSLATE_BRICK_WALL = register("mossy_deepslate_brick_wall", new WallBlock(AbstractBlock.Settings.copy(MOSSY_DEEPSLATE_BRICKS).solid()), true);
     public static final Block SKULKY_DEEPSLATE_BRICKS = register("skulky_deepslate_bricks", new Block(AbstractBlock.Settings.copy(Blocks.DEEPSLATE_BRICKS)), true);
-    public static final Block SKULKY_DEEPSLATE_BRICK_SLAB = register("skulky_deepslate_brick_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.DEEPSLATE_BRICKS)), true);
-    public static final Block SKULKY_DEEPSLATE_BRICK_STAIRS = register("skulky_deepslate_brick_stairs", new StairsBlock(MOSSY_DEEPSLATE_BRICKS.getDefaultState(), AbstractBlock.Settings.copy(Blocks.DEEPSLATE_BRICKS)), true);
-    public static final Block SKULKY_DEEPSLATE_BRICK_WALL = register("skulky_deepslate_brick_wall", new WallBlock(AbstractBlock.Settings.copy(MOSSY_DEEPSLATE_BRICKS).solid()), true);
+    public static final Block SKULKY_DEEPSLATE_BRICK_SLAB = register("skulky_deepslate_brick_slab", new SlabBlock(AbstractBlock.Settings.copy(SKULKY_DEEPSLATE_BRICKS)), true);
+    public static final Block SKULKY_DEEPSLATE_BRICK_STAIRS = register("skulky_deepslate_brick_stairs", new StairsBlock(SKULKY_DEEPSLATE_BRICKS.getDefaultState(), AbstractBlock.Settings.copy(Blocks.DEEPSLATE_BRICKS)), true);
+    public static final Block SKULKY_DEEPSLATE_BRICK_WALL = register("skulky_deepslate_brick_wall", new WallBlock(AbstractBlock.Settings.copy(SKULKY_DEEPSLATE_BRICKS).solid()), true);
     public static final Block DEEPSLATE_PILLAR = register("deepslate_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.DEEPSLATE)), true);
     public static final Block CHISELED_DEEPSLATE_PILLAR = register("chiseled_deepslate_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.DEEPSLATE)), true);
 

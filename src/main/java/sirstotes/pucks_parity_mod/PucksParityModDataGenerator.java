@@ -94,8 +94,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(MOSSY_TUFF_BRICK_WALL)
 					.add(TUFF_TILE_WALL)
 					.add(MOSSY_COBBLED_DEEPSLATE_WALL)
+					.add(SKULKY_COBBLED_DEEPSLATE_WALL)
 					.add(DEEPSLATE_WALL)
 					.add(MOSSY_DEEPSLATE_BRICK_WALL)
+					.add(SKULKY_DEEPSLATE_BRICK_WALL)
 					.add(COBBLED_GRANITE_WALL)
 					.add(MOSSY_COBBLED_GRANITE_WALL)
 					.add(GRANITE_BRICK_WALL)
@@ -124,6 +126,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(END_STONE_WALL)
 					.add(MOLDY_COBBLED_END_STONE_WALL)
 					.add(MOLDY_END_STONE_BRICK_WALL)
+					.add(MOLDY_PURPUR_BRICK_WALL)
 					.add(POLISHED_END_STONE_WALL)
 					.add(END_STONE_TILE_WALL)
 					.add(PURPUR_WALL)
@@ -1822,6 +1825,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_SLAB, MOSSY_COBBLED_DEEPSLATE, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_STAIRS, MOSSY_COBBLED_DEEPSLATE, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_WALL, MOSSY_COBBLED_DEEPSLATE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SKULKY_COBBLED_DEEPSLATE_SLAB, SKULKY_COBBLED_DEEPSLATE, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SKULKY_COBBLED_DEEPSLATE_STAIRS, SKULKY_COBBLED_DEEPSLATE, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SKULKY_COBBLED_DEEPSLATE_WALL, SKULKY_COBBLED_DEEPSLATE, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_SLAB, COBBLED_GRANITE, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_STAIRS, COBBLED_GRANITE, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_WALL, COBBLED_GRANITE, 1);
@@ -1907,6 +1913,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_SLAB, MOSSY_DEEPSLATE_BRICKS, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_STAIRS, MOSSY_DEEPSLATE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_WALL, MOSSY_DEEPSLATE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SKULKY_DEEPSLATE_BRICK_SLAB, SKULKY_DEEPSLATE_BRICKS, 2);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SKULKY_DEEPSLATE_BRICK_STAIRS, SKULKY_DEEPSLATE_BRICKS, 1);
+//			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SKULKY_DEEPSLATE_BRICK_WALL, SKULKY_DEEPSLATE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_SLAB, MOSSY_GRANITE_BRICKS, 2);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_STAIRS, MOSSY_GRANITE_BRICKS, 1);
 //			offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_WALL, MOSSY_GRANITE_BRICKS, 1);
@@ -2154,6 +2163,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(MOSSY_COBBLED_DEEPSLATE_SLAB, drops(MOSSY_COBBLED_DEEPSLATE_SLAB.asItem()));
 			addDrop(MOSSY_COBBLED_DEEPSLATE_STAIRS, drops(MOSSY_COBBLED_DEEPSLATE_STAIRS.asItem()));
 			addDrop(MOSSY_COBBLED_DEEPSLATE_WALL, drops(MOSSY_COBBLED_DEEPSLATE_WALL.asItem()));
+			addDrop(SKULKY_COBBLED_DEEPSLATE, drops(SKULKY_COBBLED_DEEPSLATE.asItem()));
+			addDrop(SKULKY_COBBLED_DEEPSLATE_SLAB, drops(SKULKY_COBBLED_DEEPSLATE_SLAB.asItem()));
+			addDrop(SKULKY_COBBLED_DEEPSLATE_STAIRS, drops(SKULKY_COBBLED_DEEPSLATE_STAIRS.asItem()));
+			addDrop(SKULKY_COBBLED_DEEPSLATE_WALL, drops(SKULKY_COBBLED_DEEPSLATE_WALL.asItem()));
 			addDrop(DEEPSLATE_SLAB, drops(DEEPSLATE_SLAB.asItem()));
 			addDrop(DEEPSLATE_STAIRS, drops(DEEPSLATE_STAIRS.asItem()));
 			addDrop(DEEPSLATE_WALL, drops(DEEPSLATE_WALL.asItem()));
@@ -2161,6 +2174,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(MOSSY_DEEPSLATE_BRICK_SLAB, drops(MOSSY_DEEPSLATE_BRICK_SLAB.asItem()));
 			addDrop(MOSSY_DEEPSLATE_BRICK_STAIRS, drops(MOSSY_DEEPSLATE_BRICK_STAIRS.asItem()));
 			addDrop(MOSSY_DEEPSLATE_BRICK_WALL, drops(MOSSY_DEEPSLATE_BRICK_WALL.asItem()));
+			addDrop(SKULKY_DEEPSLATE_BRICKS, drops(SKULKY_DEEPSLATE_BRICKS.asItem()));
+			addDrop(SKULKY_DEEPSLATE_BRICK_SLAB, drops(SKULKY_DEEPSLATE_BRICK_SLAB.asItem()));
+			addDrop(SKULKY_DEEPSLATE_BRICK_STAIRS, drops(SKULKY_DEEPSLATE_BRICK_STAIRS.asItem()));
+			addDrop(SKULKY_DEEPSLATE_BRICK_WALL, drops(SKULKY_DEEPSLATE_BRICK_WALL.asItem()));
 			addDrop(DEEPSLATE_PILLAR, drops(DEEPSLATE_PILLAR.asItem()));
 			addDrop(CHISELED_DEEPSLATE_PILLAR, drops(CHISELED_DEEPSLATE_PILLAR.asItem()));
 			addDrop(COBBLED_GRANITE, drops(COBBLED_GRANITE.asItem()));
@@ -3340,7 +3357,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_TUFF_TILES.asItem(), Identifier.of("pucks_parity_mod:block/cracked_tuff_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(TUFF_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/tuff_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(MOSSY_COBBLED_DEEPSLATE.asItem(), Identifier.of("pucks_parity_mod:block/mossy_cobbled_deepslate"));
+			blockStateModelGenerator.registerParentedItemModel(SKULKY_COBBLED_DEEPSLATE.asItem(), Identifier.of("pucks_parity_mod:block/skulky_cobbled_deepslate"));
 			blockStateModelGenerator.registerParentedItemModel(MOSSY_DEEPSLATE_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/mossy_deepslate_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(SKULKY_DEEPSLATE_BRICKS.asItem(), Identifier.of("pucks_parity_mod:block/skulky_deepslate_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(DEEPSLATE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/deepslate_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_DEEPSLATE_PILLAR.asItem(), Identifier.of("pucks_parity_mod:block/chiseled_deepslate_pillar"));
 			blockStateModelGenerator.registerParentedItemModel(COBBLED_GRANITE.asItem(), Identifier.of("pucks_parity_mod:block/cobbled_granite"));

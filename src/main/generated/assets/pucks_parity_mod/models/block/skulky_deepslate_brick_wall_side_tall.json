@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/template_wall_side_tall",
   "textures": {
-    "wall": "pucks_parity_mod:block/mossy_deepslate_bricks"
+    "wall": "pucks_parity_mod:block/skulky_deepslate_bricks"
   }
 }
