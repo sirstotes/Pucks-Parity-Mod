@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_purpur": {
+      "conditions": {
+        "items": [
+          {
+            "items": "pucks_parity_mod:purpur"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:polished_purpur_wall_from_purpur_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_purpur"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:polished_purpur_wall_from_purpur_stonecutting"
+    ]
+  }
+}
