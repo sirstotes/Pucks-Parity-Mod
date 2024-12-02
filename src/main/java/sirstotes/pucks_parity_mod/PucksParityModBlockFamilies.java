@@ -71,20 +71,20 @@ public class PucksParityModBlockFamilies {
             .stairs(PucksParityModBlocks.MOSSY_COBBLED_DEEPSLATE_STAIRS)
             .wall(PucksParityModBlocks.MOSSY_COBBLED_DEEPSLATE_WALL)
             .build();
-    public static final BlockFamily SKULKY_COBBLED_DEEPSLATE = register(PucksParityModBlocks.SKULKY_COBBLED_DEEPSLATE)
-            .slab(PucksParityModBlocks.SKULKY_COBBLED_DEEPSLATE_SLAB)
-            .stairs(PucksParityModBlocks.SKULKY_COBBLED_DEEPSLATE_STAIRS)
-            .wall(PucksParityModBlocks.SKULKY_COBBLED_DEEPSLATE_WALL)
+    public static final BlockFamily SCULKY_COBBLED_DEEPSLATE = register(PucksParityModBlocks.SCULKY_COBBLED_DEEPSLATE)
+            .slab(PucksParityModBlocks.SCULKY_COBBLED_DEEPSLATE_SLAB)
+            .stairs(PucksParityModBlocks.SCULKY_COBBLED_DEEPSLATE_STAIRS)
+            .wall(PucksParityModBlocks.SCULKY_COBBLED_DEEPSLATE_WALL)
             .build();
     public static final BlockFamily MOSSY_DEEPSLATE_BRICKS = register(PucksParityModBlocks.MOSSY_DEEPSLATE_BRICKS)
             .slab(PucksParityModBlocks.MOSSY_DEEPSLATE_BRICK_SLAB)
             .stairs(PucksParityModBlocks.MOSSY_DEEPSLATE_BRICK_STAIRS)
             .wall(PucksParityModBlocks.MOSSY_DEEPSLATE_BRICK_WALL)
             .build();
-    public static final BlockFamily SKULKY_DEEPSLATE_BRICKS = register(PucksParityModBlocks.SKULKY_DEEPSLATE_BRICKS)
-            .slab(PucksParityModBlocks.SKULKY_DEEPSLATE_BRICK_SLAB)
-            .stairs(PucksParityModBlocks.SKULKY_DEEPSLATE_BRICK_STAIRS)
-            .wall(PucksParityModBlocks.SKULKY_DEEPSLATE_BRICK_WALL)
+    public static final BlockFamily SCULKY_DEEPSLATE_BRICKS = register(PucksParityModBlocks.SCULKY_DEEPSLATE_BRICKS)
+            .slab(PucksParityModBlocks.SCULKY_DEEPSLATE_BRICK_SLAB)
+            .stairs(PucksParityModBlocks.SCULKY_DEEPSLATE_BRICK_STAIRS)
+            .wall(PucksParityModBlocks.SCULKY_DEEPSLATE_BRICK_WALL)
             .build();
     public static final BlockFamily COBBLED_GRANITE = register(PucksParityModBlocks.COBBLED_GRANITE)
             .slab(PucksParityModBlocks.COBBLED_GRANITE_SLAB)

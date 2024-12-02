@@ -4,9 +4,9 @@
   "cookingtime": 200,
   "experience": 0.0,
   "ingredient": {
-    "item": "pucks_parity_mod:cobbled_basalt"
+    "item": "minecraft:netherrack"
   },
   "result": {
-    "id": "minecraft:basalt"
+    "id": "pucks_parity_mod:hardened_netherrack"
   }
 }
