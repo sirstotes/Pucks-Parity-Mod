@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "mossy_light_blue_terracotta_bricks",
+  "ingredients": [
+    {
+      "item": "pucks_parity_mod:light_blue_terracotta_bricks"
+    },
+    {
+      "item": "minecraft:vine"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:mossy_light_blue_terracotta_bricks"
+  }
+}

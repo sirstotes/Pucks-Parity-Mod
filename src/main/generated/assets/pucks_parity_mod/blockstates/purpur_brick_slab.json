@@ -4,7 +4,7 @@
       "model": "pucks_parity_mod:block/purpur_brick_slab"
     },
     "type=double": {
-      "model": "pucks_parity_mod:block/purpur_bricks"
+      "model": "pucks_parity_mod:purpur_bricks"
     },
     "type=top": {
       "model": "pucks_parity_mod:block/purpur_brick_slab_top"

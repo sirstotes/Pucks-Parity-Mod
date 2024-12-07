@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "pucks_parity_mod:orange_terracotta_tiles"
+  },
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:orange_terracotta_tile_wall"
+  }
+}

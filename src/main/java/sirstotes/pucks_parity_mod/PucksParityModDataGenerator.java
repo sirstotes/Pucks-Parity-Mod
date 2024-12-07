@@ -1,5 +1,6 @@
 package sirstotes.pucks_parity_mod;
 
+import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -29,6 +30,7 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.UnaryOperator;
@@ -3645,6 +3647,37 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.filter(BlockFamily::shouldGenerateModels)
 					.forEach(family -> blockStateModelGenerator.registerCubeAllModelTexturePool(family.getBaseBlock()).family(family));
 
+			TexturedModel texturedModel = TexturedModel.SIDE_TOP_BOTTOM_WALL.get(MOSSY_SANDSTONE);
+			blockStateModelGenerator.new BlockTexturePool(texturedModel.getTextures().put(TextureKey.WALL, Identifier.of("pucks_parity_mod", "block/mossy_sandstone_bottom")))
+					.base(MOSSY_SANDSTONE, texturedModel.getModel())
+					.wall(MOSSY_SANDSTONE_WALL)
+					.stairs(MOSSY_SANDSTONE_STAIRS);
+			generateSlab(blockStateModelGenerator, MOSSY_SANDSTONE_SLAB, MOSSY_SANDSTONE, Identifier.of("pucks_parity_mod", "mossy_sandstone"));
+
+			TexturedModel texturedModel2 = TexturedModel.SIDE_TOP_BOTTOM_WALL.get(MOSSY_RED_SANDSTONE);
+			blockStateModelGenerator.new BlockTexturePool(texturedModel2.getTextures().put(TextureKey.WALL, Identifier.of("pucks_parity_mod", "block/mossy_red_sandstone_bottom")))
+					.base(MOSSY_RED_SANDSTONE, texturedModel2.getModel())
+					.wall(MOSSY_RED_SANDSTONE_WALL)
+					.stairs(MOSSY_RED_SANDSTONE_STAIRS);
+			generateSlab(blockStateModelGenerator, MOSSY_RED_SANDSTONE_SLAB, MOSSY_RED_SANDSTONE, Identifier.of("pucks_parity_mod", "mossy_red_sandstone"));
+
+			TexturedModel texturedModel3 = TexturedModel.CUBE_COLUMN.get(PURPUR_BRICKS);
+			blockStateModelGenerator.new BlockTexturePool(texturedModel3.getTextures().put(TextureKey.WALL, Identifier.of("pucks_parity_mod", "block/purpur_bricks_side")))
+					.base(PURPUR_BRICKS, texturedModel3.getModel())
+					.wall(PURPUR_BRICK_WALL)
+					.stairs(PURPUR_BRICK_STAIRS);
+			generateSlab(blockStateModelGenerator, PURPUR_BRICK_SLAB, PURPUR_BRICKS, Identifier.of("pucks_parity_mod", "purpur_bricks"));
+
+			TexturedModel texturedModel4 = TexturedModel.CUBE_COLUMN.get(CRACKED_PURPUR_BRICKS);
+			blockStateModelGenerator.new BlockTexturePool(texturedModel4.getTextures()).base(CRACKED_PURPUR_BRICKS, texturedModel3.getModel());
+
+			TexturedModel texturedModel5 = TexturedModel.CUBE_COLUMN.get(MOLDY_PURPUR_BRICKS);
+			blockStateModelGenerator.new BlockTexturePool(texturedModel5.getTextures().put(TextureKey.WALL, Identifier.of("pucks_parity_mod", "block/moldy_purpur_bricks_side")))
+					.base(MOLDY_PURPUR_BRICKS, texturedModel5.getModel())
+					.wall(MOLDY_PURPUR_BRICK_WALL)
+					.stairs(MOLDY_PURPUR_BRICK_STAIRS);
+			generateSlab(blockStateModelGenerator, MOLDY_PURPUR_BRICK_SLAB, MOLDY_PURPUR_BRICKS, Identifier.of("pucks_parity_mod", "moldy_purpur_bricks"));
+
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Blocks.STONE)).wall(STONE_WALL);
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Blocks.SMOOTH_STONE)).stairs(POLISHED_SMOOTH_STONE_STAIRS).wall(POLISHED_SMOOTH_STONE_WALL);
 			blockStateModelGenerator.new BlockTexturePool(TextureMap.all(Blocks.DEEPSLATE)).stairs(DEEPSLATE_STAIRS).wall(DEEPSLATE_WALL);
@@ -3724,7 +3757,6 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ANDESITE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DIORITE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_END_STONE_BRICKS);
-			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_PURPUR_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_SANDSTONE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_SANDSTONE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_PRISMARINE_BRICKS);
@@ -3838,9 +3870,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerAxisRotated(CHISELED_END_STONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_PURPUR_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(SANDSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
-			blockStateModelGenerator.registerAxisRotated(CHISELED_SANDSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(RED_SANDSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
-			blockStateModelGenerator.registerAxisRotated(CHISELED_RED_SANDSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(PRISMARINE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_PRISMARINE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(DARK_PRISMARINE_PILLAR, TexturedModel.CUBE_COLUMN);

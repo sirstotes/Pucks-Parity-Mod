@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "pucks_parity_mod:cobbled_diorite"
+  },
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:cobbled_diorite_stairs"
+  }
+}

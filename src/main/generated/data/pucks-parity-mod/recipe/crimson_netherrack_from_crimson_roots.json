@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "crimson_netherrack",
+  "ingredients": [
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "item": "minecraft:crimson_roots"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:crimson_netherrack"
+  }
+}

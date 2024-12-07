@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "pucks_parity_mod:moldy_cobbled_end_stone"
+  },
+  "result": {
+    "count": 2,
+    "id": "pucks_parity_mod:moldy_cobbled_end_stone_slab"
+  }
+}

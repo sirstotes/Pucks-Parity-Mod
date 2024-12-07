@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "warped_basalt_bricks",
+  "ingredients": [
+    {
+      "item": "pucks_parity_mod:basalt_bricks"
+    },
+    {
+      "item": "minecraft:warped_roots"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:warped_basalt_bricks"
+  }
+}

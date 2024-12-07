@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=north": {"model": "pucks_parity_mod:block/chiseled_red_sandstone_pillar", "x": 270},
+    "facing=south": {"model": "pucks_parity_mod:block/chiseled_red_sandstone_pillar", "x":  90},
+    "facing=east": {"model": "pucks_parity_mod:block/chiseled_red_sandstone_pillar", "x":  270, "y":  90},
+    "facing=west": {"model": "pucks_parity_mod:block/chiseled_red_sandstone_pillar", "x":  90, "y":  90},
+    "facing=up": {"model": "pucks_parity_mod:block/chiseled_red_sandstone_pillar", "x":  180},
+    "facing=down": {"model": "pucks_parity_mod:block/chiseled_red_sandstone_pillar"}
+  }
+}

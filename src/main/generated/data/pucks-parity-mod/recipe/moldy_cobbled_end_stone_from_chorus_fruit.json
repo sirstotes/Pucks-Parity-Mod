@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "moldy_cobbled_end_stone",
+  "ingredients": [
+    {
+      "item": "pucks_parity_mod:cobbled_end_stone"
+    },
+    {
+      "item": "minecraft:chorus_fruit"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:moldy_cobbled_end_stone"
+  }
+}

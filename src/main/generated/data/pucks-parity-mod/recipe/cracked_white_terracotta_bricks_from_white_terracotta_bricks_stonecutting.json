@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "pucks_parity_mod:white_terracotta_bricks"
+  },
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:cracked_white_terracotta_bricks"
+  }
+}

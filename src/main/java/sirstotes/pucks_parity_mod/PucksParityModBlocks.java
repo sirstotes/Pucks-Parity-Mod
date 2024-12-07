@@ -1670,7 +1670,7 @@ public class PucksParityModBlocks {
     public static final Block SANDSTONE_TILE_WALL = register("sandstone_tile_wall", new WallBlock(AbstractBlock.Settings.copy(SANDSTONE_TILES).solid()), true);
     public static final Block CRACKED_SANDSTONE_TILES = register("cracked_sandstone_tiles", new Block(AbstractBlock.Settings.copy(Blocks.SANDSTONE)), true);
     public static final Block SANDSTONE_PILLAR = register("sandstone_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.SANDSTONE)), true);
-    public static final Block CHISELED_SANDSTONE_PILLAR = register("chiseled_sandstone_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.SANDSTONE)), true);
+    public static final Block CHISELED_SANDSTONE_PILLAR = register("chiseled_sandstone_pillar", new DirectionalPillarBlock(AbstractBlock.Settings.copy(Blocks.SANDSTONE)), true);
 
     public static final Block MOSSY_RED_SANDSTONE = register("mossy_red_sandstone", new Block(AbstractBlock.Settings.copy(Blocks.RED_SANDSTONE)), true);
     public static final Block MOSSY_RED_SANDSTONE_SLAB = register("mossy_red_sandstone_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.RED_SANDSTONE)), true);
@@ -1694,7 +1694,7 @@ public class PucksParityModBlocks {
     public static final Block RED_SANDSTONE_TILE_WALL = register("red_sandstone_tile_wall", new WallBlock(AbstractBlock.Settings.copy(RED_SANDSTONE_TILES).solid()), true);
     public static final Block CRACKED_RED_SANDSTONE_TILES = register("cracked_red_sandstone_tiles", new Block(AbstractBlock.Settings.copy(Blocks.RED_SANDSTONE)), true);
     public static final Block RED_SANDSTONE_PILLAR = register("red_sandstone_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.RED_SANDSTONE)), true);
-    public static final Block CHISELED_RED_SANDSTONE_PILLAR = register("chiseled_red_sandstone_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.RED_SANDSTONE)), true);
+    public static final Block CHISELED_RED_SANDSTONE_PILLAR = register("chiseled_red_sandstone_pillar", new DirectionalPillarBlock(AbstractBlock.Settings.copy(Blocks.RED_SANDSTONE)), true);
 
     public static final Block BARNACLED_PRISMARINE = register("barnacled_prismarine", new Block(AbstractBlock.Settings.copy(Blocks.PRISMARINE)), true);
     public static final Block BARNACLED_PRISMARINE_SLAB = register("barnacled_prismarine_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.PRISMARINE)), true);

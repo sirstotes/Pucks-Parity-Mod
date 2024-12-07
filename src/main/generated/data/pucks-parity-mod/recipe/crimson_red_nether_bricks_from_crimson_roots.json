@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "crimson_red_nether_bricks",
+  "ingredients": [
+    {
+      "item": "minecraft:red_nether_bricks"
+    },
+    {
+      "item": "minecraft:crimson_roots"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:crimson_red_nether_bricks"
+  }
+}

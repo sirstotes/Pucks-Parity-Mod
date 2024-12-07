@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "mossy_cobbled_calcite",
+  "ingredients": [
+    {
+      "item": "pucks_parity_mod:cobbled_calcite"
+    },
+    {
+      "item": "minecraft:moss_block"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:mossy_cobbled_calcite"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "pucks_parity_mod:purpur"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:popped_chorus_fruit"
+  }
+}

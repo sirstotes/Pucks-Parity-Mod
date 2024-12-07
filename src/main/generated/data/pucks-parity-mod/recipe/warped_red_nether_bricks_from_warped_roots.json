@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "group": "warped_red_nether_bricks",
+  "ingredients": [
+    {
+      "item": "minecraft:red_nether_bricks"
+    },
+    {
+      "item": "minecraft:warped_roots"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:warped_red_nether_bricks"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "minecraft:magenta_terracotta"
+  },
+  "result": {
+    "count": 1,
+    "id": "pucks_parity_mod:magenta_terracotta_brick_wall"
+  }
+}

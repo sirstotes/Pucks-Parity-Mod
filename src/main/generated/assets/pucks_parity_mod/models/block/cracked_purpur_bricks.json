@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube_column",
   "textures": {
-    "all": "pucks_parity_mod:block/cracked_purpur_bricks"
+    "end": "pucks_parity_mod:block/cracked_purpur_bricks_top",
+    "side": "pucks_parity_mod:block/cracked_purpur_bricks_side"
   }
 }

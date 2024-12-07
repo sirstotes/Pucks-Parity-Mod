@@ -13,7 +13,7 @@ public abstract class PumpkinBlockMixin {
         method = "onUseWithItem",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z")
     )
-    public boolean includeNewShears(boolean original, ItemStack stack) {//TODO: This will break compatibility with other mods but I'm not sure what else to do.
-        return !stack.isIn(ConventionalItemTags.SHEAR_TOOLS);
+    public boolean includeNewShears(boolean original, ItemStack stack) {
+        return stack.isIn(ConventionalItemTags.SHEAR_TOOLS);
     }
 }
