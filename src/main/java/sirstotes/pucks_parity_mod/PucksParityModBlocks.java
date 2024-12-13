@@ -8,6 +8,7 @@ import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -144,6 +145,26 @@ public class PucksParityModBlocks {
             itemGroup.addAfter(Items.IRON_DOOR, GOLD_DOOR);
             itemGroup.addAfter(Items.OAK_FENCE_GATE, new ItemStack(WAXED_COPPER_GATE), new ItemStack(IRON_GATE), new ItemStack(GOLD_GATE));
             itemGroup.addAfter(Items.IRON_TRAPDOOR, GOLD_TRAPDOOR);
+        });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COLORED_BLOCKS).register((itemGroup) -> {
+            itemGroup.addAfter(Items.PINK_STAINED_GLASS_PANE, new ItemStack (SLIDING_GLASS_PANE),
+                    new ItemStack (WHITE_SLIDING_GLASS_PANE),
+                    new ItemStack (LIGHT_GRAY_SLIDING_GLASS_PANE),
+                    new ItemStack (GRAY_SLIDING_GLASS_PANE),
+                    new ItemStack (BLACK_SLIDING_GLASS_PANE),
+                    new ItemStack (RED_SLIDING_GLASS_PANE),
+                    new ItemStack (ORANGE_SLIDING_GLASS_PANE),
+                    new ItemStack (YELLOW_SLIDING_GLASS_PANE),
+                    new ItemStack (LIME_SLIDING_GLASS_PANE),
+                    new ItemStack (GREEN_SLIDING_GLASS_PANE),
+                    new ItemStack (CYAN_SLIDING_GLASS_PANE),
+                    new ItemStack (LIGHT_BLUE_SLIDING_GLASS_PANE),
+                    new ItemStack (BLUE_SLIDING_GLASS_PANE),
+                    new ItemStack (PURPLE_SLIDING_GLASS_PANE),
+                    new ItemStack (MAGENTA_SLIDING_GLASS_PANE),
+                    new ItemStack (PINK_SLIDING_GLASS_PANE),
+                    new ItemStack (BROWN_SLIDING_GLASS_PANE));
         });
 
         Registry.register(Registries.ITEM_GROUP, PucksParityModItems.CUSTOM_ITEM_GROUP_KEY, PucksParityModItems.CUSTOM_ITEM_GROUP);
@@ -1454,6 +1475,40 @@ public class PucksParityModBlocks {
             .luminance(Blocks.createLightLevelFromLitBlockState(15))), true);
     public static final Block IRON_GATE = register("iron_gate", new SlidingPaneDoorBlock(BlockSetType.IRON, AbstractBlock.Settings.copy(Blocks.IRON_DOOR)), true);
     public static final Block IRON_REDSTONE_LANTERN = register("iron_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
+
+    public static final BlockSetType GLASS = new BlockSetType(
+            "glass",
+            true,
+            true,
+            true,
+            BlockSetType.ActivationRule.EVERYTHING,
+            BlockSoundGroup.GLASS,
+            SoundEvents.BLOCK_IRON_DOOR_CLOSE,
+            SoundEvents.BLOCK_IRON_DOOR_OPEN,
+            SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE,
+            SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN,
+            SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_OFF,
+            SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_ON,
+            SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF,
+            SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON
+    );
+    public static final Block SLIDING_GLASS_PANE = register("sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.GLASS_PANE)), true);
+    public static final Block RED_SLIDING_GLASS_PANE = register("red_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.RED_STAINED_GLASS_PANE)), true);
+    public static final Block ORANGE_SLIDING_GLASS_PANE = register("orange_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.ORANGE_STAINED_GLASS_PANE)), true);
+    public static final Block YELLOW_SLIDING_GLASS_PANE = register("yellow_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.YELLOW_STAINED_GLASS_PANE)), true);
+    public static final Block LIME_SLIDING_GLASS_PANE = register("lime_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.LIME_STAINED_GLASS_PANE)), true);
+    public static final Block GREEN_SLIDING_GLASS_PANE = register("green_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.GREEN_STAINED_GLASS_PANE)), true);
+    public static final Block CYAN_SLIDING_GLASS_PANE = register("cyan_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.CYAN_STAINED_GLASS_PANE)), true);
+    public static final Block LIGHT_BLUE_SLIDING_GLASS_PANE = register("light_blue_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)), true);
+    public static final Block BLUE_SLIDING_GLASS_PANE = register("blue_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.BLUE_STAINED_GLASS_PANE)), true);
+    public static final Block PURPLE_SLIDING_GLASS_PANE = register("purple_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.PURPLE_STAINED_GLASS_PANE)), true);
+    public static final Block MAGENTA_SLIDING_GLASS_PANE = register("magenta_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.MAGENTA_STAINED_GLASS_PANE)), true);
+    public static final Block PINK_SLIDING_GLASS_PANE = register("pink_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.PINK_STAINED_GLASS_PANE)), true);
+    public static final Block BROWN_SLIDING_GLASS_PANE = register("brown_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.BROWN_STAINED_GLASS_PANE)), true);
+    public static final Block WHITE_SLIDING_GLASS_PANE = register("white_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.WHITE_STAINED_GLASS_PANE)), true);
+    public static final Block LIGHT_GRAY_SLIDING_GLASS_PANE = register("light_gray_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)), true);
+    public static final Block GRAY_SLIDING_GLASS_PANE = register("gray_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.GRAY_STAINED_GLASS_PANE)), true);
+    public static final Block BLACK_SLIDING_GLASS_PANE = register("black_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.BLACK_STAINED_GLASS_PANE)), true);
 
     public static final Block STONE_WALL = register("stone_wall", new WallBlock(AbstractBlock.Settings.copy(Blocks.STONE).solid()), true);
     public static final Block POLISHED_STONE = register("polished_stone", new Block(AbstractBlock.Settings.copy(Blocks.STONE)), true);

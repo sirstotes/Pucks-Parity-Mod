@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-07T14:05:34.4969548	Puck's Parity Mod/Block Loot Tables
+// 1.21.1	2024-12-12T19:10:37.9285405	Puck's Parity Mod/Block Loot Tables
 7968c67db5b32f5775859a4158fae2192e97501f data\pucks_parity_mod\loot_table\blocks\iron_bulb.json
 a0b5bfa437669bf6a3fe14e3329efefed7bdf8e9 data\pucks_parity_mod\loot_table\blocks\mossy_brick_wall.json
 8e2d7d59ee90228ef832ad38c8242d17f84638fb data\pucks_parity_mod\loot_table\blocks\mossy_black_terracotta_bricks.json
@@ -419,8 +419,8 @@ f5c389996434657bd97d501917840494454ae5de data\pucks_parity_mod\loot_table\blocks
 a15e7cb38c937c47e68daf8c1b4e5007d9c0ab33 data\pucks_parity_mod\loot_table\blocks\warped_cobbled_blackstone_stairs.json
 445d5aad09c2f1d44a34aacbd6db3b24e9f956f1 data\pucks_parity_mod\loot_table\blocks\warped_netherrack_wall.json
 f176aaeb3a240b8f6dbc9ca17f8d1587ec96f2c4 data\pucks_parity_mod\loot_table\blocks\mossy_cobbled_tuff_stairs.json
-940159f1f8b874e1a90f54a769d2c958a37f10b0 data\pucks_parity_mod\loot_table\blocks\warped_blackstone_brick_stairs.json
 08317df7b44cb0d880f47a063148b8155dfa541b data\pucks_parity_mod\loot_table\blocks\mossy_sandstone_stairs.json
+940159f1f8b874e1a90f54a769d2c958a37f10b0 data\pucks_parity_mod\loot_table\blocks\warped_blackstone_brick_stairs.json
 a0a30b833504fab76e3003c3fb61f9f519e1058b data\pucks_parity_mod\loot_table\blocks\polished_gray_terracotta.json
 71f1d0263030105f787e063b2268f5436ce0ee0a data\pucks_parity_mod\loot_table\blocks\chiseled_brown_terracotta_pillar.json
 cd1f711c60c7e018f14b31150cdff10d9b161efb data\pucks_parity_mod\loot_table\blocks\red_nether_tile_slab.json

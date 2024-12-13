@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.enums.DoorHinge;
 import net.minecraft.data.client.*;
 import net.minecraft.data.family.BlockFamilies;
 import net.minecraft.data.family.BlockFamily;
@@ -28,6 +29,7 @@ import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 
 import java.util.List;
 import java.util.Map;
@@ -3643,6 +3645,42 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			registerBars(blockStateModelGenerator, WAXED_OXIDIZED_COPPER_BARS, "oxidized_copper_bars");
 			registerBars(blockStateModelGenerator, GOLD_BARS, "gold_bars");
 
+			registerPaneDoor(blockStateModelGenerator, SLIDING_GLASS_PANE, "sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, RED_SLIDING_GLASS_PANE, "red_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, ORANGE_SLIDING_GLASS_PANE, "orange_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, YELLOW_SLIDING_GLASS_PANE, "yellow_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, LIME_SLIDING_GLASS_PANE, "lime_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, GREEN_SLIDING_GLASS_PANE, "green_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, CYAN_SLIDING_GLASS_PANE, "cyan_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, LIGHT_BLUE_SLIDING_GLASS_PANE, "light_blue_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, BLUE_SLIDING_GLASS_PANE, "blue_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, PURPLE_SLIDING_GLASS_PANE, "purple_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, MAGENTA_SLIDING_GLASS_PANE, "magenta_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, PINK_SLIDING_GLASS_PANE, "pink_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, BROWN_SLIDING_GLASS_PANE, "brown_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, WHITE_SLIDING_GLASS_PANE, "white_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, LIGHT_GRAY_SLIDING_GLASS_PANE, "light_gray_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, GRAY_SLIDING_GLASS_PANE, "gray_sliding_glass_pane");
+			registerPaneDoor(blockStateModelGenerator, BLACK_SLIDING_GLASS_PANE, "black_sliding_glass_pane");
+
+			blockStateModelGenerator.registerParentedItemModel(SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(RED_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/red_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(ORANGE_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/orange_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(YELLOW_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/yellow_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(LIME_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/lime_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(GREEN_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/green_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(CYAN_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/cyan_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(LIGHT_BLUE_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/light_blue_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(BLUE_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/blue_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(PURPLE_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/purple_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(MAGENTA_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/magenta_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(PINK_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/pink_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(BROWN_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/brown_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(WHITE_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/white_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(LIGHT_GRAY_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/light_gray_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(GRAY_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/gray_sliding_glass_pane"));
+			blockStateModelGenerator.registerParentedItemModel(BLACK_SLIDING_GLASS_PANE.asItem(), Identifier.of("pucks_parity_mod:block/black_sliding_glass_pane"));
+
 			PucksParityModBlockFamilies.getFamilies()
 					.filter(BlockFamily::shouldGenerateModels)
 					.forEach(family -> blockStateModelGenerator.registerCubeAllModelTexturePool(family.getBaseBlock()).family(family));
@@ -4359,6 +4397,60 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 
 			itemModelGenerator.register(IRON_GATE.asItem(), Models.GENERATED);
 			itemModelGenerator.register(IRON_REDSTONE_LANTERN.asItem(), Models.GENERATED);
+		}
+
+		private void registerPaneDoor(BlockStateModelGenerator blockStateModelGenerator, Block block, String texture) {
+			Identifier normal = ModelIds.getBlockModelId(block);
+			Identifier open = ModelIds.getBlockSubModelId(block, "_open");
+			Identifier open_flipped = ModelIds.getBlockSubModelId(block, "_open_flipped");
+			blockStateModelGenerator.blockStateCollector
+					.accept(
+							VariantsBlockStateSupplier.create(block)
+									.coordinate(BlockStateVariantMap.create(Properties.HORIZONTAL_FACING, Properties.DOOR_HINGE, Properties.OPEN)
+											.register(Direction.NORTH, DoorHinge.LEFT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open_flipped).put(VariantSettings.Y, VariantSettings.Rotation.R0))
+											.register(Direction.NORTH, DoorHinge.RIGHT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open).put(VariantSettings.Y, VariantSettings.Rotation.R180))
+											.register(Direction.NORTH, DoorHinge.LEFT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R0))
+											.register(Direction.NORTH, DoorHinge.RIGHT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R180))
+											.register(Direction.SOUTH, DoorHinge.LEFT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open_flipped).put(VariantSettings.Y, VariantSettings.Rotation.R180))
+											.register(Direction.SOUTH, DoorHinge.RIGHT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open).put(VariantSettings.Y, VariantSettings.Rotation.R0))
+											.register(Direction.SOUTH, DoorHinge.LEFT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R180))
+											.register(Direction.SOUTH, DoorHinge.RIGHT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R0))
+											.register(Direction.EAST, DoorHinge.LEFT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open_flipped).put(VariantSettings.Y, VariantSettings.Rotation.R90))
+											.register(Direction.EAST, DoorHinge.RIGHT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open).put(VariantSettings.Y, VariantSettings.Rotation.R270))
+											.register(Direction.EAST, DoorHinge.LEFT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R90))
+											.register(Direction.EAST, DoorHinge.RIGHT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R270))
+											.register(Direction.WEST, DoorHinge.LEFT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open_flipped).put(VariantSettings.Y, VariantSettings.Rotation.R270))
+											.register(Direction.WEST, DoorHinge.RIGHT, true,
+													BlockStateVariant.create().put(VariantSettings.MODEL, open).put(VariantSettings.Y, VariantSettings.Rotation.R90))
+											.register(Direction.WEST, DoorHinge.LEFT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R270))
+											.register(Direction.WEST, DoorHinge.RIGHT, false,
+													BlockStateVariant.create().put(VariantSettings.MODEL, normal).put(VariantSettings.Y, VariantSettings.Rotation.R90))
+									));
+			TextureMap textureMap = new TextureMap()
+					.put(TextureKey.PARTICLE, Identifier.of("pucks_parity_mod", "block/" + texture))
+					.put(TextureKey.TEXTURE, Identifier.of("pucks_parity_mod", "block/" + texture))
+					.put(TextureKey.END, Identifier.of("pucks_parity_mod", "block/" + texture + "_end"));
+
+			new Model(Optional.of(Identifier.of("pucks_parity_mod", "block/sliding_pane_base")), Optional.of(texture), TextureKey.PARTICLE, TextureKey.TEXTURE, TextureKey.END)
+					.upload(normal, textureMap, blockStateModelGenerator.modelCollector);
+			new Model(Optional.of(Identifier.of("pucks_parity_mod", "block/sliding_pane_open_base")), Optional.of(texture), TextureKey.PARTICLE, TextureKey.TEXTURE, TextureKey.END)
+					.upload(open, textureMap, blockStateModelGenerator.modelCollector);
+			new Model(Optional.of(Identifier.of("pucks_parity_mod", "block/sliding_pane_open_flipped_base")), Optional.of(texture), TextureKey.PARTICLE, TextureKey.TEXTURE, TextureKey.END)
+					.upload(open_flipped, textureMap, blockStateModelGenerator.modelCollector);
 		}
 
 		private void registerBars(BlockStateModelGenerator blockStateModelGenerator, Block block, String texture) {

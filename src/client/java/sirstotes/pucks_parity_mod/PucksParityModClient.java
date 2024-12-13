@@ -94,6 +94,24 @@ public class PucksParityModClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_GRATE, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_REDSTONE_LANTERN, RenderLayer.getCutout());
 
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.SLIDING_GLASS_PANE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.RED_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.ORANGE_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.YELLOW_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.LIME_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GREEN_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.CYAN_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.LIGHT_BLUE_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.BLUE_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.PURPLE_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.MAGENTA_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.PINK_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.BROWN_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WHITE_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.LIGHT_GRAY_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GRAY_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.BLACK_SLIDING_GLASS_PANE, RenderLayer.getTranslucent());
+
 		EntityModelLayerRegistry.registerModelLayer(GOLD_SHIELD_MODEL_LAYER, ShieldEntityModel::getTexturedModelData);
 
 		ShieldSetModelCallback.EVENT.register((loader) -> {
