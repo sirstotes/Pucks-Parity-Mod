@@ -12,6 +12,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +32,7 @@ public class GoldDoorBlock extends DoorBlock {
             world.setBlockState(pos, state, Block.NOTIFY_LISTENERS | Block.REDRAW_ON_MAIN_THREAD);
             this.playOpenCloseSound(player, world, pos, (Boolean)state.get(OPEN));
             world.emitGameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
-            return ActionResult.success(world.isClient);
+            return ActionResult.SUCCESS;
         }
     }
 
@@ -42,7 +43,7 @@ public class GoldDoorBlock extends DoorBlock {
     }
     //Causes gold doors to not switch when receiving redstone power.
     @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
 
     }
 }

@@ -8,7 +8,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.AbstractCookingRecipe;
 import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.input.SingleStackRecipeInput;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
@@ -23,26 +25,26 @@ import sirstotes.pucks_parity_mod.PucksParityModItems;
 @Mixin(AbstractFurnaceBlockEntity.class)
 public class AbstractFurnaceBlockEntityMixin {
     @Inject(method = "craftRecipe", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"))
-    private static void wetSpongeRecipeForNewBuckets(DynamicRegistryManager registryManager, @Nullable RecipeEntry<?> recipe, DefaultedList<ItemStack> slots, int count, CallbackInfoReturnable<Boolean> cir) {
-        if (slots.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !slots.get(1).isEmpty() && slots.get(1).isOf(PucksParityModItems.COPPER_BUCKET)) {
-            slots.set(1, new ItemStack(PucksParityModItems.COPPER_WATER_BUCKET));
-        } else if (slots.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !slots.get(1).isEmpty() && slots.get(1).isOf(PucksParityModItems.GOLD_BUCKET)) {
-            slots.set(1, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_1));
-        } else if (slots.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !slots.get(1).isEmpty() && slots.get(1).isOf(PucksParityModItems.GOLD_WATER_BUCKET_1)) {
-            slots.set(1, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_2));
-        } else if (slots.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !slots.get(1).isEmpty() && slots.get(1).isOf(PucksParityModItems.GOLD_WATER_BUCKET_2)) {
-            slots.set(1, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_3));
+    private static void wetSpongeRecipeForNewBuckets(DynamicRegistryManager dynamicRegistryManager, RecipeEntry<? extends AbstractCookingRecipe> recipe, SingleStackRecipeInput input, DefaultedList<ItemStack> inventory, int maxCount, CallbackInfoReturnable<Boolean> cir) {
+        if (inventory.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !inventory.get(1).isEmpty() && inventory.get(1).isOf(PucksParityModItems.COPPER_BUCKET)) {
+            inventory.set(1, new ItemStack(PucksParityModItems.COPPER_WATER_BUCKET));
+        } else if (inventory.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !inventory.get(1).isEmpty() && inventory.get(1).isOf(PucksParityModItems.GOLD_BUCKET)) {
+            inventory.set(1, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_1));
+        } else if (inventory.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !inventory.get(1).isEmpty() && inventory.get(1).isOf(PucksParityModItems.GOLD_WATER_BUCKET_1)) {
+            inventory.set(1, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_2));
+        } else if (inventory.get(0).isOf(Blocks.WET_SPONGE.asItem()) && !inventory.get(1).isEmpty() && inventory.get(1).isOf(PucksParityModItems.GOLD_WATER_BUCKET_2)) {
+            inventory.set(1, new ItemStack(PucksParityModItems.GOLD_WATER_BUCKET_3));
         }
     }
     @ModifyReturnValue(method = "canExtract", at = @At("RETURN"))
     public boolean canExtractNewBuckets(boolean original, int slot, ItemStack stack, Direction dir) {
         if (!original) {
-            return dir == Direction.DOWN && slot == 1 ? stack.isIn(ConventionalItemTags.BUCKETS) && (((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.WATER || ((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.EMPTY) : true;
+            return dir != Direction.DOWN || slot != 1 || stack.isIn(ConventionalItemTags.BUCKETS) && (((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.WATER || ((PucksParityModBucket) stack.getItem()).pucks_Parity_Mod$getFluid() == Fluids.EMPTY);
         }
         return false;
     }
     @ModifyExpressionValue(method = "isValid", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z", ordinal = 0))
-    public boolean checkOtherBuckets1(boolean original, @Local(ordinal = 0) ItemStack stack) {
+    public boolean checkOtherBuckets1(boolean original, @Local(ordinal = 0, argsOnly = true) ItemStack stack) {
         return original || stack.isIn(ConventionalItemTags.BUCKETS);
     }
     @ModifyExpressionValue(method = "isValid", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z", ordinal = 1))

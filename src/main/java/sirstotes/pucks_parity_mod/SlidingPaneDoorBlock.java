@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoorHinge;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
@@ -26,6 +26,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +38,7 @@ public class SlidingPaneDoorBlock extends Block {
             instance -> instance.group(BlockSetType.CODEC.fieldOf("block_set_type").forGetter(DoorBlock::getBlockSetType), createSettingsCodec())
                     .apply(instance, DoorBlock::new)
     );
-    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
     public static final BooleanProperty OPEN = Properties.OPEN;
     public static final EnumProperty<DoorHinge> HINGE = Properties.DOOR_HINGE;
     public static final BooleanProperty POWERED = Properties.POWERED;
@@ -98,14 +99,14 @@ public class SlidingPaneDoorBlock extends Block {
 //        }
 //    }
 
-    @Override
-    protected void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
-        if (explosion.canTriggerBlocks() && this.blockSetType.canOpenByWindCharge() && !(Boolean)state.get(POWERED)) {
-            this.setOpen(null, world, state, pos, !this.isOpen(state));
-        }
-
-        super.onExploded(state, world, pos, explosion, stackMerger);
-    }
+//    @Override
+//    protected void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
+//        if (explosion.canTriggerBlocks() && this.blockSetType.canOpenByWindCharge() && !(Boolean)state.get(POWERED)) {
+//            this.setOpen(null, world, state, pos, !this.isOpen(state));
+//        }
+//
+//        super.onExploded(state, world, pos, explosion, stackMerger);
+//    }
 
     @Override
     protected boolean canPathfindThrough(BlockState state, NavigationType type) {
@@ -174,7 +175,7 @@ public class SlidingPaneDoorBlock extends Block {
             world.setBlockState(pos, state, Block.NOTIFY_LISTENERS | Block.REDRAW_ON_MAIN_THREAD);
             this.playOpenCloseSound(player, world, pos, state.get(OPEN));
             world.emitGameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
-            return ActionResult.success(world.isClient);
+            return ActionResult.SUCCESS;
         }
     }
 
@@ -190,8 +191,8 @@ public class SlidingPaneDoorBlock extends Block {
         }
     }
 
-    @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         boolean bl = world.isReceivingRedstonePower(pos);
         if (!this.getDefaultState().isOf(sourceBlock) && bl != state.get(POWERED)) {
             if (bl != state.get(OPEN)) {
@@ -199,8 +200,9 @@ public class SlidingPaneDoorBlock extends Block {
                 world.emitGameEvent(null, bl ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
             }
 
-            world.setBlockState(pos, state.with(POWERED, bl).with(OPEN, bl), Block.NOTIFY_LISTENERS);
+            world.setBlockState(pos, state.with(POWERED, bl).with(OPEN, bl), 2);
         }
+
     }
 
 //    @Override

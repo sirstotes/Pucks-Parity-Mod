@@ -10,6 +10,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
 public class GoldTrapdoorBlock extends TrapdoorBlock {
@@ -26,7 +27,7 @@ public class GoldTrapdoorBlock extends TrapdoorBlock {
             return ActionResult.PASS;
         } else {
             flip(state, world, pos, player);
-            return ActionResult.success(world.isClient);
+            return ActionResult.SUCCESS;
         }
     }
 
@@ -41,7 +42,7 @@ public class GoldTrapdoorBlock extends TrapdoorBlock {
     }
     //Causes gold trapdoors to not switch when receiving redstone power.
     @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
 
     }
 }

@@ -1,9 +1,10 @@
 {
 	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
 	"elements": [
 		{
-			"from": [0, -0.001, 7],
-			"to": [16, -0.001, 9],
+			"from": [0, 0.001, 7],
+			"to": [16, 0.001, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"up": {"uv": [7, 0, 9, 16], "rotation": 270, "texture": "#0"},

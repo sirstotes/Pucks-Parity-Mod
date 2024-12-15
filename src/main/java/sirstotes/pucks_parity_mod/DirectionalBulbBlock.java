@@ -37,13 +37,6 @@ public class DirectionalBulbBlock extends FacingBlock {
         }
     }
 
-    @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
-        if (world instanceof ServerWorld serverWorld) {
-            this.update(state, serverWorld, pos);
-        }
-    }
-
     public void update(BlockState state, ServerWorld world, BlockPos pos) {
         boolean bl = world.isReceivingRedstonePower(pos);
         if (bl != (Boolean)state.get(POWERED)) {

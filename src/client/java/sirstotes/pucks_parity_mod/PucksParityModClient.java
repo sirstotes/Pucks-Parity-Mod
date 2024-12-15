@@ -3,10 +3,7 @@ package sirstotes.pucks_parity_mod;
 import com.github.crimsondawn45.fabricshieldlib.lib.event.ShieldSetModelCallback;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.ShieldEntityModel;
@@ -119,16 +116,16 @@ public class PucksParityModClient implements ClientModInitializer {
 			return ActionResult.PASS;
 		});
 
-		BuiltinItemRendererRegistry.INSTANCE.register(PucksParityModItems.GOLD_SHIELD, (stack, mode, matrices, vertexConsumers, light, overlay) -> {
-			renderBanner(stack, matrices, vertexConsumers, light, overlay, modelGoldShield, GOLD_SHIELD_BASE, GOLD_SHIELD_BASE_NO_PATTERN);
-		});
+//		BuiltinItemRendererRegistry.INSTANCE.register(PucksParityModItems.GOLD_SHIELD, (stack, mode, matrices, vertexConsumers, light, overlay) -> {
+//			renderBanner(stack, matrices, vertexConsumers, light, overlay, modelGoldShield, GOLD_SHIELD_BASE, GOLD_SHIELD_BASE_NO_PATTERN);
+//		});
 	}
 
 	static {
-		ModelPredicateProviderRegistry.register(
-				PucksParityModItems.COPPER_SHIELD,
-				Identifier.ofVanilla("blocking"),
-				(stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F
-		);
+//		ModelPredicateProviderRegistry.register(
+//				PucksParityModItems.COPPER_SHIELD,
+//				Identifier.ofVanilla("blocking"),
+//				(stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1.0F : 0.0F
+//		);
 	}
 }

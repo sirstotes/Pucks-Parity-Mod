@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/template_hanging_lantern",
+  "ambientocclusion": false,
   "textures": {
     "lantern": "pucks_parity_mod:block/iron_redstone_lantern"
   }

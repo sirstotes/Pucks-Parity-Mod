@@ -4,7 +4,6 @@ import com.github.crimsondawn45.fabricshieldlib.lib.object.FabricBannerShieldIte
 import com.github.crimsondawn45.fabricshieldlib.lib.object.FabricShieldItem;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
@@ -13,16 +12,16 @@ import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.block.dispenser.ShearsDispenserBehavior;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ConsumableComponents;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.*;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.item.equipment.EquipmentAsset;
+import net.minecraft.item.equipment.EquipmentAssetKeys;
+import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -35,16 +34,10 @@ import net.minecraft.world.event.GameEvent;
 import sirstotes.pucks_parity_mod.accessors.FluidDrainableMixinAccessor;
 
 import java.util.EnumMap;
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.Map;
 
 public class PucksParityModItems {
     public static void initialize() {
-        FuelRegistry.INSTANCE.add(COPPER_LAVA_BUCKET, 20000);
-        FuelRegistry.INSTANCE.add(GOLD_LAVA_BUCKET_1, 20000);
-        FuelRegistry.INSTANCE.add(GOLD_LAVA_BUCKET_2, 20000);
-        FuelRegistry.INSTANCE.add(GOLD_LAVA_BUCKET_3, 20000);
-
 		DispenserBlock.registerBehavior(COPPER_SHEARS.asItem(), new ShearsDispenserBehavior());
         DispenserBlock.registerBehavior(GOLD_SHEARS.asItem(), new ShearsDispenserBehavior());
 
@@ -188,6 +181,13 @@ public class PucksParityModItems {
 		Identifier itemID = Identifier.of(PucksParityMod.MOD_ID, id);
 		return Registry.register(Registries.ITEM, itemID, item);
 	}
+    public static Item register(Item.Settings settings, String id) {
+        Identifier itemID = Identifier.of(PucksParityMod.MOD_ID, id);
+        return Registry.register(Registries.ITEM, itemID, new Item(settings));
+    }
+    public static RegistryKey<EquipmentAsset> registerEquipmentAssetKey(String id) {
+        return RegistryKey.of(RegistryKey.ofRegistry(Identifier.ofVanilla("equipment_asset")), Identifier.of(PucksParityMod.MOD_ID, id));
+    }
     public static final Item COPPER_NUGGET = register(new Item(new Item.Settings()), "copper_nugget");
     public static final Item COPPER_SHEARS = register(new ShearsItem(new Item.Settings().maxDamage(138).component(DataComponentTypes.TOOL, ShearsItem.createToolComponent())), "copper_shears");
     public static final Item GOLD_SHEARS = register(new ShearsItem(new Item.Settings().maxDamage(200).component(DataComponentTypes.TOOL, ShearsItem.createToolComponent())), "gold_shears");
@@ -195,7 +195,7 @@ public class PucksParityModItems {
     public static final Item COPPER_BUCKET = register(new CopperBucketItem(Fluids.EMPTY, new Item.Settings().maxCount(16)), "copper_bucket");
 	public static final Item COPPER_WATER_BUCKET = register(new CopperBucketItem(Fluids.WATER, new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_water_bucket");
 	public static final Item COPPER_LAVA_BUCKET = register(new CopperBucketItem(Fluids.LAVA, new Item.Settings()), "copper_lava_bucket");
-    public static final Item COPPER_MILK_BUCKET = register(new CopperMilkBucketItem(new Item.Settings().recipeRemainder(COPPER_BUCKET).maxCount(1)), "copper_milk_bucket");
+    public static final Item COPPER_MILK_BUCKET = register((new Item.Settings()).recipeRemainder(COPPER_BUCKET).component(DataComponentTypes.CONSUMABLE, ConsumableComponents.MILK_BUCKET).useRemainder(COPPER_BUCKET).maxCount(1), "copper_milk_bucket");
 	public static final Item COPPER_POWDER_SNOW_BUCKET = register(new CopperPowderSnowBucketItem(Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "copper_powder_snow_bucket");
     public static final Item COPPER_FIRE_STARTER = register(new FlintAndSteelItem(new Item.Settings().maxDamage(16)), "copper_fire_starter");
     public static final Item COPPER_SHIELD = register(new FabricShieldItem(new Item.Settings().maxDamage(150), 5, 13, Items.COPPER_INGOT), "copper_shield");
@@ -207,9 +207,9 @@ public class PucksParityModItems {
     public static final Item GOLD_LAVA_BUCKET_1 = register(new GoldBucketItem(Fluids.LAVA, GOLD_BUCKET, 1, new Item.Settings().recipeRemainder(GOLD_BUCKET).maxCount(1)), "gold_lava_bucket_1");
     public static final Item GOLD_LAVA_BUCKET_2 = register(new GoldBucketItem(Fluids.LAVA, GOLD_LAVA_BUCKET_1, 2, new Item.Settings().recipeRemainder(GOLD_LAVA_BUCKET_1).maxCount(1)), "gold_lava_bucket_2");
     public static final Item GOLD_LAVA_BUCKET_3 = register(new GoldBucketItem(Fluids.LAVA, GOLD_LAVA_BUCKET_2, 3, new Item.Settings().recipeRemainder(GOLD_LAVA_BUCKET_2).maxCount(1)), "gold_lava_bucket_3");
-    public static final Item GOLD_MILK_BUCKET_1 = register(new GoldMilkBucketItem(GOLD_BUCKET, 1, new Item.Settings().recipeRemainder(GOLD_BUCKET).maxCount(1)), "gold_milk_bucket_1");
-    public static final Item GOLD_MILK_BUCKET_2 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_1, 2, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_1).maxCount(1)), "gold_milk_bucket_2");
-    public static final Item GOLD_MILK_BUCKET_3 = register(new GoldMilkBucketItem(GOLD_MILK_BUCKET_2, 3, new Item.Settings().recipeRemainder(GOLD_MILK_BUCKET_2).maxCount(1)), "gold_milk_bucket_3");
+    public static final Item GOLD_MILK_BUCKET_1 = register((new Item.Settings()).recipeRemainder(GOLD_BUCKET).component(DataComponentTypes.CONSUMABLE, ConsumableComponents.MILK_BUCKET).useRemainder(GOLD_BUCKET).maxCount(1), "gold_milk_bucket_1");
+    public static final Item GOLD_MILK_BUCKET_2 = register((new Item.Settings()).recipeRemainder(GOLD_MILK_BUCKET_1).component(DataComponentTypes.CONSUMABLE, ConsumableComponents.MILK_BUCKET).useRemainder(GOLD_MILK_BUCKET_1).maxCount(1), "gold_milk_bucket_2");
+    public static final Item GOLD_MILK_BUCKET_3 = register((new Item.Settings()).recipeRemainder(GOLD_MILK_BUCKET_2).component(DataComponentTypes.CONSUMABLE, ConsumableComponents.MILK_BUCKET).useRemainder(GOLD_MILK_BUCKET_2).maxCount(1), "gold_milk_bucket_3");
     public static final Item GOLD_POWDER_SNOW_BUCKET_1 = register(new GoldPowderSnowBucketItem(GOLD_BUCKET, 1, Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "gold_powder_snow_bucket_1");
     public static final Item GOLD_POWDER_SNOW_BUCKET_2 = register(new GoldPowderSnowBucketItem(GOLD_POWDER_SNOW_BUCKET_1, 2, Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "gold_powder_snow_bucket_2");
     public static final Item GOLD_POWDER_SNOW_BUCKET_3 = register(new GoldPowderSnowBucketItem(GOLD_POWDER_SNOW_BUCKET_2, 3, Blocks.POWDER_SNOW, SoundEvents.ITEM_BUCKET_EMPTY_POWDER_SNOW, new Item.Settings().maxCount(1)), "gold_powder_snow_bucket_3");
@@ -227,50 +227,16 @@ public class PucksParityModItems {
         }
     }, "gold_brush");
 
-    public static final RegistryEntry<ArmorMaterial> COPPER_ARMOR = registerArmor("copper", Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-        map.put(ArmorItem.Type.BOOTS, 2);
-        map.put(ArmorItem.Type.LEGGINGS, 4);
-        map.put(ArmorItem.Type.CHESTPLATE, 5);
-        map.put(ArmorItem.Type.HELMET, 2);
-        map.put(ArmorItem.Type.BODY, 5);
-    }), 12, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F, 0.0F, () -> Ingredient.ofItems(Items.COPPER_INGOT));
+    public static final net.minecraft.item.equipment.ArmorMaterial COPPER_ARMOR = new net.minecraft.item.equipment.ArmorMaterial(15, (Map)Util.make(new EnumMap(EquipmentType.class), (map) -> {
+        map.put(EquipmentType.BOOTS, 2);
+        map.put(EquipmentType.LEGGINGS, 4);
+        map.put(EquipmentType.CHESTPLATE, 5);
+        map.put(EquipmentType.HELMET, 2);
+        map.put(EquipmentType.BODY, 5);
+    }), 12, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F, 0.0F, ItemTags.REPAIRS_IRON_ARMOR, EquipmentAssetKeys.IRON);
 
-    public static final Item COPPER_HORSE_ARMOR = register(new AnimalArmorItem(COPPER_ARMOR, AnimalArmorItem.Type.EQUESTRIAN, false, new Item.Settings().maxCount(1)), "copper_horse_armor");
-
-    private static RegistryEntry<ArmorMaterial> registerArmor(
-            String id,
-            EnumMap<ArmorItem.Type, Integer> defense,
-            int enchantability,
-            RegistryEntry<SoundEvent> equipSound,
-            float toughness,
-            float knockbackResistance,
-            Supplier<Ingredient> repairIngredient
-    ) {
-        List<ArmorMaterial.Layer> list = List.of(new ArmorMaterial.Layer(Identifier.of("pucks_parity_mod", id)));
-        return registerArmor(id, defense, enchantability, equipSound, toughness, knockbackResistance, repairIngredient, list);
-    }
-    private static RegistryEntry<ArmorMaterial> registerArmor(
-            String id,
-            EnumMap<ArmorItem.Type, Integer> defense,
-            int enchantability,
-            RegistryEntry<SoundEvent> equipSound,
-            float toughness,
-            float knockbackResistance,
-            Supplier<Ingredient> repairIngredient,
-            List<ArmorMaterial.Layer> layers
-    ) {
-        EnumMap<ArmorItem.Type, Integer> enumMap = new EnumMap<>(ArmorItem.Type.class);
-
-        for (ArmorItem.Type type : ArmorItem.Type.values()) {
-            enumMap.put(type, defense.get(type));
-        }
-
-        return Registry.registerReference(
-                Registries.ARMOR_MATERIAL,
-                Identifier.of("pucks_parity_mod", id),
-                new ArmorMaterial(enumMap, enchantability, equipSound, repairIngredient, layers, toughness, knockbackResistance)
-        );
-    }
+    RegistryKey<EquipmentAsset> COPPER_EQUIPMENT_ASSET = registerEquipmentAssetKey("copper");
+    public static final Item COPPER_HORSE_ARMOR = register(new AnimalArmorItem(COPPER_ARMOR, AnimalArmorItem.Type.EQUESTRIAN, SoundEvents.ENTITY_HORSE_ARMOR, false, new Item.Settings().maxCount(1)), "copper_horse_armor");
 
     public static final RegistryKey<ItemGroup> CUSTOM_ITEM_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(PucksParityMod.MOD_ID, "item_group"));
     public static final ItemGroup CUSTOM_ITEM_GROUP = FabricItemGroup.builder()

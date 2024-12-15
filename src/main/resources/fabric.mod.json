@@ -1,18 +1,18 @@
 {
 	"schemaVersion": 1,
-	"id": "pucks-parity-mod",
+	"id": "pucks_parity_mod",
 	"version": "${version}",
 	"name": "Puck's Parity Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A mod that adds over 900 new blocks and items to have parity between vanilla metals and stones.",
 	"authors": [
-		"Me!"
+		"Puck"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/mod/pucks-parity-mod",
+		"sources": "https://github.com/sirstotes/Pucks-Parity-Mod"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/pucks-parity-mod/icon.png",
+	"license": "CC-BY-NC-4.0",
+	"icon": "assets/pucks_parity_mod/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -26,19 +26,16 @@
 		]
 	},
 	"mixins": [
-      "pucks-parity-mod.mixins.json",
+      "pucks_parity_mod.mixins.json",
 		{
-			"config": "pucks-parity-mod.client.mixins.json",
+			"config": "pucks_parity_mod.client.mixins.json",
 			"environment": "client"
 		}
 	],
 	"depends": {
 		"fabricloader": ">=0.16.2",
-		"minecraft": "~1.21.1",
+		"minecraft": "~1.21.4",
 		"java": ">=21",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }

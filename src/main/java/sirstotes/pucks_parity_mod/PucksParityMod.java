@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.BiomeTags;
@@ -16,9 +17,6 @@ import org.slf4j.LoggerFactory;
 public class PucksParityMod implements ModInitializer {
 	public static final String MOD_ID = "pucks_parity_mod";
 
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final RegistryKey<PlacedFeature> SMOOTH_PRISMARINE_ORE_PLACED_KEY = RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of(MOD_ID,"ore_smooth_prismarine"));
@@ -31,5 +29,12 @@ public class PucksParityMod implements ModInitializer {
 
 		BiomeModifications.addFeature(BiomeSelectors.tag(BiomeTags.IS_OCEAN), GenerationStep.Feature.UNDERGROUND_ORES, SMOOTH_PRISMARINE_ORE_PLACED_KEY);
 		BiomeModifications.addFeature(BiomeSelectors.tag(BiomeTags.IS_OCEAN), GenerationStep.Feature.UNDERGROUND_ORES, SMOOTH_DARK_PRISMARINE_ORE_PLACED_KEY);
+
+		FuelRegistryEvents.BUILD.register((builder, context) -> {
+        	builder.add(PucksParityModItems.COPPER_LAVA_BUCKET, 20000);
+			builder.add(PucksParityModItems.GOLD_LAVA_BUCKET_1, 20000);
+			builder.add(PucksParityModItems.GOLD_LAVA_BUCKET_2, 20000);
+			builder.add(PucksParityModItems.GOLD_LAVA_BUCKET_3, 20000);
+		});
 	}
 }

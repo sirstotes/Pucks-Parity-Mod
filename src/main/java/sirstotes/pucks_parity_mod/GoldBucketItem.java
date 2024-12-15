@@ -1,6 +1,7 @@
 package sirstotes.pucks_parity_mod;
 
 import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidDrainable;
 import net.minecraft.block.FluidFillable;
@@ -13,8 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsage;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -36,37 +37,45 @@ public class GoldBucketItem extends BucketItem implements PucksParityModBucket {
         fluidLevel = _level;
     }
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
         BlockHitResult blockHitResult = raycast(
                 world, user, !pucks_Parity_Mod$isFull() ? net.minecraft.world.RaycastContext.FluidHandling.SOURCE_ONLY : RaycastContext.FluidHandling.NONE
         );
         if (blockHitResult.getType() == HitResult.Type.MISS) {
-            return TypedActionResult.pass(itemStack);
+            return ActionResult.PASS;
         } else if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-            return TypedActionResult.pass(itemStack);
+            return ActionResult.PASS;
         } else {
             BlockPos blockPos = blockHitResult.getBlockPos();
             Direction direction = blockHitResult.getSide();
             BlockPos blockPos2 = blockPos.offset(direction);
             if (world.canPlayerModifyAt(user, blockPos) && user.canPlaceOn(blockPos2, direction, itemStack)) {
                 BlockState blockState = world.getBlockState(blockPos);
-                if (blockState.getBlock() instanceof FluidDrainable fluidDrainable && (fluidLevel == 0 || ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$fluidEquals(this.fluid, blockState))) {
-                    System.out.println("TRY TO DRAIN");
-                    ItemStack itemStack2 = ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$tryDrainFluid(this, world, blockPos, blockState);
-                    if (!itemStack2.isEmpty()) {
-                        user.incrementStat(Stats.USED.getOrCreateStat(this));
-                        fluidDrainable.getBucketFillSound().ifPresent(sound -> user.playSound(sound, 1.0F, 1.0F));
-                        world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);
-                        ItemStack itemStack3 = ItemUsage.exchangeStack(itemStack, user, itemStack2);
-                        if (!world.isClient) {
-                            Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)user, itemStack2);
-                        }
+                ItemStack itemStack2;
+                if (this.fluid == Fluids.EMPTY) {
+                    blockState = world.getBlockState(blockPos);
+                    Block var14 = blockState.getBlock();
+                    if (var14 instanceof FluidDrainable fluidDrainable && (fluidLevel == 0 || ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$fluidEquals(this.fluid, blockState))) {
+                        itemStack2 = ((FluidDrainableMixinAccessor) fluidDrainable).pucks_Parity_Mod$tryDrainFluid(this, world, blockPos, blockState);
+                        if (!itemStack2.isEmpty()) {
+                            user.incrementStat(Stats.USED.getOrCreateStat(this));
+                            fluidDrainable.getBucketFillSound().ifPresent((sound) -> {
+                                user.playSound(sound, 1.0F, 1.0F);
+                            });
+                            world.emitGameEvent(user, GameEvent.FLUID_PICKUP, blockPos);
+                            ItemStack itemStack3 = ItemUsage.exchangeStack(itemStack, user, itemStack2);
+                            if (!world.isClient) {
+                                Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)user, itemStack2);
+                            }
 
-                        return TypedActionResult.success(itemStack3, world.isClient());
+                            return ActionResult.SUCCESS.withNewHandStack(itemStack3);
+                        }
                     }
+
+                    return ActionResult.FAIL;
                 } else {
-                    System.out.println("TRY TO PLACE");
+                    blockState = world.getBlockState(blockPos);
                     BlockPos blockPos3 = blockState.getBlock() instanceof FluidFillable && this.fluid == Fluids.WATER ? blockPos : blockPos2;
                     if (this.placeFluid(user, world, blockPos3, blockHitResult)) {
                         this.onEmptied(user, world, itemStack, blockPos3);
@@ -75,12 +84,15 @@ public class GoldBucketItem extends BucketItem implements PucksParityModBucket {
                         }
 
                         user.incrementStat(Stats.USED.getOrCreateStat(this));
-                        ItemStack itemStack2 = ItemUsage.exchangeStack(itemStack, user, pucks_Parity_Mod$getEmptiedStack(itemStack, user));
-                        return TypedActionResult.success(itemStack2, world.isClient());
+                        itemStack2 = ItemUsage.exchangeStack(itemStack, user, pucks_Parity_Mod$getEmptiedStack(itemStack, user));
+                        return ActionResult.SUCCESS.withNewHandStack(itemStack2);
+                    } else {
+                        return ActionResult.FAIL;
                     }
                 }
+            } else {
+                return ActionResult.FAIL;
             }
-            return TypedActionResult.fail(itemStack);
         }
     }
 
