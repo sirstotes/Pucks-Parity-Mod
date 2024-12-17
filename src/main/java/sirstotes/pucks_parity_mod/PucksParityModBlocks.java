@@ -2069,6 +2069,32 @@ public class PucksParityModBlocks {
     public static final Block PACKED_MUD_PILLAR = register("packed_mud_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.PACKED_MUD)), true);
     public static final Block CHISELED_MUD_PILLAR = register("chiseled_mud_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.PACKED_MUD)), true);
 
+    public static final Block RESIN = register("hardened_resin", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block RESIN_SLAB = register("hardened_resin_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BLOCK)), true);
+    public static final Block RESIN_STAIRS = register("hardened_resin_stairs", new StairsBlock(Blocks.RESIN_BLOCK.getDefaultState(), AbstractBlock.Settings.copy(Blocks.RESIN_BLOCK)), true);
+    public static final Block RESIN_WALL = register("hardened_resin_wall", new WallBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BLOCK).solid()), true);
+    public static final Block RESIN_BRICKS = Blocks.RESIN_BRICKS;
+    public static final Block RESIN_BRICK_SLAB = Blocks.RESIN_BRICK_SLAB;
+    public static final Block RESIN_BRICK_STAIRS = Blocks.RESIN_BRICK_STAIRS;
+    public static final Block RESIN_BRICK_WALL = Blocks.RESIN_BRICK_WALL;
+    public static final Block CRACKED_RESIN_BRICKS = register("cracked_resin_bricks", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block MOSSY_RESIN_BRICKS = register("mossy_resin_bricks", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block MOSSY_RESIN_BRICK_SLAB = register("mossy_resin_brick_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block MOSSY_RESIN_BRICK_STAIRS = register("mossy_resin_brick_stairs", new StairsBlock(MOSSY_RESIN_BRICKS.getDefaultState(), AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block MOSSY_RESIN_BRICK_WALL = register("mossy_resin_brick_wall", new WallBlock(AbstractBlock.Settings.copy(MOSSY_RESIN_BRICKS).solid()), true);
+    public static final Block CHISELED_RESIN = Blocks.CHISELED_RESIN_BRICKS;
+    public static final Block POLISHED_RESIN = register("polished_resin", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block POLISHED_RESIN_SLAB = register("polished_resin_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block POLISHED_RESIN_STAIRS = register("polished_resin_stairs", new StairsBlock(POLISHED_RESIN.getDefaultState(), AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block POLISHED_RESIN_WALL = register("polished_resin_wall", new WallBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS).solid()), true);
+    public static final Block RESIN_TILES = register("resin_tiles", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block RESIN_TILE_SLAB = register("resin_tile_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block RESIN_TILE_STAIRS = register("resin_tile_stairs", new StairsBlock(RESIN_TILES.getDefaultState(), AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block RESIN_TILE_WALL = register("resin_tile_wall", new WallBlock(AbstractBlock.Settings.copy(MUD_TILES).solid()), true);
+    public static final Block CRACKED_RESIN_TILES = register("cracked_resin_tiles", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block RESIN_PILLAR = register("resin_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    public static final Block CHISELED_RESIN_PILLAR = register("chiseled_resin_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+
     public static final Block TERRACOTTA_SLAB = register("terracotta_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.TERRACOTTA)), true);
     public static final Block TERRACOTTA_STAIRS = register("terracotta_stairs", new StairsBlock(Blocks.TERRACOTTA.getDefaultState(), AbstractBlock.Settings.copy(Blocks.TERRACOTTA)), true);
     public static final Block TERRACOTTA_WALL = register("terracotta_wall", new WallBlock(AbstractBlock.Settings.copy(Blocks.TERRACOTTA).solid()), true);

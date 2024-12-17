@@ -201,6 +201,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(QUARTZ_TILE_WALL)
 					.add(PACKED_MUD_WALL)
 					.add(MOSSY_MUD_BRICK_WALL)
+					.add(RESIN_WALL)
+					.add(MOSSY_RESIN_BRICK_WALL)
+					.add(RESIN_TILE_WALL)
 					.add(POLISHED_PACKED_MUD_WALL)
 					.add(MUD_TILE_WALL)
 					.add(TERRACOTTA_WALL)
@@ -620,7 +623,6 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_STAIRS, TUFF_TILES, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_WALL, TUFF_TILES, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_TILES, TUFF_TILES, 1);
-					;
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, Blocks.TUFF, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_TUFF_BRICKS, Blocks.TUFF_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, Blocks.TUFF_BRICKS, 1);
@@ -1111,25 +1113,25 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_WALL, Blocks.PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_BRICKS, Blocks.PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_BRICKS, Blocks.MUD_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILES, Blocks.MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_SLAB, Blocks.MUD, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_STAIRS, Blocks.MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_WALL, Blocks.MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_TILES, Blocks.MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILES, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_SLAB, Blocks.PACKED_MUD, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_STAIRS, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_WALL, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_TILES, Blocks.PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_SLAB, MUD_TILES, 2);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_STAIRS, MUD_TILES, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_WALL, MUD_TILES, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_TILES, MUD_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD, Blocks.MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_SLAB, Blocks.MUD, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_STAIRS, Blocks.MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_WALL, Blocks.MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_SLAB, Blocks.PACKED_MUD, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_STAIRS, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_WALL, Blocks.PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_SLAB, POLISHED_PACKED_MUD, 2);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_STAIRS, POLISHED_PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_WALL, POLISHED_PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, Blocks.MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, Blocks.MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, Blocks.MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, Blocks.PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, Blocks.MUD_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, Blocks.MUD_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, Blocks.MUD_BRICKS, 1);
@@ -1139,6 +1141,38 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, POLISHED_PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, POLISHED_PACKED_MUD, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, POLISHED_PACKED_MUD, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_SLAB, RESIN, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_STAIRS, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_WALL, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_BRICKS, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_BRICKS, RESIN_BRICKS, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILES, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_SLAB, RESIN, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_STAIRS, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_WALL, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_TILES, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_SLAB, RESIN_TILES, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_STAIRS, RESIN_TILES, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_WALL, RESIN_TILES, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_TILES, RESIN_TILES, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_SLAB, RESIN, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_STAIRS, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_WALL, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_SLAB, POLISHED_RESIN, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_STAIRS, POLISHED_RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_WALL, POLISHED_RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, RESIN_BRICKS, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, RESIN_BRICKS, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN, RESIN_TILES, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, RESIN_TILES, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, RESIN_TILES, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN, POLISHED_RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, POLISHED_RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, POLISHED_RESIN, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_SLAB, Blocks.TERRACOTTA, 2);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_STAIRS, Blocks.TERRACOTTA, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_WALL, Blocks.TERRACOTTA, 1);
@@ -1971,6 +2005,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_SLAB, MOSSY_MUD_BRICKS, 2);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_STAIRS, MOSSY_MUD_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_WALL, MOSSY_MUD_BRICKS, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICK_SLAB, MOSSY_RESIN_BRICKS, 2);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICK_STAIRS, MOSSY_RESIN_BRICKS, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICK_WALL, MOSSY_RESIN_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_SLAB, MOSSY_BRICKS, 2);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_STAIRS, MOSSY_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_WALL, MOSSY_BRICKS, 1);
@@ -2034,6 +2071,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_BASALT), RecipeCategory.BUILDING_BLOCKS, Blocks.SMOOTH_BASALT, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_BASALT)).offerTo(exporter);
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_CALCITE), RecipeCategory.BUILDING_BLOCKS, Blocks.CALCITE, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_CALCITE)).offerTo(exporter);
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_DRIPSTONE), RecipeCategory.BUILDING_BLOCKS, Blocks.DRIPSTONE_BLOCK, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_DRIPSTONE)).offerTo(exporter);
+					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.RESIN_BLOCK), RecipeCategory.BUILDING_BLOCKS, RESIN, 1.0F, 200).criterion("has_resin_block", conditionsFromItem(Blocks.RESIN_BLOCK)).offerTo(exporter);
 
 					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
 							.input(COBBLED_TUFF)
@@ -2170,7 +2208,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
 							.input(Blocks.SANDSTONE)
 							.input(Blocks.VINE)
-							.group("mossy__sandstone")
+							.group("mossy_sandstone")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE, Blocks.VINE));
 					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
@@ -2182,7 +2220,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
 							.input(Blocks.SANDSTONE)
 							.input(Blocks.MOSS_BLOCK)
-							.group("mossy__sandstone")
+							.group("mossy_sandstone")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE, Blocks.MOSS_BLOCK));
 					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
@@ -2389,6 +2427,12 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.group("moldy_purpur_bricks")
 							.criterion("has_chorus_fruit", conditionsFromItem(Items.CHORUS_FRUIT))
 							.offerTo(exporter, convertBetween(MOLDY_PURPUR_BRICKS, Items.CHORUS_FRUIT));
+					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICKS)
+							.input(Blocks.RESIN_BRICKS)
+							.input(Blocks.PALE_MOSS_BLOCK)
+							.group("mossy_resin_bricks")
+							.criterion("has_pale_moss_block", conditionsFromItem(Blocks.PALE_MOSS_BLOCK))
+							.offerTo(exporter, convertBetween(MOSSY_RESIN_BRICKS, Blocks.PALE_MOSS_BLOCK));
 					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
 							.input(Blocks.BRICKS)
 							.input(Blocks.VINE)
@@ -3213,6 +3257,26 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRACKED_MUD_TILES, drops(CRACKED_MUD_TILES));
 			addDrop(PACKED_MUD_PILLAR, drops(PACKED_MUD_PILLAR));
 			addDrop(CHISELED_MUD_PILLAR, drops(CHISELED_MUD_PILLAR));
+			addDrop(RESIN, drops(RESIN));
+			addDrop(RESIN_SLAB, drops(RESIN_SLAB));
+			addDrop(RESIN_STAIRS, drops(RESIN_STAIRS));
+			addDrop(RESIN_WALL, drops(RESIN_WALL));
+			addDrop(CRACKED_RESIN_BRICKS, drops(CRACKED_RESIN_BRICKS));
+			addDrop(MOSSY_RESIN_BRICKS, drops(MOSSY_RESIN_BRICKS));
+			addDrop(MOSSY_RESIN_BRICK_SLAB, drops(MOSSY_RESIN_BRICK_SLAB));
+			addDrop(MOSSY_RESIN_BRICK_STAIRS, drops(MOSSY_RESIN_BRICK_STAIRS));
+			addDrop(MOSSY_RESIN_BRICK_WALL, drops(MOSSY_RESIN_BRICK_WALL));
+			addDrop(POLISHED_RESIN, drops(POLISHED_RESIN));
+			addDrop(POLISHED_RESIN_SLAB, drops(POLISHED_RESIN_SLAB));
+			addDrop(POLISHED_RESIN_STAIRS, drops(POLISHED_RESIN_STAIRS));
+			addDrop(POLISHED_RESIN_WALL, drops(POLISHED_RESIN_WALL));
+			addDrop(RESIN_TILES, drops(RESIN_TILES));
+			addDrop(RESIN_TILE_SLAB, drops(RESIN_TILE_SLAB));
+			addDrop(RESIN_TILE_STAIRS, drops(RESIN_TILE_STAIRS));
+			addDrop(RESIN_TILE_WALL, drops(RESIN_TILE_WALL));
+			addDrop(CRACKED_RESIN_TILES, drops(CRACKED_RESIN_TILES));
+			addDrop(RESIN_PILLAR, drops(RESIN_PILLAR));
+			addDrop(CHISELED_RESIN_PILLAR, drops(CHISELED_RESIN_PILLAR));
 			addDrop(TERRACOTTA_SLAB, drops(TERRACOTTA_SLAB));
 			addDrop(TERRACOTTA_STAIRS, drops(TERRACOTTA_STAIRS));
 			addDrop(TERRACOTTA_WALL, drops(TERRACOTTA_WALL));
@@ -3806,6 +3870,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_CALCITE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DRIPSTONE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_MUD_BRICKS);
+			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RESIN_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_TERRACOTTA_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ORANGE_TERRACOTTA_BRICKS);
@@ -3844,6 +3909,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_CALCITE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DRIPSTONE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_MUD_TILES);
+			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RESIN_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_TERRACOTTA_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_TERRACOTTA_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ORANGE_TERRACOTTA_TILES);
@@ -3926,6 +3992,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerAxisRotated(CHISELED_DRIPSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(PACKED_MUD_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_MUD_PILLAR, TexturedModel.CUBE_COLUMN);
+			blockStateModelGenerator.registerAxisRotated(RESIN_PILLAR, TexturedModel.CUBE_COLUMN);
+			blockStateModelGenerator.registerAxisRotated(CHISELED_RESIN_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(TERRACOTTA_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_TERRACOTTA_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(RED_TERRACOTTA_PILLAR, TexturedModel.CUBE_COLUMN);
@@ -4146,6 +4214,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(MOSSY_MUD_BRICKS, ModelIds.getBlockModelId(MOSSY_MUD_BRICKS));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_PACKED_MUD, Identifier.of("pucks_parity_mod:block/chiseled_packed_mud"));
 			blockStateModelGenerator.registerParentedItemModel(POLISHED_PACKED_MUD, Identifier.of("pucks_parity_mod:block/polished_packed_mud"));
+			blockStateModelGenerator.registerParentedItemModel(CRACKED_RESIN_BRICKS, Identifier.of("pucks_parity_mod:block/cracked_resin_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(MUD_TILES, Identifier.of("pucks_parity_mod:block/mud_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_MUD_TILES, Identifier.of("pucks_parity_mod:block/cracked_mud_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(PACKED_MUD_PILLAR, Identifier.of("pucks_parity_mod:block/packed_mud_pillar"));
