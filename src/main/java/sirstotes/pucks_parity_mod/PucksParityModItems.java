@@ -21,7 +21,9 @@ import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -227,16 +229,16 @@ public class PucksParityModItems {
         }
     }, "gold_brush");
 
+    public static final TagKey<Item> REPAIRS_COPPER_ARMOR = TagKey.of(RegistryKeys.ITEM, Identifier.of(PucksParityMod.MOD_ID, "repairs_copper_armor"));
+    public static final RegistryKey<EquipmentAsset> COPPER_EQUIPMENT_ASSET = registerEquipmentAssetKey("copper");
     public static final net.minecraft.item.equipment.ArmorMaterial COPPER_ARMOR = new net.minecraft.item.equipment.ArmorMaterial(15, (Map)Util.make(new EnumMap(EquipmentType.class), (map) -> {
         map.put(EquipmentType.BOOTS, 2);
         map.put(EquipmentType.LEGGINGS, 4);
         map.put(EquipmentType.CHESTPLATE, 5);
         map.put(EquipmentType.HELMET, 2);
         map.put(EquipmentType.BODY, 5);
-    }), 12, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F, 0.0F, ItemTags.REPAIRS_IRON_ARMOR, EquipmentAssetKeys.IRON);
-
-    RegistryKey<EquipmentAsset> COPPER_EQUIPMENT_ASSET = registerEquipmentAssetKey("copper");
-    public static final Item COPPER_HORSE_ARMOR = register(new AnimalArmorItem(COPPER_ARMOR, AnimalArmorItem.Type.EQUESTRIAN, SoundEvents.ENTITY_HORSE_ARMOR, false, new Item.Settings().maxCount(1)), "copper_horse_armor");
+    }), 12, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 0.0F, 0.0F, REPAIRS_COPPER_ARMOR, COPPER_EQUIPMENT_ASSET);
+public static final Item COPPER_HORSE_ARMOR = register(new AnimalArmorItem(COPPER_ARMOR, AnimalArmorItem.Type.EQUESTRIAN, SoundEvents.ENTITY_HORSE_ARMOR, false, new Item.Settings().maxCount(1)), "copper_horse_armor");
 
     public static final RegistryKey<ItemGroup> CUSTOM_ITEM_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(PucksParityMod.MOD_ID, "item_group"));
     public static final ItemGroup CUSTOM_ITEM_GROUP = FabricItemGroup.builder()

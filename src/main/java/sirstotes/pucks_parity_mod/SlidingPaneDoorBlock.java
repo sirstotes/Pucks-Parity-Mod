@@ -4,12 +4,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoorHinge;
-import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -82,31 +80,6 @@ public class SlidingPaneDoorBlock extends Block {
             default -> state.get(OPEN) ? EAST_SHAPE.offset(-0.125, 0, state.get(HINGE) == DoorHinge.LEFT ? -0.875 : 0.875): EAST_SHAPE;
         };
     }
-
-//    @Override
-//    protected BlockState getStateForNeighborUpdate(
-//            BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos
-//    ) {
-//        DoubleBlockHalf doubleBlockHalf = state.get(HALF);
-//        if (direction.getAxis() != Direction.Axis.Y || doubleBlockHalf == DoubleBlockHalf.LOWER != (direction == Direction.UP)) {
-//            return doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canPlaceAt(world, pos)
-//                    ? Blocks.AIR.getDefaultState()
-//                    : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-//        } else {
-//            return neighborState.getBlock() instanceof DoorBlock && neighborState.get(HALF) != doubleBlockHalf
-//                    ? neighborState.with(HALF, doubleBlockHalf)
-//                    : Blocks.AIR.getDefaultState();
-//        }
-//    }
-
-//    @Override
-//    protected void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
-//        if (explosion.canTriggerBlocks() && this.blockSetType.canOpenByWindCharge() && !(Boolean)state.get(POWERED)) {
-//            this.setOpen(null, world, state, pos, !this.isOpen(state));
-//        }
-//
-//        super.onExploded(state, world, pos, explosion, stackMerger);
-//    }
 
     @Override
     protected boolean canPathfindThrough(BlockState state, NavigationType type) {
