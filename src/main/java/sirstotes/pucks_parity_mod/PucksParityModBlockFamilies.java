@@ -581,7 +581,8 @@ public static final BlockFamily POLISHED_CALCITE = register(PucksParityModBlocks
             .stairs(PucksParityModBlocks.MUD_TILE_STAIRS)
             .wall(PucksParityModBlocks.MUD_TILE_WALL)
             .build();
-    public static final BlockFamily RESIN = register(PucksParityModBlocks.RESIN)
+    //?if >1.21.3 {
+    /*public static final BlockFamily RESIN = register(PucksParityModBlocks.RESIN)
             .slab(PucksParityModBlocks.RESIN_SLAB)
             .stairs(PucksParityModBlocks.RESIN_STAIRS)
             .wall(PucksParityModBlocks.RESIN_WALL)
@@ -601,6 +602,7 @@ public static final BlockFamily POLISHED_CALCITE = register(PucksParityModBlocks
             .stairs(PucksParityModBlocks.RESIN_TILE_STAIRS)
             .wall(PucksParityModBlocks.RESIN_TILE_WALL)
             .build();
+    *///?}
     public static final BlockFamily CRIMSON_QUARTZ_BRICKS = register(PucksParityModBlocks.CRIMSON_QUARTZ_BRICKS)
             .slab(PucksParityModBlocks.CRIMSON_QUARTZ_BRICK_SLAB)
             .stairs(PucksParityModBlocks.CRIMSON_QUARTZ_BRICK_STAIRS)

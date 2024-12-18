@@ -28,7 +28,7 @@ public class FluidBlockMixin implements FluidDrainableMixinAccessor {
     @Unique
     public ItemStack pucks_Parity_Mod$tryDrainFluid(Item item, WorldAccess world, BlockPos pos, BlockState state) {
         if ((Integer)state.get(LEVEL) == 0) {
-            world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL_AND_REDRAW);
+            world.setBlockState(pos, Blocks.AIR.getDefaultState(), /*if <1.21.1 {*/11/*?} else {*//*Block.NOTIFY_ALL_AND_REDRAW*//*?}*/);
             if (item instanceof BucketItem) {
                 return new ItemStack(((FluidMixinAccessor) this.fluid).pucks_Parity_Mod$getBucketItem((BucketItem) item));
             }

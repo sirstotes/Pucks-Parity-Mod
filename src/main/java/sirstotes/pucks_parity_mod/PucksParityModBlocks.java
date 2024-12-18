@@ -1,6 +1,7 @@
 package sirstotes.pucks_parity_mod;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
@@ -27,7 +28,8 @@ public class PucksParityModBlocks {
         return Registry.register(Registries.BLOCK, id, block);
     }
     public static void initialize() {
-        Registry.register(Registries.BLOCK_TYPE, Identifier.of(PucksParityMod.MOD_ID, "weathering_copper_chain"), OxidizableChainBlock.CODEC);
+        //? if >1.20.1
+        /*Registry.register(Registries.BLOCK_TYPE, Identifier.of(PucksParityMod.MOD_ID, "weathering_copper_chain"), OxidizableChainBlock.CODEC);*/
         OxidizableBlocksRegistry.registerOxidizableBlockPair(COPPER_CHAIN, EXPOSED_COPPER_CHAIN);
         OxidizableBlocksRegistry.registerOxidizableBlockPair(EXPOSED_COPPER_CHAIN, WEATHERED_COPPER_CHAIN);
         OxidizableBlocksRegistry.registerOxidizableBlockPair(WEATHERED_COPPER_CHAIN, OXIDIZED_COPPER_CHAIN);
@@ -86,14 +88,17 @@ public class PucksParityModBlocks {
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.BUILDING_BLOCKS).register((itemGroup) -> {
             itemGroup.addAfter(Items.IRON_BLOCK, new ItemStack(CHISELED_IRON),
-                    new ItemStack(IRON_GRATE),
+                    //?if >1.20.1
+                    /*new ItemStack(IRON_GRATE),*/
                     new ItemStack(CUT_IRON),
                     new ItemStack(CUT_IRON_STAIRS),
                     new ItemStack(CUT_IRON_SLAB));
             itemGroup.addAfter(Items.IRON_BARS, IRON_GATE);
-            itemGroup.addAfter(Items.IRON_TRAPDOOR, IRON_BULB);
+            //?if >1.20.1
+            /*itemGroup.addAfter(Items.IRON_TRAPDOOR, IRON_BULB);*/
             itemGroup.addAfter(Items.GOLD_BLOCK, new ItemStack(CHISELED_GOLD),
-                    new ItemStack(GOLD_GRATE),
+                    //?if >1.20.1
+                    /*new ItemStack(GOLD_GRATE),*/
                     new ItemStack(CUT_GOLD),
                     new ItemStack(CUT_GOLD_STAIRS),
                     new ItemStack(CUT_GOLD_SLAB),
@@ -103,21 +108,21 @@ public class PucksParityModBlocks {
                     new ItemStack(GOLD_TRAPDOOR));
             itemGroup.addAfter(Items.HEAVY_WEIGHTED_PRESSURE_PLATE, GOLD_CHAIN);
             itemGroup.addAfter(Items.CUT_COPPER_SLAB, new ItemStack(COPPER_BARS), new ItemStack(COPPER_GATE));
-            itemGroup.addAfter(Items.COPPER_BULB, new ItemStack(PLAYER_PRESSURE_PLATE), new ItemStack(COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.CUT_COPPER_SLAB/*?} else {*//*Items.COPPER_BULB*//**/, new ItemStack(PLAYER_PRESSURE_PLATE), new ItemStack(COPPER_CHAIN));
             itemGroup.addAfter(Items.EXPOSED_CUT_COPPER_SLAB, new ItemStack(EXPOSED_COPPER_BARS), new ItemStack(EXPOSED_COPPER_GATE));
-            itemGroup.addAfter(Items.EXPOSED_COPPER_BULB, new ItemStack(EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(EXPOSED_COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.EXPOSED_CUT_COPPER_SLAB/*} else {*//*Items.EXPOSED_COPPER_BULB*//**/, new ItemStack(EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(EXPOSED_COPPER_CHAIN));
             itemGroup.addAfter(Items.WEATHERED_CUT_COPPER_SLAB, new ItemStack(WEATHERED_COPPER_BARS), new ItemStack(WEATHERED_COPPER_GATE));
-            itemGroup.addAfter(Items.WEATHERED_COPPER_BULB, new ItemStack(WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WEATHERED_COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.WEATHERED_CUT_COPPER_SLAB/*} else {*//*Items.WEATHERED_COPPER_BULB*//**/, new ItemStack(WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WEATHERED_COPPER_CHAIN));
             itemGroup.addAfter(Items.OXIDIZED_CUT_COPPER_SLAB, new ItemStack(OXIDIZED_COPPER_BARS), new ItemStack(OXIDIZED_COPPER_GATE));
-            itemGroup.addAfter(Items.OXIDIZED_COPPER_BULB, new ItemStack(OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(OXIDIZED_COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.OXIDIZED_CUT_COPPER_SLAB/*} else {*//*Items.OXIDIZED_COPPER_BULB*//**/, new ItemStack(OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(OXIDIZED_COPPER_CHAIN));
             itemGroup.addAfter(Items.WAXED_CUT_COPPER_SLAB, new ItemStack(WAXED_COPPER_BARS), new ItemStack(WAXED_COPPER_GATE));
-            itemGroup.addAfter(Items.WAXED_COPPER_BULB, new ItemStack(WAXED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.WAXED_CUT_COPPER_SLAB/*} else {*//*Items.WAXED_COPPER_BULB*//**/, new ItemStack(WAXED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_COPPER_CHAIN));
             itemGroup.addAfter(Items.WAXED_EXPOSED_CUT_COPPER_SLAB, new ItemStack(WAXED_EXPOSED_COPPER_BARS), new ItemStack(WAXED_EXPOSED_COPPER_GATE));
-            itemGroup.addAfter(Items.WAXED_EXPOSED_COPPER_BULB, new ItemStack(WAXED_EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_EXPOSED_COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.WAXED_EXPOSED_CUT_COPPER_SLAB/*} else {*//*Items.WAXED_EXPOSED_COPPER_BULB*//**/, new ItemStack(WAXED_EXPOSED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_EXPOSED_COPPER_CHAIN));
             itemGroup.addAfter(Items.WAXED_WEATHERED_CUT_COPPER_SLAB, new ItemStack(WAXED_WEATHERED_COPPER_BARS), new ItemStack(WAXED_WEATHERED_COPPER_GATE));
-            itemGroup.addAfter(Items.WAXED_WEATHERED_COPPER_BULB, new ItemStack(WAXED_WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_WEATHERED_COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.WAXED_WEATHERED_CUT_COPPER_SLAB/*} else {*//*Items.WAXED_WEATHERED_COPPER_BULB*//**/, new ItemStack(WAXED_WEATHERED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_WEATHERED_COPPER_CHAIN));
             itemGroup.addAfter(Items.WAXED_OXIDIZED_CUT_COPPER_SLAB, new ItemStack(WAXED_OXIDIZED_COPPER_BARS), new ItemStack(WAXED_OXIDIZED_COPPER_GATE));
-            itemGroup.addAfter(Items.WAXED_OXIDIZED_COPPER_BULB, new ItemStack(WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN));
+            itemGroup.addAfter(/*?if <1.21.1 {*/Items.WAXED_OXIDIZED_CUT_COPPER_SLAB/*} else {*//*Items.WAXED_OXIDIZED_COPPER_BULB*//**/, new ItemStack(WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE), new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN));
         });
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FUNCTIONAL).register((itemGroup) -> {
@@ -134,7 +139,8 @@ public class PucksParityModBlocks {
                     new ItemStack(WAXED_EXPOSED_COPPER_CHAIN),
                     new ItemStack(WAXED_WEATHERED_COPPER_CHAIN),
                     new ItemStack(WAXED_OXIDIZED_COPPER_CHAIN));
-            itemGroup.addAfter(Items.REDSTONE_LAMP, new ItemStack(IRON_BULB), new ItemStack(GOLD_BULB));
+            //?if >1.20.1
+            /*itemGroup.addAfter(Items.REDSTONE_LAMP, new ItemStack(IRON_BULB), new ItemStack(GOLD_BULB));*/
         });
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((itemGroup) -> {
@@ -237,30 +243,32 @@ public class PucksParityModBlocks {
             itemGroup.add(MOSSY_COBBLED_TUFF_STAIRS);
             itemGroup.add(MOSSY_COBBLED_TUFF_WALL);
             itemGroup.add(Blocks.TUFF);
-            itemGroup.add(Blocks.TUFF_SLAB);
-            itemGroup.add(Blocks.TUFF_STAIRS);
-            itemGroup.add(Blocks.TUFF_WALL);
-            itemGroup.add(Blocks.TUFF_BRICKS);
-            itemGroup.add(Blocks.TUFF_BRICK_SLAB);
-            itemGroup.add(Blocks.TUFF_BRICK_STAIRS);
-            itemGroup.add(Blocks.TUFF_BRICK_WALL);
             itemGroup.add(MOSSY_TUFF_BRICKS);
             itemGroup.add(MOSSY_TUFF_BRICK_SLAB);
             itemGroup.add(MOSSY_TUFF_BRICK_STAIRS);
             itemGroup.add(MOSSY_TUFF_BRICK_WALL);
             itemGroup.add(CRACKED_TUFF_BRICKS);
-            itemGroup.add(Blocks.CHISELED_TUFF_BRICKS);
-            itemGroup.add(Blocks.POLISHED_TUFF);
-            itemGroup.add(Blocks.POLISHED_TUFF_SLAB);
-            itemGroup.add(Blocks.POLISHED_TUFF_STAIRS);
-            itemGroup.add(Blocks.POLISHED_TUFF_WALL);
             itemGroup.add(TUFF_TILES);
             itemGroup.add(TUFF_TILE_SLAB);
             itemGroup.add(TUFF_TILE_STAIRS);
             itemGroup.add(TUFF_TILE_WALL);
             itemGroup.add(CRACKED_TUFF_TILES);
             itemGroup.add(TUFF_PILLAR);
+            //?if >1.20.1 {
+            /*itemGroup.add(Blocks.TUFF_SLAB);
+            itemGroup.add(Blocks.TUFF_STAIRS);
+            itemGroup.add(Blocks.TUFF_WALL);
+            itemGroup.add(Blocks.TUFF_BRICKS);
+            itemGroup.add(Blocks.TUFF_BRICK_SLAB);
+            itemGroup.add(Blocks.TUFF_BRICK_STAIRS);
+            itemGroup.add(Blocks.TUFF_BRICK_WALL);
+            itemGroup.add(Blocks.CHISELED_TUFF_BRICKS);
+            itemGroup.add(Blocks.POLISHED_TUFF);
+            itemGroup.add(Blocks.POLISHED_TUFF_SLAB);
+            itemGroup.add(Blocks.POLISHED_TUFF_STAIRS);
+            itemGroup.add(Blocks.POLISHED_TUFF_WALL);
             itemGroup.add(Blocks.CHISELED_TUFF);
+            *///?}
             itemGroup.add(Blocks.COBBLED_DEEPSLATE);
             itemGroup.add(Blocks.COBBLED_DEEPSLATE_SLAB);
             itemGroup.add(Blocks.COBBLED_DEEPSLATE_STAIRS);
@@ -599,6 +607,29 @@ public class PucksParityModBlocks {
             itemGroup.add(CRACKED_DARK_PRISMARINE_TILES);
             itemGroup.add(DARK_PRISMARINE_PILLAR);
             itemGroup.add(CHISELED_DARK_PRISMARINE_PILLAR);
+            //?if >1.21.3 {
+            /*itemGroup.add(RESIN);
+            itemGroup.add(RESIN_SLAB);
+            itemGroup.add(RESIN_STAIRS);
+            itemGroup.add(RESIN_WALL);
+            itemGroup.add(RESIN_BRICKS);
+            itemGroup.add(RESIN_BRICK_SLAB);
+            itemGroup.add(RESIN_BRICK_STAIRS);
+            itemGroup.add(RESIN_BRICK_WALL);
+            itemGroup.add(MOSSY_RESIN_BRICKS);
+            itemGroup.add(MOSSY_RESIN_BRICK_SLAB);
+            itemGroup.add(MOSSY_RESIN_BRICK_STAIRS);
+            itemGroup.add(MOSSY_RESIN_BRICK_WALL);
+            itemGroup.add(CHISELED_RESIN);
+            itemGroup.add(CRACKED_RESIN);
+            itemGroup.add(RESIN_TILES);
+            itemGroup.add(RESIN_TILES_SLAB);
+            itemGroup.add(RESIN_TILES_STAIRS);
+            itemGroup.add(RESIN_TILES_WALL);
+            itemGroup.add(CRACKED_RESIN_TILES);
+            itemGroup.add(RESIN_PILLAR);
+            itemGroup.add(CHISELED_RESIN_PILLAR);
+            *///?}
             itemGroup.add(Blocks.SMOOTH_QUARTZ);
             itemGroup.add(Blocks.SMOOTH_QUARTZ_SLAB);
             itemGroup.add(Blocks.SMOOTH_QUARTZ_STAIRS);
@@ -1337,11 +1368,15 @@ public class PucksParityModBlocks {
     public static final Block OXIDIZED_COPPER_REDSTONE_LANTERN = register("oxidized_copper_redstone_lantern", new OxidizableDirectionalLanternBlock(Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
     public static final Block WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN = register("waxed_oxidized_copper_redstone_lantern", new DirectionalLanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
 
+    //?if <1.21.1 {
+    public static final BlockSetType COPPER_BLOCK_SET = new BlockSetType("copper");
+    //?} else
+    /*public static final BlockSetType COPPER_BLOCK_SET =COPPER_BLOCK_SET;*/
     public static final Block PLAYER_PRESSURE_PLATE = register(
             "player_pressure_plate",
             new OxidizablePlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     0,
                     Oxidizable.OxidationLevel.UNAFFECTED
             ),
@@ -1351,7 +1386,7 @@ public class PucksParityModBlocks {
             "waxed_player_pressure_plate",
             new PlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     0
             ),
             true
@@ -1360,7 +1395,7 @@ public class PucksParityModBlocks {
             "exposed_player_pressure_plate",
             new OxidizablePlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     10,
                     Oxidizable.OxidationLevel.EXPOSED
             ),
@@ -1370,7 +1405,7 @@ public class PucksParityModBlocks {
             "waxed_exposed_player_pressure_plate",
             new PlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     10
             ),
             true
@@ -1379,7 +1414,7 @@ public class PucksParityModBlocks {
             "weathered_player_pressure_plate",
             new OxidizablePlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     20,
                     Oxidizable.OxidationLevel.WEATHERED
             ),
@@ -1389,7 +1424,7 @@ public class PucksParityModBlocks {
             "waxed_weathered_player_pressure_plate",
             new PlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     20
             ),
             true
@@ -1398,7 +1433,7 @@ public class PucksParityModBlocks {
             "oxidized_player_pressure_plate",
             new OxidizablePlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     50,
                     Oxidizable.OxidationLevel.OXIDIZED
             ),
@@ -1408,50 +1443,52 @@ public class PucksParityModBlocks {
             "waxed_oxidized_player_pressure_plate",
             new PlayerOnlyPressurePlateBlock(
                     AbstractBlock.Settings.create().mapColor(MapColor.ORANGE).solid().requiresTool().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.COPPER,
+                    COPPER_BLOCK_SET,
                     50
             ),
             true
     );
-    public static final Block COPPER_GATE = register("copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.UNAFFECTED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
-    public static final Block WAXED_COPPER_GATE = register("waxed_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
-    public static final Block EXPOSED_COPPER_GATE = register("exposed_copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.EXPOSED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
-    public static final Block WAXED_EXPOSED_COPPER_GATE = register("waxed_exposed_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
-    public static final Block WEATHERED_COPPER_GATE = register("weathered_copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.WEATHERED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
-    public static final Block WAXED_WEATHERED_COPPER_GATE = register("waxed_weathered_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
-    public static final Block OXIDIZED_COPPER_GATE = register("oxidized_copper_gate", new OxidizableSlidingPaneDoorBlock(BlockSetType.COPPER, Oxidizable.OxidationLevel.OXIDIZED, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
-    public static final Block WAXED_OXIDIZED_COPPER_GATE = register("waxed_oxidized_copper_gate", new SlidingPaneDoorBlock(BlockSetType.COPPER, AbstractBlock.Settings.copy(Blocks.COPPER_DOOR)), true);
+    private static final AbstractBlock.Settings COPPER_DOOR_SETTINGS = AbstractBlock.Settings.copy(/*?if <1.21 {*/Blocks.IRON_DOOR/*} else {*//*Blocks.COPPER_DOOR*//*}*/);
+    public static final Block COPPER_GATE = register("copper_gate", new OxidizableSlidingPaneDoorBlock(COPPER_BLOCK_SET, Oxidizable.OxidationLevel.UNAFFECTED, COPPER_DOOR_SETTINGS), true);
+    public static final Block WAXED_COPPER_GATE = register("waxed_copper_gate", new SlidingPaneDoorBlock(COPPER_BLOCK_SET, COPPER_DOOR_SETTINGS), true);
+    public static final Block EXPOSED_COPPER_GATE = register("exposed_copper_gate", new OxidizableSlidingPaneDoorBlock(COPPER_BLOCK_SET, Oxidizable.OxidationLevel.EXPOSED, COPPER_DOOR_SETTINGS), true);
+    public static final Block WAXED_EXPOSED_COPPER_GATE = register("waxed_exposed_copper_gate", new SlidingPaneDoorBlock(COPPER_BLOCK_SET, COPPER_DOOR_SETTINGS), true);
+    public static final Block WEATHERED_COPPER_GATE = register("weathered_copper_gate", new OxidizableSlidingPaneDoorBlock(COPPER_BLOCK_SET, Oxidizable.OxidationLevel.WEATHERED, COPPER_DOOR_SETTINGS), true);
+    public static final Block WAXED_WEATHERED_COPPER_GATE = register("waxed_weathered_copper_gate", new SlidingPaneDoorBlock(COPPER_BLOCK_SET, COPPER_DOOR_SETTINGS), true);
+    public static final Block OXIDIZED_COPPER_GATE = register("oxidized_copper_gate", new OxidizableSlidingPaneDoorBlock(COPPER_BLOCK_SET, Oxidizable.OxidationLevel.OXIDIZED, COPPER_DOOR_SETTINGS), true);
+    public static final Block WAXED_OXIDIZED_COPPER_GATE = register("waxed_oxidized_copper_gate", new SlidingPaneDoorBlock(COPPER_BLOCK_SET, COPPER_DOOR_SETTINGS), true);
 
     public static final Block GOLD_CHAIN = register("gold_chain", new ChainBlock(AbstractBlock.Settings.create().solid().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.CHAIN).nonOpaque()), true);
     public static final Block GOLD_BARS = register("gold_bars", new PaneBlock(AbstractBlock.Settings.create().requiresTool().strength(4.0F, 6.0F).sounds(BlockSoundGroup.METAL).nonOpaque()), true);
-    public static final Block GOLD_TRAPDOOR = register("gold_trapdoor", new GoldTrapdoorBlock(BlockSetType.GOLD, AbstractBlock.Settings.create().mapColor(MapColor.GOLD).requiresTool().strength(4.0F).allowsSpawning(Blocks::never)), true);
+    public static final Block GOLD_TRAPDOOR = register("gold_trapdoor", new GoldTrapdoorBlock(BlockSetType.GOLD, AbstractBlock.Settings.create().mapColor(MapColor.GOLD).requiresTool().strength(4.0F)/*?if >1.21.1 {*//*.allowsSpawning(Blocks::never)*//*?}*/), true);
     public static final Block GOLD_DOOR = register("gold_door", new GoldDoorBlock(BlockSetType.GOLD, AbstractBlock.Settings.create().mapColor(MapColor.GOLD).requiresTool().strength(4.0F).pistonBehavior(PistonBehavior.DESTROY)), true);
     public static final Block CHISELED_GOLD = register("chiseled_gold", new Block(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK)), true);
     public static final Block CUT_GOLD = register("cut_gold", new Block(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK)), true);
     public static final Block CUT_GOLD_SLAB = register("cut_gold_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK)), true);
     public static final Block CUT_GOLD_STAIRS = register("cut_gold_stairs", new StairsBlock(CUT_GOLD.getDefaultState(), AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK)), true);
-    public static final Block GOLD_GRATE = register("gold_grate", new GrateBlock(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK).nonOpaque()), true);
     public static final Block GOLD_LANTERN = register("gold_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)) {
         protected static final VoxelShape STANDING_SHAPE = VoxelShapes.union(Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 1.0, 10.0), Block.createCuboidShape(4.0, 1.0, 4.0, 12.0, 6.0, 12.0), Block.createCuboidShape(6.0, 6.0, 6.0, 10.0, 7.0, 10.0));
         protected static final VoxelShape HANGING_SHAPE = STANDING_SHAPE.offset(0.0, 7.0*(1.0/16.0), 0.0);
         @Override
-        protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
             return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
         }}, true);
     public static final Block GOLD_SOUL_LANTERN = register("gold_soul_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)) {
         protected static final VoxelShape STANDING_SHAPE = VoxelShapes.union(Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 1.0, 10.0), Block.createCuboidShape(4.0, 1.0, 4.0, 12.0, 6.0, 12.0), Block.createCuboidShape(6.0, 6.0, 6.0, 10.0, 7.0, 10.0));
         protected static final VoxelShape HANGING_SHAPE = STANDING_SHAPE.offset(0.0, 7.0*(1.0/16.0), 0.0);
         @Override
-        protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
             return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
         }}, true);
     public static final Block GOLD_REDSTONE_LANTERN = register("gold_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)) {
         protected static final VoxelShape STANDING_SHAPE = VoxelShapes.union(Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 1.0, 10.0), Block.createCuboidShape(4.0, 1.0, 4.0, 12.0, 6.0, 12.0), Block.createCuboidShape(6.0, 6.0, 6.0, 10.0, 7.0, 10.0));
         protected static final VoxelShape HANGING_SHAPE = STANDING_SHAPE.offset(0.0, 7.0*(1.0/16.0), 0.0);
         @Override
-        protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
             return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
         }}, true);
+    //? if >1.20.1 {
+    /*public static final Block GOLD_GRATE = register("gold_grate", new GrateBlock(AbstractBlock.Settings.copy(Blocks.GOLD_BLOCK).nonOpaque()), true);
     public static final Block GOLD_BULB = register("gold_bulb", new BulbBlock(AbstractBlock.Settings.create()
         .mapColor(Blocks.GOLD_BLOCK.getDefaultMapColor())
         .strength(3.0F, 6.0F)
@@ -1459,13 +1496,15 @@ public class PucksParityModBlocks {
         .requiresTool()
         .solidBlock(Blocks::never)
         .luminance(Blocks.createLightLevelFromLitBlockState(15))), true);
+    *///?}
     public static final Block GOLD_GATE = register("gold_gate", new GoldSlidingPaneDoorBlock(BlockSetType.GOLD, AbstractBlock.Settings.copy(GOLD_DOOR)), true);
 
     public static final Block CHISELED_IRON = register("chiseled_iron", new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK)), true);
     public static final Block CUT_IRON = register("cut_iron", new Block(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK)), true);
     public static final Block CUT_IRON_SLAB = register("cut_iron_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK)), true);
     public static final Block CUT_IRON_STAIRS = register("cut_iron_stairs", new StairsBlock(CUT_IRON.getDefaultState(), AbstractBlock.Settings.copy(Blocks.IRON_BLOCK)), true);
-    public static final Block IRON_GRATE = register("iron_grate", new GrateBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque()), true);
+    //? if >1.20.1 {
+    /*public static final Block IRON_GRATE = register("iron_grate", new GrateBlock(AbstractBlock.Settings.copy(Blocks.IRON_BLOCK).nonOpaque()), true);
     public static final Block IRON_BULB = register("iron_bulb", new DirectionalBulbBlock(AbstractBlock.Settings.create()
             .mapColor(Blocks.IRON_BLOCK.getDefaultMapColor())
             .strength(3.0F, 6.0F)
@@ -1473,42 +1512,32 @@ public class PucksParityModBlocks {
             .requiresTool()
             .solidBlock(Blocks::never)
             .luminance(Blocks.createLightLevelFromLitBlockState(15))), true);
+     *///?}
     public static final Block IRON_GATE = register("iron_gate", new SlidingPaneDoorBlock(BlockSetType.IRON, AbstractBlock.Settings.copy(Blocks.IRON_DOOR)), true);
     public static final Block IRON_REDSTONE_LANTERN = register("iron_redstone_lantern", new LanternBlock(AbstractBlock.Settings.copy(Blocks.LANTERN)), true);
 
-    public static final BlockSetType GLASS = new BlockSetType(
-            "glass",
-            true,
-            true,
-            true,
-            BlockSetType.ActivationRule.EVERYTHING,
-            BlockSoundGroup.GLASS,
-            SoundEvents.BLOCK_IRON_DOOR_CLOSE,
-            SoundEvents.BLOCK_IRON_DOOR_OPEN,
-            SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE,
-            SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN,
-            SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_OFF,
-            SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_ON,
-            SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF,
-            SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON
-    );
-    public static final Block SLIDING_GLASS_PANE = register("sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.GLASS_PANE)), true);
-    public static final Block RED_SLIDING_GLASS_PANE = register("red_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.RED_STAINED_GLASS_PANE)), true);
-    public static final Block ORANGE_SLIDING_GLASS_PANE = register("orange_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.ORANGE_STAINED_GLASS_PANE)), true);
-    public static final Block YELLOW_SLIDING_GLASS_PANE = register("yellow_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.YELLOW_STAINED_GLASS_PANE)), true);
-    public static final Block LIME_SLIDING_GLASS_PANE = register("lime_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.LIME_STAINED_GLASS_PANE)), true);
-    public static final Block GREEN_SLIDING_GLASS_PANE = register("green_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.GREEN_STAINED_GLASS_PANE)), true);
-    public static final Block CYAN_SLIDING_GLASS_PANE = register("cyan_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.CYAN_STAINED_GLASS_PANE)), true);
-    public static final Block LIGHT_BLUE_SLIDING_GLASS_PANE = register("light_blue_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)), true);
-    public static final Block BLUE_SLIDING_GLASS_PANE = register("blue_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.BLUE_STAINED_GLASS_PANE)), true);
-    public static final Block PURPLE_SLIDING_GLASS_PANE = register("purple_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.PURPLE_STAINED_GLASS_PANE)), true);
-    public static final Block MAGENTA_SLIDING_GLASS_PANE = register("magenta_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.MAGENTA_STAINED_GLASS_PANE)), true);
-    public static final Block PINK_SLIDING_GLASS_PANE = register("pink_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.PINK_STAINED_GLASS_PANE)), true);
-    public static final Block BROWN_SLIDING_GLASS_PANE = register("brown_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.BROWN_STAINED_GLASS_PANE)), true);
-    public static final Block WHITE_SLIDING_GLASS_PANE = register("white_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.WHITE_STAINED_GLASS_PANE)), true);
-    public static final Block LIGHT_GRAY_SLIDING_GLASS_PANE = register("light_gray_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)), true);
-    public static final Block GRAY_SLIDING_GLASS_PANE = register("gray_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.GRAY_STAINED_GLASS_PANE)), true);
-    public static final Block BLACK_SLIDING_GLASS_PANE = register("black_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS, AbstractBlock.Settings.copy(Blocks.BLACK_STAINED_GLASS_PANE)), true);
+    //?if >1.20.1 {
+    /*public static final BlockSetType GLASS = new BlockSetType("glass", true, true, true, BlockSetType.ActivationRule.EVERYTHING, BlockSoundGroup.GLASS, SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundEvents.BLOCK_IRON_DOOR_OPEN, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_ON, SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON);
+    *///?} else {
+    public static final BlockSetType GLASS_BLOCK_SET = new BlockSetType("glass", true, BlockSoundGroup.GLASS, SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundEvents.BLOCK_IRON_DOOR_OPEN, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_OFF, SoundEvents.BLOCK_METAL_PRESSURE_PLATE_CLICK_ON, SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON);
+    //?}
+    public static final Block SLIDING_GLASS_PANE = register("sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.GLASS_PANE)), true);
+    public static final Block RED_SLIDING_GLASS_PANE = register("red_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.RED_STAINED_GLASS_PANE)), true);
+    public static final Block ORANGE_SLIDING_GLASS_PANE = register("orange_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.ORANGE_STAINED_GLASS_PANE)), true);
+    public static final Block YELLOW_SLIDING_GLASS_PANE = register("yellow_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.YELLOW_STAINED_GLASS_PANE)), true);
+    public static final Block LIME_SLIDING_GLASS_PANE = register("lime_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.LIME_STAINED_GLASS_PANE)), true);
+    public static final Block GREEN_SLIDING_GLASS_PANE = register("green_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.GREEN_STAINED_GLASS_PANE)), true);
+    public static final Block CYAN_SLIDING_GLASS_PANE = register("cyan_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.CYAN_STAINED_GLASS_PANE)), true);
+    public static final Block LIGHT_BLUE_SLIDING_GLASS_PANE = register("light_blue_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.LIGHT_BLUE_STAINED_GLASS_PANE)), true);
+    public static final Block BLUE_SLIDING_GLASS_PANE = register("blue_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.BLUE_STAINED_GLASS_PANE)), true);
+    public static final Block PURPLE_SLIDING_GLASS_PANE = register("purple_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.PURPLE_STAINED_GLASS_PANE)), true);
+    public static final Block MAGENTA_SLIDING_GLASS_PANE = register("magenta_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.MAGENTA_STAINED_GLASS_PANE)), true);
+    public static final Block PINK_SLIDING_GLASS_PANE = register("pink_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.PINK_STAINED_GLASS_PANE)), true);
+    public static final Block BROWN_SLIDING_GLASS_PANE = register("brown_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.BROWN_STAINED_GLASS_PANE)), true);
+    public static final Block WHITE_SLIDING_GLASS_PANE = register("white_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.WHITE_STAINED_GLASS_PANE)), true);
+    public static final Block LIGHT_GRAY_SLIDING_GLASS_PANE = register("light_gray_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.LIGHT_GRAY_STAINED_GLASS_PANE)), true);
+    public static final Block GRAY_SLIDING_GLASS_PANE = register("gray_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.GRAY_STAINED_GLASS_PANE)), true);
+    public static final Block BLACK_SLIDING_GLASS_PANE = register("black_sliding_glass_pane", new SlidingPaneDoorBlock(GLASS_BLOCK_SET, AbstractBlock.Settings.copy(Blocks.BLACK_STAINED_GLASS_PANE)), true);
 
     public static final Block STONE_WALL = register("stone_wall", new WallBlock(AbstractBlock.Settings.copy(Blocks.STONE).solid()), true);
     public static final Block POLISHED_STONE = register("polished_stone", new Block(AbstractBlock.Settings.copy(Blocks.STONE)), true);
@@ -2069,7 +2098,8 @@ public class PucksParityModBlocks {
     public static final Block PACKED_MUD_PILLAR = register("packed_mud_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.PACKED_MUD)), true);
     public static final Block CHISELED_MUD_PILLAR = register("chiseled_mud_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.PACKED_MUD)), true);
 
-    public static final Block RESIN = register("hardened_resin", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
+    //?if >1.21.3 {
+    /*public static final Block RESIN = register("hardened_resin", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
     public static final Block RESIN_SLAB = register("hardened_resin_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BLOCK)), true);
     public static final Block RESIN_STAIRS = register("hardened_resin_stairs", new StairsBlock(Blocks.RESIN_BLOCK.getDefaultState(), AbstractBlock.Settings.copy(Blocks.RESIN_BLOCK)), true);
     public static final Block RESIN_WALL = register("hardened_resin_wall", new WallBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BLOCK).solid()), true);
@@ -2094,7 +2124,7 @@ public class PucksParityModBlocks {
     public static final Block CRACKED_RESIN_TILES = register("cracked_resin_tiles", new Block(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
     public static final Block RESIN_PILLAR = register("resin_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
     public static final Block CHISELED_RESIN_PILLAR = register("chiseled_resin_pillar", new PillarBlock(AbstractBlock.Settings.copy(Blocks.RESIN_BRICKS)), true);
-
+    *///?}
     public static final Block TERRACOTTA_SLAB = register("terracotta_slab", new SlabBlock(AbstractBlock.Settings.copy(Blocks.TERRACOTTA)), true);
     public static final Block TERRACOTTA_STAIRS = register("terracotta_stairs", new StairsBlock(Blocks.TERRACOTTA.getDefaultState(), AbstractBlock.Settings.copy(Blocks.TERRACOTTA)), true);
     public static final Block TERRACOTTA_WALL = register("terracotta_wall", new WallBlock(AbstractBlock.Settings.copy(Blocks.TERRACOTTA).solid()), true);

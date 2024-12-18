@@ -1,6 +1,6 @@
 package sirstotes.pucks_parity_mod.mixin.shears;
-
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+//?if >1.20.1 {
+/*import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,11 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(WolfEntity.class)
 public abstract class WolfEntityMixin {
-    @ModifyExpressionValue(
-        method = "interactMob",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z", ordinal = 1)
-    )
+    @ModifyExpressionValue(method = "interactMob", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isOf(Lnet/minecraft/item/Item;)Z", ordinal = 1))
     public boolean includeNewShears(boolean original, PlayerEntity player, Hand hand) {
         return original || player.getStackInHand(hand).isIn(ConventionalItemTags.SHEAR_TOOLS);
     }
 }
+*///?}

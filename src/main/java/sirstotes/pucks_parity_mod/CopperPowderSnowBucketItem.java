@@ -13,7 +13,6 @@ public class CopperPowderSnowBucketItem extends PowderSnowBucketItem implements 
 
     public CopperPowderSnowBucketItem(Block block, SoundEvent placeSound, Settings settings) {
         super(block, placeSound, settings);
-        //TODO Auto-generated constructor stub
     }
     
 	@Override

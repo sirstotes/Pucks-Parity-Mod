@@ -85,10 +85,12 @@ public class PucksParityModClient implements ClientModInitializer {
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_LANTERN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_SOUL_LANTERN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_REDSTONE_LANTERN, RenderLayer.getCutout());
-		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_GRATE, RenderLayer.getCutout());
 		
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_GATE, RenderLayer.getCutout());
+		//?if >1.20.1 {
+		/*BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.GOLD_GRATE, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_GRATE, RenderLayer.getCutout());
+		*///?}
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.IRON_REDSTONE_LANTERN, RenderLayer.getCutout());
 
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.SLIDING_GLASS_PANE, RenderLayer.getCutout());

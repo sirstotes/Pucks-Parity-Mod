@@ -5,5 +5,4 @@ import org.spongepowered.asm.mixin.Mixin;
 import sirstotes.pucks_parity_mod.accessors.BrushItemMixinAccessor;
 
 @Mixin(BrushItem.class)
-public class BrushItemMixin implements BrushItemMixinAccessor {
-}
+public class BrushItemMixin implements BrushItemMixinAccessor { }//Mixin exists solely to implement the interface

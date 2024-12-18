@@ -1,6 +1,6 @@
 package sirstotes.pucks_parity_mod.mixin.buckets;
-
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+//?if >1.20.1 {
+/*import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.item.ItemStack;
@@ -15,4 +15,5 @@ public class FurnaceFuelSlotMixin {
     private static boolean allowOtherBuckets(boolean original, @Local ItemStack stack) {
         return original || stack.isIn(ConventionalItemTags.BUCKETS);
     }
-}
+}//TODO:backport
+*///?}

@@ -1,6 +1,6 @@
 package sirstotes.pucks_parity_mod.mixin.shears;
-
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+//?if >1.20.1 {
+/*import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -19,4 +19,5 @@ public abstract class SheepEntityMixin {
     public boolean includeNewShears(boolean original, PlayerEntity player, Hand hand) {
         return original || player.getStackInHand(hand).isIn(ConventionalItemTags.SHEAR_TOOLS);
     }
-}
+}//TODO: Backport
+*///?}

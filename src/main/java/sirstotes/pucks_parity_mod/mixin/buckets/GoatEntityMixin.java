@@ -1,6 +1,6 @@
 package sirstotes.pucks_parity_mod.mixin.buckets;
-
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+//?if >1.20.1
+/*import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.entity.passive.GoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,4 +24,5 @@ public class GoatEntityMixin {
         }
         return original;
     }
-}
+}//TODO:backport
+*///?}

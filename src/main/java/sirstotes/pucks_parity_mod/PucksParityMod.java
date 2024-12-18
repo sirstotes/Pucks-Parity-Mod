@@ -4,7 +4,8 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.registry.FuelRegistryEvents;
+//? if >1.20.1
+/*import net.fabricmc.fabric.api.registry.FuelRegistryEvents;*/
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.BiomeTags;
@@ -30,11 +31,13 @@ public class PucksParityMod implements ModInitializer {
 		BiomeModifications.addFeature(BiomeSelectors.tag(BiomeTags.IS_OCEAN), GenerationStep.Feature.UNDERGROUND_ORES, SMOOTH_PRISMARINE_ORE_PLACED_KEY);
 		BiomeModifications.addFeature(BiomeSelectors.tag(BiomeTags.IS_OCEAN), GenerationStep.Feature.UNDERGROUND_ORES, SMOOTH_DARK_PRISMARINE_ORE_PLACED_KEY);
 
-		FuelRegistryEvents.BUILD.register((builder, context) -> {
+		//? if >1.21.1 {
+		/*FuelRegistryEvents.BUILD.register((builder, context) -> {
         	builder.add(PucksParityModItems.COPPER_LAVA_BUCKET, 20000);
 			builder.add(PucksParityModItems.GOLD_LAVA_BUCKET_1, 20000);
 			builder.add(PucksParityModItems.GOLD_LAVA_BUCKET_2, 20000);
 			builder.add(PucksParityModItems.GOLD_LAVA_BUCKET_3, 20000);
 		});
+		*///?}
 	}
 }

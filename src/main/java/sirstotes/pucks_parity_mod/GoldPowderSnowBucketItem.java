@@ -12,6 +12,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -31,13 +32,23 @@ public class GoldPowderSnowBucketItem extends PowderSnowBucketItem implements Pu
         fluidLevel = _level;
     }
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
+    //? if >1.21.1 {
+    /*public ActionResult use(World world, PlayerEntity user, Hand hand) {
+     *///?} else {
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        //?}
         ItemStack itemStack = user.getStackInHand(hand);
         BlockHitResult blockHitResult = raycast(world, user, RaycastContext.FluidHandling.NONE);
         if (blockHitResult.getType() == HitResult.Type.MISS) {
-            return ActionResult.PASS;
+            //? if >1.21.1 {
+            /*return ActionResult.PASS;
+             *///? else
+            return TypedActionResult.pass(itemStack);
         } else if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-            return ActionResult.PASS;
+            //? if >1.21.1 {
+            /*return ActionResult.PASS;
+             *///? else
+            return TypedActionResult.pass(itemStack);
         }
         BlockPos blockPos = blockHitResult.getBlockPos();
         Direction direction = blockHitResult.getSide();
@@ -55,11 +66,17 @@ public class GoldPowderSnowBucketItem extends PowderSnowBucketItem implements Pu
                     if (!world.isClient) {
                         Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)user, itemStack2);
                     }
-                    return ActionResult.SUCCESS.withNewHandStack(itemStack3);
+                    //? if >1.21.1 {
+                    /*return ActionResult.SUCCESS.withNewHandStack(itemStack3);
+                     *///?} else
+                    return TypedActionResult.success(itemStack3);
                 }
             }
         }
-        return ActionResult.PASS;
+        //? if >1.21.1 {
+        /*return ActionResult.PASS;
+         *///? else
+        return TypedActionResult.pass(itemStack);
     }
 
     @Override
@@ -76,8 +93,8 @@ public class GoldPowderSnowBucketItem extends PowderSnowBucketItem implements Pu
             }
             return actionResult;
         }
-        ActionResult actionResult = use(context.getWorld(), context.getPlayer(), context.getHand());
-        if (actionResult == ActionResult.PASS) {
+        /*? if < 1.21.1 {*/TypedActionResult<ItemStack>/*?} else {*//*ActionResult*//*?}*/ actionResult = use(context.getWorld(), context.getPlayer(), context.getHand());
+        if (/*? if < 1.21.1 {*/actionResult.getResult()/*?} else {*//*actionResult*//*?}*/ == ActionResult.PASS) {
             ActionResult actionResult1 = this.place(new ItemPlacementContext(context));
 
             PlayerEntity playerEntity = context.getPlayer();
@@ -86,14 +103,14 @@ public class GoldPowderSnowBucketItem extends PowderSnowBucketItem implements Pu
             }
             return actionResult1;
         }
-        if (actionResult instanceof ActionResult.Success success) {
-            context.getPlayer().setStackInHand(context.getHand(), success.itemContext().newHandStack());
+        if (/*? if < 1.21.1 {*/actionResult.getResult() == ActionResult.SUCCESS/*?} else {*//*actionResult instanceof ActionResult.Success success*//*?}*/) {
+            context.getPlayer().setStackInHand(context.getHand(), /*? if < 1.21.1 {*/actionResult.getValue()/*?} else {*//*success.itemContext().newHandStack()*//*?}*/);
         }
-        return actionResult;
+        return /*? if < 1.21.1 {*/actionResult.getResult()/*?} else {*//*actionResult*//*?}*/;
     }
 
     public ItemStack pucks_Parity_Mod$getEmptiedStack(ItemStack stack, PlayerEntity player) {
-        return !player.isInCreativeMode() ? new ItemStack(emptiedItem) : stack;
+        return !/*? if <1.21.1 {*/player.getAbilities().creativeMode/*?} else {*//*player.isInCreativeMode()*//*?}*/ ? new ItemStack(emptiedItem) : stack;
     }
 
     @Override

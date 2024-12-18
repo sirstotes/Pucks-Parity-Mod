@@ -24,7 +24,7 @@ import sirstotes.pucks_parity_mod.accessors.FluidDrainableMixinAccessor;
 public class PowderSnowBlockMixin implements FluidDrainableMixinAccessor {
     @Unique
     public ItemStack pucks_Parity_Mod$tryDrainFluid(Item item, WorldAccess world, BlockPos pos, BlockState state) {
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL_AND_REDRAW);
+        world.setBlockState(pos, Blocks.AIR.getDefaultState(), /*if <1.21.1 {*/11/*?} else {*//*Block.NOTIFY_ALL_AND_REDRAW*//*?}*/);
         if (!world.isClient()) {
             world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(state));
         }

@@ -12,9 +12,10 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ActionResult;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+//? if < 1.21.2
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -32,15 +33,27 @@ public class CopperBucketItem extends BucketItem implements PucksParityModBucket
         fluid = _fluid;
     }
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
+    //? if >1.21.1 {
+    /*public ActionResult use(World world, PlayerEntity user, Hand hand) {
+    *///?} else {
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    //?}
         ItemStack itemStack = user.getStackInHand(hand);
         BlockHitResult blockHitResult = raycast(
                 world, user, this.fluid == Fluids.EMPTY ? net.minecraft.world.RaycastContext.FluidHandling.SOURCE_ONLY : RaycastContext.FluidHandling.NONE
         );
         if (blockHitResult.getType() == HitResult.Type.MISS) {
-            return ActionResult.PASS;
+            //? if >1.21.1 {
+            /*return ActionResult.PASS;
+            *///? else {
+            return TypedActionResult.pass(itemStack);
+            //?}
         } else if (blockHitResult.getType() != HitResult.Type.BLOCK) {
-            return ActionResult.PASS;
+            //? if >1.21.1 {
+            /*return ActionResult.PASS;
+             *///? else {
+            return TypedActionResult.pass(itemStack);
+            //?}
         } else {
             BlockPos blockPos = blockHitResult.getBlockPos();
             Direction direction = blockHitResult.getSide();
@@ -64,12 +77,18 @@ public class CopperBucketItem extends BucketItem implements PucksParityModBucket
                             if (!world.isClient) {
                                 Criteria.FILLED_BUCKET.trigger((ServerPlayerEntity)user, itemStack2);
                             }
-
-                            return ActionResult.SUCCESS.withNewHandStack(itemStack3);
+                            //? if >1.21.1 {
+                            /*return ActionResult.SUCCESS.withNewHandStack(itemStack3);
+                            *///?} else {
+                            return TypedActionResult.success(itemStack3);
+                            //?}
                         }
                     }
-
-                    return ActionResult.FAIL;
+                    //? if >1.21.1 {
+                    /*return ActionResult.FAIL;
+                     *///? else {
+                    return TypedActionResult.fail(itemStack);
+                    //?}
                 } else {
                     blockState = world.getBlockState(blockPos);
                     BlockPos blockPos3 = blockState.getBlock() instanceof FluidFillable && this.fluid == Fluids.WATER ? blockPos : blockPos2;
@@ -81,23 +100,34 @@ public class CopperBucketItem extends BucketItem implements PucksParityModBucket
 
                         user.incrementStat(Stats.USED.getOrCreateStat(this));
                         itemStack2 = ItemUsage.exchangeStack(itemStack, user, pucks_Parity_Mod$getEmptiedStack(itemStack, user));
-                        return ActionResult.SUCCESS.withNewHandStack(itemStack2);
+                        //? if >1.21.1 {
+                        /*return ActionResult.SUCCESS.withNewHandStack(itemStack2);
+                         *///?} else {
+                        return TypedActionResult.success(itemStack2);
+                        //?}
                     } else {
-                        return ActionResult.FAIL;
+                        //? if >1.21.1 {
+                        /*return ActionResult.FAIL;
+                         *///? else {
+                        return TypedActionResult.fail(itemStack);
+                        //?}
                     }
                 }
             } else {
-                return ActionResult.FAIL;
+                //? if >1.21.1 {
+                /*return ActionResult.FAIL;
+                 *///? else {
+                return TypedActionResult.fail(itemStack);
+                //?}
             }
         }
     }
-
     public static ItemStack pucks_Parity_Mod$getEmptiedStack(ItemStack stack, PlayerEntity player) {
         if (stack.getItem() instanceof CopperBucketItem bucket && bucket.fluid == Fluids.LAVA) {
             player.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + player.getRandom().nextFloat() * 0.4F);
-            return !player.isInCreativeMode() ? ItemStack.EMPTY : stack;
+            return !/*? if <1.21.1 {*/player.getAbilities().creativeMode/*?} else {*//*player.isInCreativeMode()*//*?}*/ ? ItemStack.EMPTY : stack;
         }
-        return !player.isInCreativeMode() ? new ItemStack(PucksParityModItems.COPPER_BUCKET) : stack;
+        return !/*? if <1.21.1 {*/player.getAbilities().creativeMode/*?} else {*//*player.isInCreativeMode()*//*?}*/ ? new ItemStack(PucksParityModItems.COPPER_BUCKET) : stack;
     }
 
     @Override
