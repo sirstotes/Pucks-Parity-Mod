@@ -31,7 +31,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.function.BiConsumer;
 
 public class SlidingPaneDoorBlock extends Block {
@@ -75,7 +74,7 @@ public class SlidingPaneDoorBlock extends Block {
     }
 
     @Override
-    /*? if <1.21.2*/ public/*?} else {*//*protected*//*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*?if <1.21.2 {*/ public/*?} else {*//*protected*//*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         Direction direction = state.get(FACING);
 
         return switch (direction) {
@@ -91,7 +90,7 @@ public class SlidingPaneDoorBlock extends Block {
     }
 
     @Override
-    //? if <1.21.1 {
+    //?if <1.21.1 {
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         switch (type) {
             case LAND -> {
@@ -167,10 +166,11 @@ public class SlidingPaneDoorBlock extends Block {
     }
 
     @Override
-    //? if <1.21.1 {
+    //?if <1.21.1 {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        //?} else
-        /*protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {*/
+        //?} else {
+        /*protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        *///?}
         if (!this.blockSetType.canOpenByHand()) {
             return ActionResult.PASS;
         } else {
@@ -195,7 +195,7 @@ public class SlidingPaneDoorBlock extends Block {
     }
 
 
-    //? if <1.21.1 {
+    //?if <1.21.1 {
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
         boolean bl = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos);
         if (!this.getDefaultState().isOf(sourceBlock) && bl != state.get(POWERED)) {
@@ -208,7 +208,7 @@ public class SlidingPaneDoorBlock extends Block {
         }
 
     }
-    //? } else {
+    //?} else {
     /*protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
         boolean bl = world.isReceivingRedstonePower(pos);
         if (!this.getDefaultState().isOf(sourceBlock) && bl != state.get(POWERED)) {
@@ -238,17 +238,17 @@ public class SlidingPaneDoorBlock extends Block {
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ BlockState rotate(BlockState state, BlockRotation rotation) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ BlockState mirror(BlockState state, BlockMirror mirror) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ BlockState mirror(BlockState state, BlockMirror mirror) {
         return mirror == BlockMirror.NONE ? state : state.rotate(mirror.getRotation(state.get(FACING))).cycle(HINGE);
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ long getRenderingSeed(BlockState state, BlockPos pos) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ long getRenderingSeed(BlockState state, BlockPos pos) {
         return MathHelper.idealHash(pos.getX() + pos.getY() + pos.getZ());
     }
 
@@ -266,7 +266,7 @@ public class SlidingPaneDoorBlock extends Block {
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ boolean hasSidedTransparency(BlockState state) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ boolean hasSidedTransparency(BlockState state) {
         return true;
     }
 }

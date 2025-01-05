@@ -12,7 +12,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-//? if >1.20.1
+//?if >1.20.1
 /*import net.minecraft.world.block.WireOrientation;*/
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
@@ -25,10 +25,11 @@ public class GoldSlidingPaneDoorBlock extends SlidingPaneDoorBlock {
     }
 
     @Override
-    //? if <1.21.1 {
+    //?if <1.21.1 {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        //?} else
-        /*protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {*/
+        //?} else {
+        /*protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        *///?}
         if (!blockSetType.canOpenByHand() && world.isReceivingRedstonePower(pos)) {
             return ActionResult.FAIL;
         } else {
@@ -36,10 +37,11 @@ public class GoldSlidingPaneDoorBlock extends SlidingPaneDoorBlock {
             world.setBlockState(pos, state, Block.NOTIFY_LISTENERS | Block.REDRAW_ON_MAIN_THREAD);
             this.playOpenCloseSound(player, world, pos, (Boolean)state.get(OPEN));
             world.emitGameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
-            //? if <1.21.2 {
+            //?if <1.21.2 {
             return ActionResult.success(world.isClient);
-            //?} else
-            /*return ActionResult.SUCCESS;*/
+            //?} else {
+            /*return ActionResult.SUCCESS;
+            *///?}
         }
     }
 
@@ -50,10 +52,11 @@ public class GoldSlidingPaneDoorBlock extends SlidingPaneDoorBlock {
     }
 
     //Causes gold doors to not switch when receiving redstone power.
-    //? if <1.21.1 {
+    //?if <1.21.1 {
     @Override public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {}
-    //? else if <1.21.2 {
+    //?} else if <1.21.2 {
     /*@Override protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {}
-     *///?} else
-    /*@Override protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {}*/
+     *///?} else {
+    /*@Override protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {}
+    *///?}
 }

@@ -32,12 +32,12 @@ public class OxidizableHopperBlock extends HopperBlock implements Oxidizable {
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         this.tickDegradation(state, world, pos, random);
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ boolean hasRandomTicks(BlockState state) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ boolean hasRandomTicks(BlockState state) {
         return Oxidizable.getIncreasedOxidationBlock(state.getBlock()).isPresent();
     }
 

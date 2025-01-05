@@ -9,13 +9,13 @@ import net.minecraft.state.StateManager;
 import net.minecraft.util.BlockRotation;
 
 public class DirectionalPillarBlock extends FacingBlock {
-    //? if >1.21.1
+    //?if >1.21.1
     /*public static final MapCodec<DirectionalPillarBlock> CODEC = createCodec(DirectionalPillarBlock::new);*/
     protected DirectionalPillarBlock(Settings settings) {
         super(settings);
     }
 
-    //? if >1.21.1 {
+    //?if >1.21.1 {
     /*@Override
     protected MapCodec<? extends FacingBlock> getCodec() {
         return CODEC;
@@ -23,7 +23,7 @@ public class DirectionalPillarBlock extends FacingBlock {
     *///?}
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ BlockState rotate(BlockState state, BlockRotation rotation) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ BlockState rotate(BlockState state, BlockRotation rotation) {
         return state.with(FACING, rotation.rotate(state.get(FACING)));
     }
 

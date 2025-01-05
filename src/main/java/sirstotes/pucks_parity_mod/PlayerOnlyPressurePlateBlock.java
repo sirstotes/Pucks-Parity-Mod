@@ -15,7 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class PlayerOnlyPressurePlateBlock extends AbstractPressurePlateBlock {
-    //?if >1.20.1}
+    //?if >1.20.1 {
     /*public static final MapCodec< PlayerOnlyPressurePlateBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                             createSettingsCodec(),

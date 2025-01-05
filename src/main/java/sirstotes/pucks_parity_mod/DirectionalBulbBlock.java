@@ -16,12 +16,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DirectionalBulbBlock extends FacingBlock {
-    //? if >1.21.1
+    //?if >1.21.1
     /*public static final MapCodec<DirectionalBulbBlock> CODEC = createCodec(DirectionalBulbBlock::new);*/
     public static final BooleanProperty POWERED = Properties.POWERED;
     public static final BooleanProperty LIT = Properties.LIT;
 
-    //? if >1.21.1 {
+    //?if >1.21.1 {
     /*@Override
     protected MapCodec<? extends DirectionalBulbBlock> getCodec() {
         return CODEC;
@@ -34,7 +34,7 @@ public class DirectionalBulbBlock extends FacingBlock {
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         if (oldState.getBlock() != state.getBlock() && world instanceof ServerWorld serverWorld) {
             this.update(state, serverWorld, pos);
         }
@@ -60,12 +60,12 @@ public class DirectionalBulbBlock extends FacingBlock {
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ boolean hasComparatorOutput(BlockState state) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ boolean hasComparatorOutput(BlockState state) {
         return true;
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ int getComparatorOutput(BlockState state, World world, BlockPos pos) {
         return world.getBlockState(pos).get(LIT) ? 15 : 0;
     }
 

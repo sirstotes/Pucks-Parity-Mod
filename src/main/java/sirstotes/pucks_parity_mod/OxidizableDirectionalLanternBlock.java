@@ -11,7 +11,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 
 public class OxidizableDirectionalLanternBlock extends DirectionalLanternBlock implements Oxidizable {
-    //?if >1.20.1}
+    //?if >1.20.1 {
     /*public static final MapCodec<OxidizableDirectionalLanternBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(Oxidizable.OxidationLevel.CODEC.fieldOf("weathering_state").forGetter(Degradable::getDegradationLevel), createSettingsCodec())
                     .apply(instance, OxidizableDirectionalLanternBlock::new)
@@ -28,12 +28,12 @@ public class OxidizableDirectionalLanternBlock extends DirectionalLanternBlock i
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         this.tickDegradation(state, world, pos, random);
     }
 
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ boolean hasRandomTicks(BlockState state) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ boolean hasRandomTicks(BlockState state) {
         return Oxidizable.getIncreasedOxidationBlock(state.getBlock()).isPresent();
     }
 
@@ -41,7 +41,7 @@ public class OxidizableDirectionalLanternBlock extends DirectionalLanternBlock i
         return this.oxidationLevel;
     }
     @Override
-    /*? if <1.21.2*/public/*?} else {*//*protected*//*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return state.get(HANGING) ? HANGING_SHAPE : STANDING_SHAPE;
     }
 }
