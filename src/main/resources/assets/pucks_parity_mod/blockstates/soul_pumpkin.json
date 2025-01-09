@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "pucks_parity_mod:block/soul_pumpkin",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "pucks_parity_mod:block/soul_pumpkin"
+    },
+    "facing=south": {
+      "model": "pucks_parity_mod:block/soul_pumpkin",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "pucks_parity_mod:block/soul_pumpkin",
+      "y": 270
+    }
+  }
+}

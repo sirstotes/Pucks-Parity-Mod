@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/warped_blackstone_bricks",
-    "side": "pucks_parity_mod:block/warped_blackstone_bricks",
-    "top": "pucks_parity_mod:block/warped_blackstone_bricks"
-  }
-}

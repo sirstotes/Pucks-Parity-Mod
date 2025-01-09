@@ -3,6 +3,9 @@
 
     "item.pucks_parity_mod.copper_nugget": "Copper Nugget",
 
+    "block.pucks_parity_mod.soul_pumpkin": "Soul Pumpkin",
+    "block.pucks_parity_mod.redstone_pumpkin": "Redstone Pumpkin",
+
     "block.pucks_parity_mod.copper_chain": "Copper Chain",
     "block.pucks_parity_mod.exposed_copper_chain": "Exposed Copper Chain",
     "block.pucks_parity_mod.weathered_copper_chain": "Weathered Copper Chain",

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/mossy_andesite_bricks",
-    "side": "pucks_parity_mod:block/mossy_andesite_bricks",
-    "top": "pucks_parity_mod:block/mossy_andesite_bricks"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "parent": "pucks_parity_mod:block/template_bars_side_alt",
-  "textures": {
-    "particle": "pucks_parity_mod:block/copper_bars",
-    "texture": "pucks_parity_mod:block/copper_bars"
-  }
-}

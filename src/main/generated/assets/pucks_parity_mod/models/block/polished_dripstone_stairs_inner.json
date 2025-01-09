@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/polished_dripstone",
-    "side": "pucks_parity_mod:block/polished_dripstone",
-    "top": "pucks_parity_mod:block/polished_dripstone"
-  }
-}

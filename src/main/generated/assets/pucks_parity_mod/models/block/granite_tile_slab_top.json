@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/granite_tiles",
-    "side": "pucks_parity_mod:block/granite_tiles",
-    "top": "pucks_parity_mod:block/granite_tiles"
-  }
-}

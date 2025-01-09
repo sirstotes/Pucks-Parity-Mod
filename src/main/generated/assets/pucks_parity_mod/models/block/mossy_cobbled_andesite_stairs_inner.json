@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/mossy_cobbled_andesite",
-    "side": "pucks_parity_mod:block/mossy_cobbled_andesite",
-    "top": "pucks_parity_mod:block/mossy_cobbled_andesite"
-  }
-}

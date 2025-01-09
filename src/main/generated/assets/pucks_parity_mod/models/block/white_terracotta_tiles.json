@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "pucks_parity_mod:block/white_terracotta_tiles"
-  }
-}

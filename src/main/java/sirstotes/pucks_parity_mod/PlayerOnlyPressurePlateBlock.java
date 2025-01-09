@@ -15,8 +15,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class PlayerOnlyPressurePlateBlock extends AbstractPressurePlateBlock {
-    //?if >1.20.1 {
-    /*public static final MapCodec< PlayerOnlyPressurePlateBlock> CODEC = RecordCodecBuilder.mapCodec(
+    //? if >1.20.1 {
+    public static final MapCodec< PlayerOnlyPressurePlateBlock> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                             createSettingsCodec(),
                             BlockSetType.CODEC.fieldOf("block_set_type").forGetter(block -> block.blockSetType),
@@ -28,7 +28,7 @@ public class PlayerOnlyPressurePlateBlock extends AbstractPressurePlateBlock {
     public MapCodec< PlayerOnlyPressurePlateBlock> getCodec() {
         return CODEC;
     }
-    *///?}
+    //?}
 
     public static final BooleanProperty POWERED = Properties.POWERED;
     private final int delay;

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/terracotta_tiles",
-    "side": "pucks_parity_mod:block/terracotta_tiles",
-    "top": "pucks_parity_mod:block/terracotta_tiles"
-  }
-}

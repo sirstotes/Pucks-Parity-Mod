@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/mossy_brown_terracotta_bricks",
-    "side": "pucks_parity_mod:block/mossy_brown_terracotta_bricks",
-    "top": "pucks_parity_mod:block/mossy_brown_terracotta_bricks"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/cobbled_dripstone",
-    "side": "pucks_parity_mod:block/cobbled_dripstone",
-    "top": "pucks_parity_mod:block/cobbled_dripstone"
-  }
-}

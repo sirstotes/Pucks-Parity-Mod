@@ -1,6 +1,5 @@
 package sirstotes.pucks_parity_mod.mixin;
-//?if >1.20.1 {
-/*import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -60,4 +59,3 @@ public class DungeonFeatureMixin extends Feature<DefaultFeatureConfig> {
         return false;
     }
 }
-*///?}

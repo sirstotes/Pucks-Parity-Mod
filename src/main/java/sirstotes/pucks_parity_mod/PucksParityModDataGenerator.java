@@ -1,21 +1,25 @@
 package sirstotes.pucks_parity_mod;
-import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+//if >1.21.3 {
+/*import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.DoorHinge;
-import net.minecraft.client.data.*;
-import net.minecraft.data.recipe.*;
+import net.minecraft.data.client.*;
+import net.minecraft.data.family.BlockFamily;
+import net.minecraft.data.server.recipe.CookingRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.BlockTags;
@@ -23,13 +27,13 @@ import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.data.family.BlockFamily;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import static sirstotes.pucks_parity_mod.PucksParityModBlocks.*;
-import static sirstotes.pucks_parity_mod.PucksParityModItems.*;
+import static sirstotes.pucks_parity_mod.PucksParityModItems.COPPER_NUGGET;
 
 public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 	@Override
@@ -200,7 +204,6 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.add(QUARTZ_TILE_WALL)
 					.add(PACKED_MUD_WALL)
 					.add(MOSSY_MUD_BRICK_WALL)
-					.add(RESIN_WALL).add(MOSSY_RESIN_BRICK_WALL).add(RESIN_TILE_WALL)
 					.add(POLISHED_PACKED_MUD_WALL)
 					.add(MUD_TILE_WALL)
 					.add(TERRACOTTA_WALL)
@@ -292,19 +295,19 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 
 	private static class RecipeProvider extends FabricRecipeProvider {
 		private RecipeProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-			super(output, registriesFuture);
+			super(output/^?if >1.20.1 {^/, registriesFuture/^?}^/);
 		}
 
 		@Override
-		public net.minecraft.data.recipe.RecipeGenerator getRecipeGenerator(RegistryWrapper.WrapperLookup lookup, RecipeExporter exporter) {
-			return new RecipeGenerator(lookup, exporter) {
-				@Override
-				public void generate() {
-					offerReversibleCompactingRecipesWithCompactingRecipeGroup(RecipeCategory.MISC, COPPER_NUGGET, RecipeCategory.MISC, Items.COPPER_INGOT, "copper_ingot_from_nuggets", "copper_ingot");
-					offerReversibleCompactingRecipesWithCompactingRecipeGroup(RecipeCategory.MISC, Items.POPPED_CHORUS_FRUIT, RecipeCategory.MISC, PURPUR, "purpur_from_chorus_fruit", "purpur");
+		public void generate(Consumer<RecipeJsonProvider> exporter) {
+					ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, SOUL_PUMPKIN).input('A', Blocks.CARVED_PUMPKIN).input('B', Blocks.SOUL_TORCH).pattern("A").pattern("B").criterion("has_carved_pumpkin", conditionsFromItem(Blocks.CARVED_PUMPKIN)).offerTo(exporter);
+					ShapedRecipeJsonBuilder.create(RecipeCategory.BUILDING_BLOCKS, REDSTONE_PUMPKIN).input('A', Blocks.CARVED_PUMPKIN).input('B', Blocks.REDSTONE_TORCH).pattern("A").pattern("B").criterion("has_carved_pumpkin", conditionsFromItem(Blocks.CARVED_PUMPKIN)).offerTo(exporter);
 
-					offerPressurePlateRecipe(PLAYER_PRESSURE_PLATE, Items.COPPER_INGOT);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, COPPER_BARS, 8)
+					offerReversibleCompactingRecipesWithCompactingRecipeGroup(exporter, RecipeCategory.MISC, COPPER_NUGGET, RecipeCategory.MISC, Items.COPPER_INGOT, "copper_ingot_from_nuggets", "copper_ingot");
+					offerReversibleCompactingRecipesWithCompactingRecipeGroup(exporter, RecipeCategory.MISC, Items.POPPED_CHORUS_FRUIT, RecipeCategory.MISC, PURPUR, "purpur_from_chorus_fruit", "purpur");
+
+					offerPressurePlateRecipe(exporter, PLAYER_PRESSURE_PLATE, Items.COPPER_INGOT);
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, COPPER_BARS, 8)
 							.input('#', Items.COPPER_INGOT)
 							.input('X', COPPER_NUGGET)
 							.pattern("#X#")
@@ -312,7 +315,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, COPPER_GATE, 3)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, COPPER_GATE, 3)
 							.input('#', Items.COPPER_INGOT)
 							.input('X', COPPER_NUGGET)
 							.pattern("X#X")
@@ -320,7 +323,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_CHAIN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, COPPER_CHAIN)
 							.input('I', Items.COPPER_INGOT)
 							.input('N', COPPER_NUGGET)
 							.pattern("N")
@@ -329,7 +332,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_LANTERN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, COPPER_LANTERN)
 							.input('#', Items.TORCH)
 							.input('X', COPPER_NUGGET)
 							.pattern("XXX")
@@ -338,7 +341,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_SOUL_LANTERN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, COPPER_SOUL_LANTERN)
 							.input('#', Items.SOUL_TORCH)
 							.input('X', COPPER_NUGGET)
 							.pattern("XXX")
@@ -347,7 +350,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_REDSTONE_LANTERN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, COPPER_REDSTONE_LANTERN)
 							.input('#', Items.REDSTONE_TORCH)
 							.input('X', COPPER_NUGGET)
 							.pattern("XXX")
@@ -364,17 +367,19 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					createTrapdoorRecipe(GOLD_TRAPDOOR, Ingredient.ofItems(Items.GOLD_INGOT))
 							.criterion(hasItem(Items.GOLD_INGOT), conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
+					//? if >1.20.1 {
 					offerGrateRecipe(GOLD_GRATE, Blocks.GOLD_BLOCK);
-					offerBulbRecipe(GOLD_BULB, Blocks.GOLD_BLOCK);
+			offerBulbRecipe(GOLD_BULB, Blocks.GOLD_BLOCK);
 					offerGrateRecipe(IRON_GRATE, Blocks.IRON_BLOCK);
 					offerBulbRecipe(IRON_BULB, Blocks.IRON_BLOCK);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_SLAB, CUT_GOLD, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_STAIRS, CUT_GOLD);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD, Blocks.GOLD_BLOCK, 4);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_STAIRS, Blocks.GOLD_BLOCK, 4);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_SLAB, Blocks.GOLD_BLOCK, 8);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, Blocks.GOLD_BLOCK, 4);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, GOLD_BARS, 8)
+					//?}
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_SLAB, CUT_GOLD, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_STAIRS, CUT_GOLD);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_GOLD, Blocks.GOLD_BLOCK, 4);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_STAIRS, Blocks.GOLD_BLOCK, 4);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_SLAB, Blocks.GOLD_BLOCK, 8);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, Blocks.GOLD_BLOCK, 4);
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, GOLD_BARS, 8)
 							.input('#', Items.GOLD_INGOT)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("#X#")
@@ -382,7 +387,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, GOLD_GATE, 3)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, GOLD_GATE, 3)
 							.input('#', Items.GOLD_INGOT)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("X#X")
@@ -390,7 +395,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_CHAIN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, GOLD_CHAIN)
 							.input('I', Items.GOLD_INGOT)
 							.input('N', Items.GOLD_NUGGET)
 							.pattern("N")
@@ -399,7 +404,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_iron_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_iron_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_LANTERN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, GOLD_LANTERN)
 							.input('#', Items.TORCH)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("XXX")
@@ -408,7 +413,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_SOUL_LANTERN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, GOLD_SOUL_LANTERN)
 							.input('#', Items.SOUL_TORCH)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("XXX")
@@ -417,7 +422,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_REDSTONE_LANTERN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, GOLD_REDSTONE_LANTERN)
 							.input('#', Items.REDSTONE_TORCH)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("XXX")
@@ -426,7 +431,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CUT_GOLD, 4)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CUT_GOLD, 4)
 							.input('X', Blocks.GOLD_BLOCK)
 							.pattern("XX")
 							.pattern("XX")
@@ -438,7 +443,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					createStairsRecipe(CUT_GOLD_STAIRS, Ingredient.ofItems(CUT_GOLD))
 							.criterion("has_cut_gold_block", conditionsFromItem(CUT_GOLD))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, 1)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, 1)
 							.input('X', CUT_GOLD_SLAB)
 							.pattern("X")
 							.pattern("X")
@@ -448,13 +453,13 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					createTrapdoorRecipe(Blocks.IRON_TRAPDOOR, Ingredient.ofItems(Items.IRON_INGOT))
 							.criterion(hasItem(Items.IRON_INGOT), conditionsFromItem(Items.IRON_INGOT))
 							.offerTo(exporter);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_IRON_SLAB, CUT_IRON, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_IRON_STAIRS, CUT_IRON);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_IRON, Blocks.IRON_BLOCK, 4);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_IRON_STAIRS, Blocks.IRON_BLOCK, 4);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_IRON_SLAB, Blocks.IRON_BLOCK, 8);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, Blocks.IRON_BLOCK, 4);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, Blocks.IRON_BARS, 8)
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_IRON_SLAB, CUT_IRON, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_IRON_STAIRS, CUT_IRON);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_IRON, Blocks.IRON_BLOCK, 4);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_IRON_STAIRS, Blocks.IRON_BLOCK, 4);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CUT_IRON_SLAB, Blocks.IRON_BLOCK, 8);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, Blocks.IRON_BLOCK, 4);
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, Blocks.IRON_BARS, 8)
 							.input('#', Items.IRON_INGOT)
 							.input('X', Items.IRON_NUGGET)
 							.pattern("#X#")
@@ -462,7 +467,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_iron_ingot", conditionsFromItem(Items.IRON_INGOT))
 							.criterion("has_iron_nugget", conditionsFromItem(Items.IRON_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, IRON_GATE, 3)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, IRON_GATE, 3)
 							.input('#', Items.IRON_INGOT)
 							.input('X', Items.IRON_NUGGET)
 							.pattern("X#X")
@@ -470,7 +475,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_iron_ingot", conditionsFromItem(Items.IRON_INGOT))
 							.criterion("has_iron_nugget", conditionsFromItem(Items.IRON_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, IRON_REDSTONE_LANTERN)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.DECORATIONS, IRON_REDSTONE_LANTERN)
 							.input('#', Items.REDSTONE_TORCH)
 							.input('X', Items.IRON_NUGGET)
 							.pattern("XXX")
@@ -479,7 +484,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.IRON_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.IRON_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CUT_IRON, 4)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CUT_IRON, 4)
 							.input('X', Blocks.IRON_BLOCK)
 							.pattern("XX")
 							.pattern("XX")
@@ -491,52 +496,54 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					createStairsRecipe(CUT_IRON_STAIRS, Ingredient.ofItems(CUT_IRON))
 							.criterion("has_cut_gold_block", conditionsFromItem(CUT_IRON))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, 1)
+					ShapedRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, 1)
 							.input('X', CUT_IRON_SLAB)
 							.pattern("X")
 							.pattern("X")
 							.criterion("has_cut_gold_block", conditionsFromItem(CUT_IRON))
 							.offerTo(exporter);
 
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_WALL, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_TILES, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_TILE_SLAB, Blocks.STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_TILE_STAIRS, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_TILE_WALL, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_STONE_TILES, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_TILE_SLAB, STONE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_TILE_STAIRS, STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_TILE_WALL, STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_STONE_TILES, STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_SLAB, Blocks.STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_STAIRS, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_WALL, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_SLAB, POLISHED_STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_STAIRS, POLISHED_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_WALL, POLISHED_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, Blocks.STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, Blocks.STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, Blocks.STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_STONE_BRICKS, STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_STONE_BRICKS, POLISHED_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, POLISHED_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, POLISHED_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_BRICKS, Blocks.TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_WALL, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_TILES, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_TILE_SLAB, Blocks.STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_TILE_STAIRS, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_TILE_WALL, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_STONE_TILES, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_TILE_SLAB, STONE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_TILE_STAIRS, STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_TILE_WALL, STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_STONE_TILES, STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_SLAB, Blocks.STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_STAIRS, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_WALL, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_SLAB, POLISHED_STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_STAIRS, POLISHED_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_STONE_WALL, POLISHED_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, Blocks.STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, Blocks.STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, Blocks.STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_STONE_BRICKS, STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_STONE_BRICKS, POLISHED_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, STONE_PILLAR, POLISHED_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_STONE_PILLAR, POLISHED_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_BRICKS, Blocks.TUFF, 1);
+					//? if >1.20.1
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_BRICKS, Blocks.TUFF_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILES, Blocks.TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_SLAB, Blocks.TUFF, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_STAIRS, Blocks.TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_WALL, Blocks.TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_TILES, Blocks.TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_SLAB, TUFF_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_STAIRS, TUFF_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_WALL, TUFF_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_TILES, TUFF_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, Blocks.TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_TILES, Blocks.TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_SLAB, Blocks.TUFF, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_STAIRS, Blocks.TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_WALL, Blocks.TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_TILES, Blocks.TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_SLAB, TUFF_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_STAIRS, TUFF_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_TILE_WALL, TUFF_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_TUFF_TILES, TUFF_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, Blocks.TUFF, 1);
+					//? if >1.20.1 {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_TUFF_BRICKS, Blocks.TUFF_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, Blocks.TUFF_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_TUFF, Blocks.TUFF_BRICKS, 1);
@@ -545,1428 +552,1393 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_TUFF_BRICKS, Blocks.POLISHED_TUFF, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, Blocks.POLISHED_TUFF, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_TUFF, Blocks.POLISHED_TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, TUFF_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_SLAB, Blocks.DEEPSLATE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_STAIRS, Blocks.DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_WALL, Blocks.DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.DEEPSLATE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.DEEPSLATE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.DEEPSLATE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.DEEPSLATE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.POLISHED_DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.POLISHED_DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_SLAB, Blocks.GRANITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_STAIRS, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_WALL, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_BRICKS, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_SLAB, GRANITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_STAIRS, GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_WALL, GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_BRICKS, GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_TILES, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_SLAB, Blocks.GRANITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_STAIRS, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_WALL, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_TILES, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_SLAB, GRANITE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_STAIRS, GRANITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_WALL, GRANITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_TILES, GRANITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRANITE_WALL, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRANITE_WALL, Blocks.POLISHED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, Blocks.GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, GRANITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, GRANITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, GRANITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, Blocks.POLISHED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, Blocks.POLISHED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, Blocks.POLISHED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICKS, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_SLAB, Blocks.ANDESITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_STAIRS, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_WALL, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_BRICKS, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_SLAB, ANDESITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_STAIRS, ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_WALL, ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_BRICKS, ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILES, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_SLAB, Blocks.ANDESITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_STAIRS, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_WALL, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_TILES, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_SLAB, ANDESITE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_STAIRS, ANDESITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_WALL, ANDESITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_TILES, ANDESITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ANDESITE_WALL, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ANDESITE_WALL, Blocks.POLISHED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, Blocks.ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, ANDESITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, ANDESITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, ANDESITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, Blocks.POLISHED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, Blocks.POLISHED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, Blocks.POLISHED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_SLAB, Blocks.DIORITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_STAIRS, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_WALL, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_BRICKS, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_SLAB, DIORITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_STAIRS, DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_WALL, DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_BRICKS, DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_TILES, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_SLAB, Blocks.DIORITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_STAIRS, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_WALL, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_TILES, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_SLAB, DIORITE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_STAIRS, DIORITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_WALL, DIORITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_TILES, DIORITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DIORITE_WALL, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DIORITE_WALL, Blocks.POLISHED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, Blocks.DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, DIORITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, DIORITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, DIORITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, Blocks.POLISHED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, Blocks.POLISHED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, Blocks.POLISHED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.BLACKSTONE_SLAB, Blocks.BLACKSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILES, Blocks.BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_SLAB, Blocks.BLACKSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_STAIRS, Blocks.BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_WALL, Blocks.BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACKSTONE_TILES, Blocks.BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_SLAB, BLACKSTONE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_STAIRS, BLACKSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_WALL, BLACKSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACKSTONE_TILES, BLACKSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, Blocks.BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, Blocks.BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, BLACKSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, BLACKSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_SLAB, Blocks.END_STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_STAIRS, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_WALL, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_BRICKS, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_BRICKS, Blocks.END_STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_TILES, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_SLAB, Blocks.END_STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_STAIRS, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_WALL, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_TILES, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_SLAB, END_STONE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_STAIRS, END_STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_WALL, END_STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_TILES, END_STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_SLAB, Blocks.END_STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_STAIRS, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_WALL, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_SLAB, POLISHED_END_STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_STAIRS, POLISHED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_WALL, POLISHED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, Blocks.END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, Blocks.END_STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, Blocks.END_STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, Blocks.END_STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, END_STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, END_STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, END_STONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, POLISHED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, POLISHED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, POLISHED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_SLAB, PURPUR, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_STAIRS, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_WALL, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_TILES, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_SLAB, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_STAIRS, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_WALL, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_TILES, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_WALL, PURPUR_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_TILES, PURPUR_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_SLAB, PURPUR, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_STAIRS, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_WALL, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_SLAB, POLISHED_PURPUR, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_STAIRS, POLISHED_PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_WALL, POLISHED_PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, PURPUR_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, POLISHED_PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, POLISHED_PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, POLISHED_PURPUR, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICKS, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_SLAB, Blocks.SANDSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_STAIRS, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_WALL, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_BRICKS, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_SLAB, SANDSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_STAIRS, SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_WALL, SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_BRICKS, SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILES, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_SLAB, Blocks.SANDSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_STAIRS, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_WALL, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_TILES, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_SLAB, SANDSTONE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_STAIRS, SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_WALL, SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_TILES, SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, Blocks.SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_SANDSTONE, SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_SANDSTONE, SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, Blocks.CUT_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, Blocks.CUT_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICKS, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_SLAB, Blocks.RED_SANDSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_STAIRS, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_WALL, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_BRICKS, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_SLAB, RED_SANDSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_STAIRS, RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_WALL, RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_BRICKS, RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILES, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_SLAB, Blocks.RED_SANDSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_STAIRS, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_WALL, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_TILES, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_SLAB, RED_SANDSTONE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_STAIRS, RED_SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_WALL, RED_SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_TILES, RED_SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_RED_SANDSTONE, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, Blocks.RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_RED_SANDSTONE, RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_RED_SANDSTONE, RED_SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, RED_SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, RED_SANDSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, Blocks.CUT_RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, Blocks.CUT_RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_BRICK_WALL, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_BRICKS, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_BRICK_WALL, Blocks.PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_BRICKS, Blocks.PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILES, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_SLAB, Blocks.PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_STAIRS, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_WALL, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_TILES, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_SLAB, PRISMARINE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_STAIRS, PRISMARINE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_WALL, PRISMARINE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_TILES, PRISMARINE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_SLAB, Blocks.PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_STAIRS, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_WALL, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_SLAB, POLISHED_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_STAIRS, POLISHED_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_WALL, POLISHED_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, Blocks.PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, Blocks.PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, Blocks.PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, Blocks.PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, PRISMARINE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, PRISMARINE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, PRISMARINE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, POLISHED_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, POLISHED_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, POLISHED_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_WALL, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICKS, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_SLAB, SMOOTH_DARK_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_WALL, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_BRICKS, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_SLAB, DARK_PRISMARINE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_STAIRS, DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_WALL, DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_BRICKS, DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_TILE_WALL, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_TILES, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_WALL, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_SLAB, POLISHED_DARK_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_STAIRS, POLISHED_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_WALL, POLISHED_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, SMOOTH_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, POLISHED_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, POLISHED_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, POLISHED_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, Blocks.DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, Blocks.DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, Blocks.DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_SLAB, HARDENED_NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_STAIRS, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_WALL, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.NETHER_BRICKS, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.NETHER_BRICK_SLAB, HARDENED_NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.NETHER_BRICK_STAIRS, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_BRICK_WALL, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CRACKED_NETHER_BRICKS, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_BRICK_WALL, Blocks.NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_TILES, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_SLAB, HARDENED_NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_STAIRS, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_WALL, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_NETHER_TILES, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_SLAB, NETHER_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_STAIRS, NETHER_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_WALL, NETHER_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_NETHER_TILES, NETHER_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_SLAB, HARDENED_NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_STAIRS, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_WALL, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_SLAB, POLISHED_HARDENED_NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_STAIRS, POLISHED_HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_WALL, POLISHED_HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, Blocks.NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, Blocks.NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, Blocks.NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, NETHER_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, NETHER_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, NETHER_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, POLISHED_HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, POLISHED_HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, POLISHED_HARDENED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SMOOTH_BASALT_SLAB, Blocks.SMOOTH_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SMOOTH_BASALT_STAIRS, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SMOOTH_BASALT_WALL, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_BRICKS, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_SLAB, Blocks.SMOOTH_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_STAIRS, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_WALL, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_BRICKS, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_SLAB, BASALT_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_STAIRS, BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_WALL, BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_BRICKS, BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_TILES, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_SLAB, Blocks.SMOOTH_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_STAIRS, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_WALL, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_TILES, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_SLAB, BASALT_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_STAIRS, BASALT_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_WALL, BASALT_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_TILES, BASALT_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_SLAB, Blocks.SMOOTH_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_STAIRS, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_WALL, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_SLAB, POLISHED_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_STAIRS, POLISHED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_WALL, POLISHED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, Blocks.SMOOTH_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.POLISHED_BASALT, BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, BASALT_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.POLISHED_BASALT, BASALT_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, BASALT_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, POLISHED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.POLISHED_BASALT, POLISHED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, POLISHED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_SLAB, Blocks.CALCITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_STAIRS, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_WALL, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICKS, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_SLAB, Blocks.CALCITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_STAIRS, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_WALL, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_BRICKS, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_SLAB, CALCITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_STAIRS, CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_WALL, CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_BRICKS, CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_TILES, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_SLAB, Blocks.CALCITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_STAIRS, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_WALL, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_TILES, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_SLAB, CALCITE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_STAIRS, CALCITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_WALL, CALCITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_TILES, CALCITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_SLAB, Blocks.CALCITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_STAIRS, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_WALL, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_SLAB, POLISHED_CALCITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_STAIRS, POLISHED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_WALL, POLISHED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, Blocks.CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, CALCITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, CALCITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, CALCITE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, POLISHED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, POLISHED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, POLISHED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_WALL, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICKS, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_WALL, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_BRICKS, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_SLAB, DRIPSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_STAIRS, DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_WALL, DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_BRICKS, DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILES, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_WALL, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_TILES, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_SLAB, DRIPSTONE_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_STAIRS, DRIPSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_WALL, DRIPSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_TILES, DRIPSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_WALL, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_SLAB, POLISHED_DRIPSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_STAIRS, POLISHED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_WALL, POLISHED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, Blocks.DRIPSTONE_BLOCK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, DRIPSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, DRIPSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, DRIPSTONE_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, POLISHED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, POLISHED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, POLISHED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_SLAB, Blocks.PACKED_MUD, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_STAIRS, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_WALL, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_BRICKS, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_BRICKS, Blocks.MUD_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILES, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_SLAB, Blocks.PACKED_MUD, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_STAIRS, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_WALL, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_TILES, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_SLAB, MUD_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_STAIRS, MUD_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MUD_TILE_WALL, MUD_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_TILES, MUD_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_SLAB, Blocks.PACKED_MUD, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_STAIRS, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_WALL, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_SLAB, POLISHED_PACKED_MUD, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_STAIRS, POLISHED_PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_WALL, POLISHED_PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, Blocks.PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, Blocks.MUD_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, Blocks.MUD_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, Blocks.MUD_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, MUD_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, MUD_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, MUD_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, POLISHED_PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, POLISHED_PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, POLISHED_PACKED_MUD, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_SLAB, RESIN, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_STAIRS, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_WALL, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN, RESIN_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILES, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_SLAB, RESIN, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_STAIRS, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_WALL, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_TILES, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_SLAB, RESIN_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_STAIRS, RESIN_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_WALL, RESIN_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_TILES, RESIN_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_SLAB, RESIN, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_STAIRS, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_WALL, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_SLAB, POLISHED_RESIN, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_STAIRS, POLISHED_RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RESIN_WALL, POLISHED_RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, RESIN_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, RESIN_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN, RESIN_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, RESIN_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, RESIN_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN, POLISHED_RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_PILLAR, POLISHED_RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RESIN_PILLAR, POLISHED_RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICK_SLAB, MOSSY_RESIN_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICK_STAIRS, MOSSY_RESIN_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICK_WALL, MOSSY_RESIN_BRICKS, 1);
-					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(Blocks.RESIN_BLOCK), RecipeCategory.BUILDING_BLOCKS, RESIN, 1.0F, 200).criterion("has_resin_block", conditionsFromItem(Blocks.RESIN_BLOCK)).offerTo(exporter);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_SLAB, Blocks.TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_STAIRS, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_WALL, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.BRICKS, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.BRICK_SLAB, Blocks.TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.BRICK_STAIRS, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, Blocks.BRICK_WALL, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BRICKS, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BRICKS, Blocks.BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILES, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_SLAB, Blocks.TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_STAIRS, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_WALL, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_TERRACOTTA_TILES, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_SLAB, TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_STAIRS, TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_WALL, TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_TERRACOTTA_TILES, TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_SLAB, Blocks.TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_STAIRS, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_WALL, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_SLAB, POLISHED_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_STAIRS, POLISHED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_WALL, POLISHED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, Blocks.TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, Blocks.BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, Blocks.BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, Blocks.BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, POLISHED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, POLISHED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, POLISHED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_SLAB, Blocks.RED_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_STAIRS, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_WALL, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICKS, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_SLAB, Blocks.RED_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_STAIRS, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_WALL, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_BRICKS, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_SLAB, RED_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_STAIRS, RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_WALL, RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_BRICKS, RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILES, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_SLAB, Blocks.RED_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_STAIRS, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_WALL, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_TILES, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_SLAB, RED_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_STAIRS, RED_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_WALL, RED_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_TILES, RED_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_SLAB, Blocks.RED_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_STAIRS, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_WALL, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_SLAB, POLISHED_RED_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_STAIRS, POLISHED_RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_WALL, POLISHED_RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, Blocks.RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, RED_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, POLISHED_RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, POLISHED_RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, POLISHED_RED_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_WALL, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICKS, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_WALL, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_BRICKS, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_SLAB, ORANGE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_STAIRS, ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_WALL, ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_BRICKS, ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILES, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_WALL, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_TILES, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_SLAB, ORANGE_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_STAIRS, ORANGE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_WALL, ORANGE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_TILES, ORANGE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_WALL, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_SLAB, POLISHED_ORANGE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_STAIRS, POLISHED_ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_WALL, POLISHED_ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, Blocks.ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, ORANGE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, POLISHED_ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, POLISHED_ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, POLISHED_ORANGE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_WALL, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICKS, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_WALL, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_BRICKS, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_SLAB, YELLOW_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_STAIRS, YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_WALL, YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_BRICKS, YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILES, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_WALL, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_TILES, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_SLAB, YELLOW_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_STAIRS, YELLOW_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_WALL, YELLOW_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_TILES, YELLOW_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_WALL, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_SLAB, POLISHED_YELLOW_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_STAIRS, POLISHED_YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_WALL, POLISHED_YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, Blocks.YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, YELLOW_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, POLISHED_YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, POLISHED_YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, POLISHED_YELLOW_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_SLAB, Blocks.LIME_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_STAIRS, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_WALL, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICKS, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_SLAB, Blocks.LIME_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_STAIRS, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_WALL, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_BRICKS, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_SLAB, LIME_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_STAIRS, LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_WALL, LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_BRICKS, LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILES, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_SLAB, Blocks.LIME_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_STAIRS, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_WALL, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_TILES, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_SLAB, LIME_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_STAIRS, LIME_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_WALL, LIME_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_TILES, LIME_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_SLAB, Blocks.LIME_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_STAIRS, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_WALL, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_SLAB, POLISHED_LIME_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_STAIRS, POLISHED_LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_WALL, POLISHED_LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, Blocks.LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, LIME_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, POLISHED_LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, POLISHED_LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, POLISHED_LIME_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_SLAB, Blocks.GREEN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_WALL, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICKS, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_SLAB, Blocks.GREEN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_WALL, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_BRICKS, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_SLAB, GREEN_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_STAIRS, GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_WALL, GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_BRICKS, GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILES, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_SLAB, Blocks.GREEN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_WALL, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_TILES, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_SLAB, GREEN_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_STAIRS, GREEN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_WALL, GREEN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_TILES, GREEN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_SLAB, Blocks.GREEN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_WALL, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_SLAB, POLISHED_GREEN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_STAIRS, POLISHED_GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_WALL, POLISHED_GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, Blocks.GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, GREEN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, POLISHED_GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, POLISHED_GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, POLISHED_GREEN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_SLAB, Blocks.CYAN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_WALL, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICKS, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_SLAB, Blocks.CYAN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_WALL, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_BRICKS, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_SLAB, CYAN_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_STAIRS, CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_WALL, CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_BRICKS, CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILES, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_SLAB, Blocks.CYAN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_WALL, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_TILES, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_SLAB, CYAN_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_STAIRS, CYAN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_WALL, CYAN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_TILES, CYAN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_SLAB, Blocks.CYAN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_WALL, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_SLAB, POLISHED_CYAN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_STAIRS, POLISHED_CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_WALL, POLISHED_CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, Blocks.CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, CYAN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, POLISHED_CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, POLISHED_CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, POLISHED_CYAN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_SLAB, LIGHT_BLUE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_STAIRS, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_WALL, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_BRICKS, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILES, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_TILES, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_SLAB, LIGHT_BLUE_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_STAIRS, LIGHT_BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_WALL, LIGHT_BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_TILES, LIGHT_BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_SLAB, POLISHED_LIGHT_BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_STAIRS, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_WALL, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, LIGHT_BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_SLAB, Blocks.BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_WALL, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICKS, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_SLAB, Blocks.BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_WALL, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_BRICKS, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_SLAB, BLUE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_STAIRS, BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_WALL, BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_BRICKS, BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILES, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_SLAB, Blocks.BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_WALL, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_TILES, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_SLAB, BLUE_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_STAIRS, BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_WALL, BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_TILES, BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_SLAB, Blocks.BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_WALL, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_SLAB, POLISHED_BLUE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_STAIRS, POLISHED_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_WALL, POLISHED_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, Blocks.BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, POLISHED_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, POLISHED_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, POLISHED_BLUE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_WALL, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICKS, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_WALL, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_BRICKS, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_SLAB, PURPLE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_STAIRS, PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_WALL, PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_BRICKS, PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILES, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_WALL, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_TILES, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_SLAB, PURPLE_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_STAIRS, PURPLE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_WALL, PURPLE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_TILES, PURPLE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_WALL, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_SLAB, POLISHED_PURPLE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_STAIRS, POLISHED_PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_WALL, POLISHED_PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, Blocks.PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, PURPLE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, POLISHED_PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, POLISHED_PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, POLISHED_PURPLE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICKS, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_BRICKS, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_SLAB, MAGENTA_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_STAIRS, MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_WALL, MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_BRICKS, MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILES, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_TILES, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_SLAB, MAGENTA_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_STAIRS, MAGENTA_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_WALL, MAGENTA_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_TILES, MAGENTA_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_SLAB, POLISHED_MAGENTA_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_STAIRS, POLISHED_MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_WALL, POLISHED_MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, Blocks.MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, MAGENTA_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, POLISHED_MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, POLISHED_MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, POLISHED_MAGENTA_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_SLAB, Blocks.PINK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_STAIRS, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_WALL, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICKS, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_SLAB, Blocks.PINK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_STAIRS, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_WALL, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_BRICKS, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_SLAB, PINK_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_STAIRS, PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_WALL, PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_BRICKS, PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILES, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_SLAB, Blocks.PINK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_STAIRS, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_WALL, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_TILES, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_SLAB, PINK_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_STAIRS, PINK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_WALL, PINK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_TILES, PINK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_SLAB, Blocks.PINK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_STAIRS, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_WALL, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_SLAB, POLISHED_PINK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_STAIRS, POLISHED_PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_WALL, POLISHED_PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, Blocks.PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, PINK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, POLISHED_PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, POLISHED_PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, POLISHED_PINK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_SLAB, Blocks.BROWN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_WALL, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICKS, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_SLAB, Blocks.BROWN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_WALL, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_BRICKS, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_SLAB, BROWN_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_STAIRS, BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_WALL, BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_BRICKS, BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILES, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_SLAB, Blocks.BROWN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_WALL, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_TILES, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_SLAB, BROWN_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_STAIRS, BROWN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_WALL, BROWN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_TILES, BROWN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_SLAB, Blocks.BROWN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_WALL, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_SLAB, POLISHED_BROWN_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_STAIRS, POLISHED_BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_WALL, POLISHED_BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, Blocks.BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, BROWN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, POLISHED_BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, POLISHED_BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, POLISHED_BROWN_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_SLAB, Blocks.WHITE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_WALL, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICKS, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_SLAB, Blocks.WHITE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_WALL, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_BRICKS, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_SLAB, WHITE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_STAIRS, WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_WALL, WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_BRICKS, WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILES, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_SLAB, Blocks.WHITE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_WALL, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_TILES, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_SLAB, WHITE_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_STAIRS, WHITE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_WALL, WHITE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_TILES, WHITE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_SLAB, Blocks.WHITE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_WALL, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_SLAB, POLISHED_WHITE_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_STAIRS, POLISHED_WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_WALL, POLISHED_WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, Blocks.WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, WHITE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, POLISHED_WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, POLISHED_WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, POLISHED_WHITE_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_SLAB, LIGHT_GRAY_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_STAIRS, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_WALL, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_BRICKS, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILES, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_TILES, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_SLAB, LIGHT_GRAY_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_STAIRS, LIGHT_GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_WALL, LIGHT_GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_TILES, LIGHT_GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_SLAB, POLISHED_LIGHT_GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_STAIRS, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_WALL, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, LIGHT_GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_SLAB, Blocks.GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_WALL, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICKS, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_SLAB, Blocks.GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_WALL, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_BRICKS, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_SLAB, GRAY_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_STAIRS, GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_WALL, GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_BRICKS, GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILES, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_SLAB, Blocks.GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_WALL, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_TILES, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_SLAB, GRAY_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_STAIRS, GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_WALL, GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_TILES, GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_SLAB, Blocks.GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_WALL, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_SLAB, POLISHED_GRAY_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_STAIRS, POLISHED_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_WALL, POLISHED_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, Blocks.GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, POLISHED_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, POLISHED_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, POLISHED_GRAY_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_SLAB, Blocks.BLACK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_WALL, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICKS, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_SLAB, Blocks.BLACK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_WALL, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_BRICKS, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_SLAB, BLACK_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_STAIRS, BLACK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_WALL, BLACK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_BRICKS, BLACK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILES, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_SLAB, Blocks.BLACK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_WALL, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_TILES, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_SLAB, BLACK_TERRACOTTA_TILES, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_STAIRS, BLACK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_WALL, BLACK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_TILES, BLACK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_SLAB, Blocks.BLACK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_WALL, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_SLAB, POLISHED_BLACK_TERRACOTTA, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_STAIRS, POLISHED_BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_WALL, POLISHED_BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, Blocks.BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, BLACK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, BLACK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_TILES, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, POLISHED_BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, POLISHED_BLACK_TERRACOTTA, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, POLISHED_BLACK_TERRACOTTA, 1);
+					//?}
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TUFF_PILLAR, TUFF_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_SLAB, Blocks.DEEPSLATE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_STAIRS, Blocks.DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_WALL, Blocks.DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.DEEPSLATE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.DEEPSLATE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.DEEPSLATE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.DEEPSLATE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DEEPSLATE_PILLAR, Blocks.POLISHED_DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DEEPSLATE_PILLAR, Blocks.POLISHED_DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICKS, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_SLAB, Blocks.GRANITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_STAIRS, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_WALL, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_BRICKS, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_SLAB, GRANITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_STAIRS, GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_BRICK_WALL, GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_BRICKS, GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_TILES, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_SLAB, Blocks.GRANITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_STAIRS, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_WALL, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_TILES, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_SLAB, GRANITE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_STAIRS, GRANITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_TILE_WALL, GRANITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRANITE_TILES, GRANITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRANITE_WALL, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRANITE_WALL, Blocks.POLISHED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, Blocks.GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, GRANITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, GRANITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, GRANITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE, Blocks.POLISHED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRANITE_PILLAR, Blocks.POLISHED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRANITE_PILLAR, Blocks.POLISHED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICKS, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_SLAB, Blocks.ANDESITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_STAIRS, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_WALL, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_BRICKS, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_SLAB, ANDESITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_STAIRS, ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_BRICK_WALL, ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_BRICKS, ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILES, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_SLAB, Blocks.ANDESITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_STAIRS, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_WALL, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_TILES, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_SLAB, ANDESITE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_STAIRS, ANDESITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_TILE_WALL, ANDESITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ANDESITE_TILES, ANDESITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ANDESITE_WALL, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ANDESITE_WALL, Blocks.POLISHED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, Blocks.ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, ANDESITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, ANDESITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, ANDESITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE, Blocks.POLISHED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ANDESITE_PILLAR, Blocks.POLISHED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ANDESITE_PILLAR, Blocks.POLISHED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICKS, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_SLAB, Blocks.DIORITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_STAIRS, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_WALL, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_BRICKS, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_SLAB, DIORITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_STAIRS, DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_BRICK_WALL, DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_BRICKS, DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_TILES, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_SLAB, Blocks.DIORITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_STAIRS, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_WALL, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_TILES, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_SLAB, DIORITE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_STAIRS, DIORITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_TILE_WALL, DIORITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DIORITE_TILES, DIORITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DIORITE_WALL, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DIORITE_WALL, Blocks.POLISHED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, Blocks.DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, DIORITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, DIORITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, DIORITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE, Blocks.POLISHED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DIORITE_PILLAR, Blocks.POLISHED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DIORITE_PILLAR, Blocks.POLISHED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.BLACKSTONE_SLAB, Blocks.BLACKSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILES, Blocks.BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_SLAB, Blocks.BLACKSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_STAIRS, Blocks.BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_WALL, Blocks.BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACKSTONE_TILES, Blocks.BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_SLAB, BLACKSTONE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_STAIRS, BLACKSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_TILE_WALL, BLACKSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACKSTONE_TILES, BLACKSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, Blocks.BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, Blocks.BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, BLACKSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, BLACKSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACKSTONE_PILLAR, Blocks.POLISHED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_SLAB, Blocks.END_STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_STAIRS, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_WALL, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_BRICKS, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_BRICKS, Blocks.END_STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_TILES, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_SLAB, Blocks.END_STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_STAIRS, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_WALL, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_TILES, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_SLAB, END_STONE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_STAIRS, END_STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_TILE_WALL, END_STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_END_STONE_TILES, END_STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_SLAB, Blocks.END_STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_STAIRS, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_WALL, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_SLAB, POLISHED_END_STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_STAIRS, POLISHED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_END_STONE_WALL, POLISHED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, Blocks.END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, Blocks.END_STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, Blocks.END_STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, Blocks.END_STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, END_STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, END_STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, END_STONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, POLISHED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, POLISHED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, POLISHED_END_STONE, 1);
+					//offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_SLAB, PURPUR, 2);
+					//offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_STAIRS, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_WALL, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILES, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_SLAB, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_STAIRS, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_WALL, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_TILES, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_TILE_WALL, PURPUR_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_TILES, PURPUR_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_SLAB, PURPUR, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_STAIRS, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_WALL, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_SLAB, POLISHED_PURPUR, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_STAIRS, POLISHED_PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPUR_WALL, POLISHED_PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, PURPUR_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, PURPUR_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, PURPUR_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR, POLISHED_PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPUR_PILLAR, POLISHED_PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPUR_PILLAR, POLISHED_PURPUR, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICKS, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_SLAB, Blocks.SANDSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_STAIRS, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_WALL, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_BRICKS, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_SLAB, SANDSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_STAIRS, SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_BRICK_WALL, SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_BRICKS, SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILES, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_SLAB, Blocks.SANDSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_STAIRS, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_WALL, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_TILES, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_SLAB, SANDSTONE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_STAIRS, SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_TILE_WALL, SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_SANDSTONE_TILES, SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, Blocks.SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_SANDSTONE, SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_SANDSTONE, SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SANDSTONE_PILLAR, Blocks.CUT_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_SANDSTONE_PILLAR, Blocks.CUT_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICKS, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_SLAB, Blocks.RED_SANDSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_STAIRS, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_WALL, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_BRICKS, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_SLAB, RED_SANDSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_STAIRS, RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_BRICK_WALL, RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_BRICKS, RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILES, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_SLAB, Blocks.RED_SANDSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_STAIRS, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_WALL, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_TILES, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_SLAB, RED_SANDSTONE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_STAIRS, RED_SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_TILE_WALL, RED_SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_SANDSTONE_TILES, RED_SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_RED_SANDSTONE, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, Blocks.RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_RED_SANDSTONE, RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_RED_SANDSTONE, RED_SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, RED_SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, RED_SANDSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_SANDSTONE_PILLAR, Blocks.CUT_RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_SANDSTONE_PILLAR, Blocks.CUT_RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_BRICK_WALL, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_BRICKS, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_BRICK_WALL, Blocks.PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_BRICKS, Blocks.PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILES, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_SLAB, Blocks.PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_STAIRS, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_WALL, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_TILES, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_SLAB, PRISMARINE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_STAIRS, PRISMARINE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_TILE_WALL, PRISMARINE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PRISMARINE_TILES, PRISMARINE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_SLAB, Blocks.PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_STAIRS, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_WALL, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_SLAB, POLISHED_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_STAIRS, POLISHED_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PRISMARINE_WALL, POLISHED_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, Blocks.PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, Blocks.PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, Blocks.PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, Blocks.PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, PRISMARINE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, PRISMARINE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, PRISMARINE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE, POLISHED_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PRISMARINE_PILLAR, POLISHED_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PRISMARINE_PILLAR, POLISHED_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_DARK_PRISMARINE_WALL, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICKS, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_SLAB, SMOOTH_DARK_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_WALL, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_BRICKS, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_SLAB, DARK_PRISMARINE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_STAIRS, DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_BRICK_WALL, DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_BRICKS, DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_TILE_WALL, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DARK_PRISMARINE_TILES, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_SLAB, SMOOTH_DARK_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_STAIRS, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_WALL, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_SLAB, POLISHED_DARK_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_STAIRS, POLISHED_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DARK_PRISMARINE_WALL, POLISHED_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, SMOOTH_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, POLISHED_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, POLISHED_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, POLISHED_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE, Blocks.DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_PILLAR, Blocks.DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DARK_PRISMARINE_PILLAR, Blocks.DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_SLAB, HARDENED_NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_STAIRS, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, HARDENED_NETHERRACK_WALL, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.NETHER_BRICKS, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.NETHER_BRICK_SLAB, HARDENED_NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.NETHER_BRICK_STAIRS, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_BRICK_WALL, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CRACKED_NETHER_BRICKS, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_BRICK_WALL, Blocks.NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_TILES, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_SLAB, HARDENED_NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_STAIRS, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_WALL, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_NETHER_TILES, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_SLAB, NETHER_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_STAIRS, NETHER_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_TILE_WALL, NETHER_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_NETHER_TILES, NETHER_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_SLAB, HARDENED_NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_STAIRS, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_WALL, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_SLAB, POLISHED_HARDENED_NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_STAIRS, POLISHED_HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_HARDENED_NETHERRACK_WALL, POLISHED_HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, Blocks.NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, Blocks.NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, Blocks.NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, NETHER_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, NETHER_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, NETHER_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.CHISELED_NETHER_BRICKS, POLISHED_HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHER_PILLAR, POLISHED_HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_NETHER_PILLAR, POLISHED_HARDENED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_BASALT_SLAB, Blocks.SMOOTH_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_BASALT_STAIRS, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SMOOTH_BASALT_WALL, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_BRICKS, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_SLAB, Blocks.SMOOTH_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_STAIRS, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_WALL, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_BRICKS, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_SLAB, BASALT_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_STAIRS, BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_BRICK_WALL, BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_BRICKS, BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_TILES, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_SLAB, Blocks.SMOOTH_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_STAIRS, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_WALL, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_TILES, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_SLAB, BASALT_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_STAIRS, BASALT_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BASALT_TILE_WALL, BASALT_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BASALT_TILES, BASALT_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_SLAB, Blocks.SMOOTH_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_STAIRS, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_WALL, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_SLAB, POLISHED_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_STAIRS, POLISHED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BASALT_WALL, POLISHED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, Blocks.SMOOTH_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.POLISHED_BASALT, BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, BASALT_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.POLISHED_BASALT, BASALT_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, BASALT_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT, POLISHED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.POLISHED_BASALT, POLISHED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BASALT_PILLAR, POLISHED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_SLAB, Blocks.CALCITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_STAIRS, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_WALL, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICKS, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_SLAB, Blocks.CALCITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_STAIRS, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_WALL, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_BRICKS, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_SLAB, CALCITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_STAIRS, CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_BRICK_WALL, CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_BRICKS, CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_TILES, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_SLAB, Blocks.CALCITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_STAIRS, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_WALL, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_TILES, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_SLAB, CALCITE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_STAIRS, CALCITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_TILE_WALL, CALCITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CALCITE_TILES, CALCITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_SLAB, Blocks.CALCITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_STAIRS, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_WALL, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_SLAB, POLISHED_CALCITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_STAIRS, POLISHED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CALCITE_WALL, POLISHED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, Blocks.CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, CALCITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, CALCITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, CALCITE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE, POLISHED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CALCITE_PILLAR, POLISHED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CALCITE_PILLAR, POLISHED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_WALL, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICKS, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_WALL, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_BRICKS, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_SLAB, DRIPSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_STAIRS, DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_BRICK_WALL, DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_BRICKS, DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILES, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_WALL, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_TILES, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_SLAB, DRIPSTONE_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_STAIRS, DRIPSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_TILE_WALL, DRIPSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_DRIPSTONE_TILES, DRIPSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_SLAB, Blocks.DRIPSTONE_BLOCK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_STAIRS, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_WALL, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_SLAB, POLISHED_DRIPSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_STAIRS, POLISHED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_DRIPSTONE_WALL, POLISHED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, Blocks.DRIPSTONE_BLOCK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, DRIPSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, DRIPSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, DRIPSTONE_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE, POLISHED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DRIPSTONE_PILLAR, POLISHED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_DRIPSTONE_PILLAR, POLISHED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_SLAB, Blocks.PACKED_MUD, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_STAIRS, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_WALL, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_BRICKS, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_BRICKS, Blocks.MUD_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MUD_TILES, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MUD_TILE_SLAB, Blocks.PACKED_MUD, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MUD_TILE_STAIRS, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MUD_TILE_WALL, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_TILES, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MUD_TILE_SLAB, MUD_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MUD_TILE_STAIRS, MUD_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MUD_TILE_WALL, MUD_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MUD_TILES, MUD_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_SLAB, Blocks.PACKED_MUD, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_STAIRS, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_WALL, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_SLAB, POLISHED_PACKED_MUD, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_STAIRS, POLISHED_PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PACKED_MUD_WALL, POLISHED_PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, Blocks.PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, Blocks.MUD_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, Blocks.MUD_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, Blocks.MUD_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, MUD_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, MUD_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, MUD_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PACKED_MUD, POLISHED_PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PACKED_MUD_PILLAR, POLISHED_PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MUD_PILLAR, POLISHED_PACKED_MUD, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_SLAB, Blocks.TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_STAIRS, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_WALL, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.BRICKS, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.BRICK_SLAB, Blocks.TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.BRICK_STAIRS, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, Blocks.BRICK_WALL, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BRICKS, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BRICKS, Blocks.BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILES, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_SLAB, Blocks.TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_STAIRS, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_WALL, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_TERRACOTTA_TILES, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_SLAB, TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_STAIRS, TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_TILE_WALL, TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_TERRACOTTA_TILES, TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_SLAB, Blocks.TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_STAIRS, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_WALL, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_SLAB, POLISHED_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_STAIRS, POLISHED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_TERRACOTTA_WALL, POLISHED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, Blocks.TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, Blocks.BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, Blocks.BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, Blocks.BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA, POLISHED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, TERRACOTTA_PILLAR, POLISHED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_TERRACOTTA_PILLAR, POLISHED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_SLAB, Blocks.RED_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_STAIRS, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_WALL, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICKS, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_SLAB, Blocks.RED_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_STAIRS, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_WALL, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_BRICKS, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_SLAB, RED_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_STAIRS, RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_BRICK_WALL, RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_BRICKS, RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILES, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_SLAB, Blocks.RED_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_STAIRS, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_WALL, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_TILES, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_SLAB, RED_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_STAIRS, RED_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_TILE_WALL, RED_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_RED_TERRACOTTA_TILES, RED_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_SLAB, Blocks.RED_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_STAIRS, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_WALL, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_SLAB, POLISHED_RED_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_STAIRS, POLISHED_RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_RED_TERRACOTTA_WALL, POLISHED_RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, Blocks.RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, RED_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, RED_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA, POLISHED_RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, RED_TERRACOTTA_PILLAR, POLISHED_RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_RED_TERRACOTTA_PILLAR, POLISHED_RED_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_WALL, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICKS, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_WALL, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_BRICKS, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_SLAB, ORANGE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_STAIRS, ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_BRICK_WALL, ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_BRICKS, ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILES, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_WALL, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_TILES, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_SLAB, ORANGE_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_STAIRS, ORANGE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_TILE_WALL, ORANGE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_ORANGE_TERRACOTTA_TILES, ORANGE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_SLAB, Blocks.ORANGE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_STAIRS, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_WALL, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_SLAB, POLISHED_ORANGE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_STAIRS, POLISHED_ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_ORANGE_TERRACOTTA_WALL, POLISHED_ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, Blocks.ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, ORANGE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, ORANGE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA, POLISHED_ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, ORANGE_TERRACOTTA_PILLAR, POLISHED_ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_ORANGE_TERRACOTTA_PILLAR, POLISHED_ORANGE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_WALL, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICKS, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_WALL, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_BRICKS, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_SLAB, YELLOW_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_STAIRS, YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_BRICK_WALL, YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_BRICKS, YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILES, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_WALL, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_TILES, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_SLAB, YELLOW_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_STAIRS, YELLOW_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_TILE_WALL, YELLOW_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_YELLOW_TERRACOTTA_TILES, YELLOW_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_SLAB, Blocks.YELLOW_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_STAIRS, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_WALL, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_SLAB, POLISHED_YELLOW_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_STAIRS, POLISHED_YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_YELLOW_TERRACOTTA_WALL, POLISHED_YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, Blocks.YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, YELLOW_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, YELLOW_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA, POLISHED_YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, YELLOW_TERRACOTTA_PILLAR, POLISHED_YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_YELLOW_TERRACOTTA_PILLAR, POLISHED_YELLOW_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_SLAB, Blocks.LIME_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_STAIRS, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_WALL, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICKS, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_SLAB, Blocks.LIME_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_STAIRS, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_WALL, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_BRICKS, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_SLAB, LIME_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_STAIRS, LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_BRICK_WALL, LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_BRICKS, LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILES, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_SLAB, Blocks.LIME_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_STAIRS, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_WALL, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_TILES, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_SLAB, LIME_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_STAIRS, LIME_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_TILE_WALL, LIME_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIME_TERRACOTTA_TILES, LIME_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_SLAB, Blocks.LIME_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_STAIRS, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_WALL, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_SLAB, POLISHED_LIME_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_STAIRS, POLISHED_LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIME_TERRACOTTA_WALL, POLISHED_LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, Blocks.LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, LIME_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, LIME_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA, POLISHED_LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIME_TERRACOTTA_PILLAR, POLISHED_LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIME_TERRACOTTA_PILLAR, POLISHED_LIME_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_SLAB, Blocks.GREEN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_WALL, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICKS, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_SLAB, Blocks.GREEN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_WALL, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_BRICKS, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_SLAB, GREEN_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_STAIRS, GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_BRICK_WALL, GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_BRICKS, GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILES, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_SLAB, Blocks.GREEN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_WALL, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_TILES, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_SLAB, GREEN_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_STAIRS, GREEN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_TILE_WALL, GREEN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GREEN_TERRACOTTA_TILES, GREEN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_SLAB, Blocks.GREEN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_STAIRS, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_WALL, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_SLAB, POLISHED_GREEN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_STAIRS, POLISHED_GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GREEN_TERRACOTTA_WALL, POLISHED_GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, Blocks.GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, GREEN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, GREEN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA, POLISHED_GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GREEN_TERRACOTTA_PILLAR, POLISHED_GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GREEN_TERRACOTTA_PILLAR, POLISHED_GREEN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_SLAB, Blocks.CYAN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_WALL, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICKS, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_SLAB, Blocks.CYAN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_WALL, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_BRICKS, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_SLAB, CYAN_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_STAIRS, CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_BRICK_WALL, CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_BRICKS, CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILES, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_SLAB, Blocks.CYAN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_WALL, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_TILES, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_SLAB, CYAN_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_STAIRS, CYAN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_TILE_WALL, CYAN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_CYAN_TERRACOTTA_TILES, CYAN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_SLAB, Blocks.CYAN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_STAIRS, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_WALL, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_SLAB, POLISHED_CYAN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_STAIRS, POLISHED_CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_CYAN_TERRACOTTA_WALL, POLISHED_CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, Blocks.CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, CYAN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, CYAN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA, POLISHED_CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CYAN_TERRACOTTA_PILLAR, POLISHED_CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_CYAN_TERRACOTTA_PILLAR, POLISHED_CYAN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_SLAB, LIGHT_BLUE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_STAIRS, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_BRICK_WALL, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_BRICKS, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILES, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_TILES, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_SLAB, LIGHT_BLUE_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_STAIRS, LIGHT_BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_TILE_WALL, LIGHT_BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_BLUE_TERRACOTTA_TILES, LIGHT_BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_SLAB, Blocks.LIGHT_BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_STAIRS, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_WALL, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_SLAB, POLISHED_LIGHT_BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_STAIRS, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_BLUE_TERRACOTTA_WALL, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, Blocks.LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, LIGHT_BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, LIGHT_BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_BLUE_TERRACOTTA_PILLAR, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_BLUE_TERRACOTTA_PILLAR, POLISHED_LIGHT_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_SLAB, Blocks.BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_WALL, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICKS, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_SLAB, Blocks.BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_WALL, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_BRICKS, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_SLAB, BLUE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_STAIRS, BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_BRICK_WALL, BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_BRICKS, BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILES, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_SLAB, Blocks.BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_WALL, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_TILES, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_SLAB, BLUE_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_STAIRS, BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_TILE_WALL, BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLUE_TERRACOTTA_TILES, BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_SLAB, Blocks.BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_STAIRS, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_WALL, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_SLAB, POLISHED_BLUE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_STAIRS, POLISHED_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLUE_TERRACOTTA_WALL, POLISHED_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, Blocks.BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, BLUE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA, POLISHED_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLUE_TERRACOTTA_PILLAR, POLISHED_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLUE_TERRACOTTA_PILLAR, POLISHED_BLUE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_WALL, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICKS, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_WALL, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_BRICKS, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_SLAB, PURPLE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_STAIRS, PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_BRICK_WALL, PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_BRICKS, PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILES, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_WALL, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_TILES, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_SLAB, PURPLE_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_STAIRS, PURPLE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_TILE_WALL, PURPLE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPLE_TERRACOTTA_TILES, PURPLE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_SLAB, Blocks.PURPLE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_STAIRS, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_WALL, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_SLAB, POLISHED_PURPLE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_STAIRS, POLISHED_PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PURPLE_TERRACOTTA_WALL, POLISHED_PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, Blocks.PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, PURPLE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, PURPLE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA, POLISHED_PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PURPLE_TERRACOTTA_PILLAR, POLISHED_PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PURPLE_TERRACOTTA_PILLAR, POLISHED_PURPLE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICKS, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_BRICKS, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_SLAB, MAGENTA_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_STAIRS, MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_BRICK_WALL, MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_BRICKS, MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILES, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_TILES, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_SLAB, MAGENTA_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_STAIRS, MAGENTA_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_TILE_WALL, MAGENTA_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_MAGENTA_TERRACOTTA_TILES, MAGENTA_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_SLAB, Blocks.MAGENTA_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_STAIRS, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_WALL, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_SLAB, POLISHED_MAGENTA_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_STAIRS, POLISHED_MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_MAGENTA_TERRACOTTA_WALL, POLISHED_MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, Blocks.MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, MAGENTA_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, MAGENTA_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA, POLISHED_MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MAGENTA_TERRACOTTA_PILLAR, POLISHED_MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_MAGENTA_TERRACOTTA_PILLAR, POLISHED_MAGENTA_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_SLAB, Blocks.PINK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_STAIRS, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_WALL, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICKS, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_SLAB, Blocks.PINK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_STAIRS, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_WALL, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_BRICKS, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_SLAB, PINK_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_STAIRS, PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_BRICK_WALL, PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_BRICKS, PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILES, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_SLAB, Blocks.PINK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_STAIRS, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_WALL, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_TILES, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_SLAB, PINK_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_STAIRS, PINK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_TILE_WALL, PINK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_PINK_TERRACOTTA_TILES, PINK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_SLAB, Blocks.PINK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_STAIRS, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_WALL, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_SLAB, POLISHED_PINK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_STAIRS, POLISHED_PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_PINK_TERRACOTTA_WALL, POLISHED_PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, Blocks.PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, PINK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, PINK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA, POLISHED_PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, PINK_TERRACOTTA_PILLAR, POLISHED_PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_PINK_TERRACOTTA_PILLAR, POLISHED_PINK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_SLAB, Blocks.BROWN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_WALL, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICKS, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_SLAB, Blocks.BROWN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_WALL, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_BRICKS, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_SLAB, BROWN_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_STAIRS, BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_BRICK_WALL, BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_BRICKS, BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILES, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_SLAB, Blocks.BROWN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_WALL, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_TILES, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_SLAB, BROWN_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_STAIRS, BROWN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_TILE_WALL, BROWN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BROWN_TERRACOTTA_TILES, BROWN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_SLAB, Blocks.BROWN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_STAIRS, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_WALL, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_SLAB, POLISHED_BROWN_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_STAIRS, POLISHED_BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BROWN_TERRACOTTA_WALL, POLISHED_BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, Blocks.BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, BROWN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, BROWN_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA, POLISHED_BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BROWN_TERRACOTTA_PILLAR, POLISHED_BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BROWN_TERRACOTTA_PILLAR, POLISHED_BROWN_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_SLAB, Blocks.WHITE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_WALL, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICKS, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_SLAB, Blocks.WHITE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_WALL, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_BRICKS, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_SLAB, WHITE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_STAIRS, WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_BRICK_WALL, WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_BRICKS, WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILES, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_SLAB, Blocks.WHITE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_WALL, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_TILES, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_SLAB, WHITE_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_STAIRS, WHITE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_TILE_WALL, WHITE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_WHITE_TERRACOTTA_TILES, WHITE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_SLAB, Blocks.WHITE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_STAIRS, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_WALL, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_SLAB, POLISHED_WHITE_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_STAIRS, POLISHED_WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_WHITE_TERRACOTTA_WALL, POLISHED_WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, Blocks.WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, WHITE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, WHITE_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA, POLISHED_WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WHITE_TERRACOTTA_PILLAR, POLISHED_WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_WHITE_TERRACOTTA_PILLAR, POLISHED_WHITE_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_SLAB, LIGHT_GRAY_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_STAIRS, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_BRICK_WALL, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_BRICKS, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILES, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_TILES, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_SLAB, LIGHT_GRAY_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_STAIRS, LIGHT_GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_TILE_WALL, LIGHT_GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_LIGHT_GRAY_TERRACOTTA_TILES, LIGHT_GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_SLAB, Blocks.LIGHT_GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_STAIRS, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_WALL, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_SLAB, POLISHED_LIGHT_GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_STAIRS, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_LIGHT_GRAY_TERRACOTTA_WALL, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, Blocks.LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, LIGHT_GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, LIGHT_GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, LIGHT_GRAY_TERRACOTTA_PILLAR, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_LIGHT_GRAY_TERRACOTTA_PILLAR, POLISHED_LIGHT_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_SLAB, Blocks.GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_WALL, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICKS, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_SLAB, Blocks.GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_WALL, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_BRICKS, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_SLAB, GRAY_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_STAIRS, GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_BRICK_WALL, GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_BRICKS, GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILES, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_SLAB, Blocks.GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_WALL, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_TILES, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_SLAB, GRAY_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_STAIRS, GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_TILE_WALL, GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_GRAY_TERRACOTTA_TILES, GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_SLAB, Blocks.GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_STAIRS, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_WALL, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_SLAB, POLISHED_GRAY_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_STAIRS, POLISHED_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_GRAY_TERRACOTTA_WALL, POLISHED_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, Blocks.GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, GRAY_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA, POLISHED_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, GRAY_TERRACOTTA_PILLAR, POLISHED_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_GRAY_TERRACOTTA_PILLAR, POLISHED_GRAY_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_SLAB, Blocks.BLACK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_WALL, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICKS, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_SLAB, Blocks.BLACK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_WALL, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_BRICKS, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_SLAB, BLACK_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_STAIRS, BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_BRICK_WALL, BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_BRICKS, BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILES, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_SLAB, Blocks.BLACK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_WALL, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_TILES, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_SLAB, BLACK_TERRACOTTA_TILES, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_STAIRS, BLACK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_TILE_WALL, BLACK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRACKED_BLACK_TERRACOTTA_TILES, BLACK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_SLAB, Blocks.BLACK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_STAIRS, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_WALL, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_SLAB, POLISHED_BLACK_TERRACOTTA, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_STAIRS, POLISHED_BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, POLISHED_BLACK_TERRACOTTA_WALL, POLISHED_BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, Blocks.BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, BLACK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, BLACK_TERRACOTTA_TILES, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA, POLISHED_BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BLACK_TERRACOTTA_PILLAR, POLISHED_BLACK_TERRACOTTA, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CHISELED_BLACK_TERRACOTTA_PILLAR, POLISHED_BLACK_TERRACOTTA, 1);
 
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_SLAB, COBBLED_TUFF, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_STAIRS, COBBLED_TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_WALL, COBBLED_TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_SLAB, MOSSY_COBBLED_TUFF, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_STAIRS, MOSSY_COBBLED_TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_WALL, MOSSY_COBBLED_TUFF, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_SLAB, MOSSY_COBBLED_DEEPSLATE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_STAIRS, MOSSY_COBBLED_DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_WALL, MOSSY_COBBLED_DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE_SLAB, SCULKY_COBBLED_DEEPSLATE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE_STAIRS, SCULKY_COBBLED_DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE_WALL, SCULKY_COBBLED_DEEPSLATE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_SLAB, COBBLED_GRANITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_STAIRS, COBBLED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_WALL, COBBLED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_SLAB, MOSSY_COBBLED_GRANITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_STAIRS, MOSSY_COBBLED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_WALL, MOSSY_COBBLED_GRANITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_SLAB, COBBLED_ANDESITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_STAIRS, COBBLED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_WALL, COBBLED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_SLAB, MOSSY_COBBLED_ANDESITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_STAIRS, MOSSY_COBBLED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_WALL, MOSSY_COBBLED_ANDESITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_SLAB, COBBLED_DIORITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_STAIRS, COBBLED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_WALL, COBBLED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_SLAB, MOSSY_COBBLED_DIORITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_STAIRS, MOSSY_COBBLED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_WALL, MOSSY_COBBLED_DIORITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_SLAB, COBBLED_BLACKSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_STAIRS, COBBLED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_WALL, COBBLED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_SLAB, CRIMSON_COBBLED_BLACKSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_STAIRS, CRIMSON_COBBLED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_WALL, CRIMSON_COBBLED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_SLAB, WARPED_COBBLED_BLACKSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_STAIRS, WARPED_COBBLED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_WALL, WARPED_COBBLED_BLACKSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_SLAB, COBBLED_END_STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_STAIRS, COBBLED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_WALL, COBBLED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_SLAB, MOLDY_COBBLED_END_STONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_STAIRS, MOLDY_COBBLED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_WALL, MOLDY_COBBLED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_SLAB, MOSSY_SANDSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_STAIRS, MOSSY_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_WALL, MOSSY_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_SLAB, MOSSY_RED_SANDSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_STAIRS, MOSSY_RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_WALL, MOSSY_RED_SANDSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_SLAB, BARNACLED_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_STAIRS, BARNACLED_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_WALL, BARNACLED_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_SLAB, DARK_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_STAIRS, DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_WALL, DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_SLAB, BARNACLED_DARK_PRISMARINE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_STAIRS, BARNACLED_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_WALL, BARNACLED_DARK_PRISMARINE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHERRACK_SLAB, Blocks.NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHERRACK_STAIRS, Blocks.NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, NETHERRACK_WALL, Blocks.NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_SLAB, CRIMSON_NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_STAIRS, CRIMSON_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_WALL, CRIMSON_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_SLAB, WARPED_NETHERRACK, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_STAIRS, WARPED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_WALL, WARPED_NETHERRACK, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_SLAB, COBBLED_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_STAIRS, COBBLED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_WALL, COBBLED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_SLAB, CRIMSON_COBBLED_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_STAIRS, CRIMSON_COBBLED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_WALL, CRIMSON_COBBLED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_SLAB, WARPED_COBBLED_BASALT, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_STAIRS, WARPED_COBBLED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_WALL, WARPED_COBBLED_BASALT, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_SLAB, COBBLED_CALCITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_STAIRS, COBBLED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_WALL, COBBLED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_SLAB, MOSSY_COBBLED_CALCITE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_STAIRS, MOSSY_COBBLED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_WALL, MOSSY_COBBLED_CALCITE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_SLAB, COBBLED_DRIPSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_STAIRS, COBBLED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_WALL, COBBLED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_SLAB, MOSSY_COBBLED_DRIPSTONE, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_STAIRS, MOSSY_COBBLED_DRIPSTONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_WALL, MOSSY_COBBLED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_SLAB, COBBLED_TUFF, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_STAIRS, COBBLED_TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_TUFF_WALL, COBBLED_TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_SLAB, MOSSY_COBBLED_TUFF, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_STAIRS, MOSSY_COBBLED_TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF_WALL, MOSSY_COBBLED_TUFF, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_SLAB, MOSSY_COBBLED_DEEPSLATE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_STAIRS, MOSSY_COBBLED_DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE_WALL, MOSSY_COBBLED_DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE_SLAB, SCULKY_COBBLED_DEEPSLATE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE_STAIRS, SCULKY_COBBLED_DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE_WALL, SCULKY_COBBLED_DEEPSLATE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_SLAB, COBBLED_GRANITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_STAIRS, COBBLED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_GRANITE_WALL, COBBLED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_SLAB, MOSSY_COBBLED_GRANITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_STAIRS, MOSSY_COBBLED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE_WALL, MOSSY_COBBLED_GRANITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_SLAB, COBBLED_ANDESITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_STAIRS, COBBLED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_ANDESITE_WALL, COBBLED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_SLAB, MOSSY_COBBLED_ANDESITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_STAIRS, MOSSY_COBBLED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE_WALL, MOSSY_COBBLED_ANDESITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_SLAB, COBBLED_DIORITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_STAIRS, COBBLED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DIORITE_WALL, COBBLED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_SLAB, MOSSY_COBBLED_DIORITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_STAIRS, MOSSY_COBBLED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE_WALL, MOSSY_COBBLED_DIORITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_SLAB, COBBLED_BLACKSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_STAIRS, COBBLED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BLACKSTONE_WALL, COBBLED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_SLAB, CRIMSON_COBBLED_BLACKSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_STAIRS, CRIMSON_COBBLED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE_WALL, CRIMSON_COBBLED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_SLAB, WARPED_COBBLED_BLACKSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_STAIRS, WARPED_COBBLED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE_WALL, WARPED_COBBLED_BLACKSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_SLAB, COBBLED_END_STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_STAIRS, COBBLED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_END_STONE_WALL, COBBLED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_SLAB, MOLDY_COBBLED_END_STONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_STAIRS, MOLDY_COBBLED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE_WALL, MOLDY_COBBLED_END_STONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_SLAB, MOSSY_SANDSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_STAIRS, MOSSY_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_WALL, MOSSY_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_SLAB, MOSSY_RED_SANDSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_STAIRS, MOSSY_RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_WALL, MOSSY_RED_SANDSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_SLAB, BARNACLED_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_STAIRS, BARNACLED_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_WALL, BARNACLED_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_SLAB, DARK_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_STAIRS, DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, DARK_PRISMARINE_WALL, DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_SLAB, BARNACLED_DARK_PRISMARINE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_STAIRS, BARNACLED_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_WALL, BARNACLED_DARK_PRISMARINE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHERRACK_SLAB, Blocks.NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHERRACK_STAIRS, Blocks.NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, NETHERRACK_WALL, Blocks.NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_SLAB, CRIMSON_NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_STAIRS, CRIMSON_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK_WALL, CRIMSON_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_SLAB, WARPED_NETHERRACK, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_STAIRS, WARPED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK_WALL, WARPED_NETHERRACK, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_SLAB, COBBLED_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_STAIRS, COBBLED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_BASALT_WALL, COBBLED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_SLAB, CRIMSON_COBBLED_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_STAIRS, CRIMSON_COBBLED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT_WALL, CRIMSON_COBBLED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_SLAB, WARPED_COBBLED_BASALT, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_STAIRS, WARPED_COBBLED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT_WALL, WARPED_COBBLED_BASALT, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_SLAB, COBBLED_CALCITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_STAIRS, COBBLED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_CALCITE_WALL, COBBLED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_SLAB, MOSSY_COBBLED_CALCITE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_STAIRS, MOSSY_COBBLED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE_WALL, MOSSY_COBBLED_CALCITE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_SLAB, COBBLED_DRIPSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_STAIRS, COBBLED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, COBBLED_DRIPSTONE_WALL, COBBLED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_SLAB, MOSSY_COBBLED_DRIPSTONE, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_STAIRS, MOSSY_COBBLED_DRIPSTONE, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE_WALL, MOSSY_COBBLED_DRIPSTONE, 1);
 
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_SLAB, MOSSY_TUFF_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_STAIRS, MOSSY_TUFF_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_WALL, MOSSY_TUFF_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_SLAB, MOSSY_DEEPSLATE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_STAIRS, MOSSY_DEEPSLATE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_WALL, MOSSY_DEEPSLATE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICK_SLAB, SCULKY_DEEPSLATE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICK_STAIRS, SCULKY_DEEPSLATE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICK_WALL, SCULKY_DEEPSLATE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_SLAB, MOSSY_GRANITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_STAIRS, MOSSY_GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_WALL, MOSSY_GRANITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_SLAB, MOSSY_ANDESITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_STAIRS, MOSSY_ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_WALL, MOSSY_ANDESITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_SLAB, MOSSY_DIORITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_STAIRS, MOSSY_DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_WALL, MOSSY_DIORITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_SLAB, CRIMSON_BLACKSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_STAIRS, CRIMSON_BLACKSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_WALL, CRIMSON_BLACKSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_SLAB, WARPED_BLACKSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_STAIRS, WARPED_BLACKSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_WALL, WARPED_BLACKSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_SLAB, MOLDY_END_STONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_STAIRS, MOLDY_END_STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_WALL, MOLDY_END_STONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_SLAB, MOLDY_PURPUR_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_STAIRS, MOLDY_PURPUR_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_WALL, MOLDY_PURPUR_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_SLAB, MOSSY_SANDSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_STAIRS, MOSSY_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_WALL, MOSSY_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_SLAB, MOSSY_RED_SANDSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_STAIRS, MOSSY_RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_WALL, MOSSY_RED_SANDSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_SLAB, BARNACLED_PRISMARINE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_STAIRS, BARNACLED_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_WALL, BARNACLED_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_SLAB, BARNACLED_DARK_PRISMARINE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_STAIRS, BARNACLED_DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_WALL, BARNACLED_DARK_PRISMARINE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_SLAB, CRIMSON_NETHER_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_STAIRS, CRIMSON_NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_WALL, CRIMSON_NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_SLAB, CRIMSON_BASALT_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_STAIRS, CRIMSON_BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_WALL, CRIMSON_BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_SLAB, WARPED_NETHER_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_STAIRS, WARPED_NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_WALL, WARPED_NETHER_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_SLAB, WARPED_BASALT_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_STAIRS, WARPED_BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_WALL, WARPED_BASALT_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_SLAB, MOSSY_CALCITE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_STAIRS, MOSSY_CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_WALL, MOSSY_CALCITE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_SLAB, MOSSY_DRIPSTONE_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_STAIRS, MOSSY_DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_WALL, MOSSY_DRIPSTONE_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_SLAB, MOSSY_MUD_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_STAIRS, MOSSY_MUD_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_WALL, MOSSY_MUD_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_SLAB, MOSSY_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_STAIRS, MOSSY_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_WALL, MOSSY_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_SLAB, MOSSY_RED_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_STAIRS, MOSSY_RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_WALL, MOSSY_RED_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_SLAB, MOSSY_ORANGE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_STAIRS, MOSSY_ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_WALL, MOSSY_ORANGE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_SLAB, MOSSY_YELLOW_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_STAIRS, MOSSY_YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_WALL, MOSSY_YELLOW_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_SLAB, MOSSY_LIME_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_STAIRS, MOSSY_LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_WALL, MOSSY_LIME_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_SLAB, MOSSY_GREEN_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_STAIRS, MOSSY_GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_WALL, MOSSY_GREEN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_SLAB, MOSSY_CYAN_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_STAIRS, MOSSY_CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_WALL, MOSSY_CYAN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_SLAB, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_STAIRS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_WALL, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_SLAB, MOSSY_BLUE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_STAIRS, MOSSY_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_WALL, MOSSY_BLUE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_SLAB, MOSSY_PURPLE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_STAIRS, MOSSY_PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_WALL, MOSSY_PURPLE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_SLAB, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_STAIRS, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_WALL, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_SLAB, MOSSY_PINK_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_STAIRS, MOSSY_PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_WALL, MOSSY_PINK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_SLAB, MOSSY_BROWN_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_STAIRS, MOSSY_BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_WALL, MOSSY_BROWN_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_SLAB, MOSSY_WHITE_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_STAIRS, MOSSY_WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_WALL, MOSSY_WHITE_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_SLAB, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_STAIRS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_WALL, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_SLAB, MOSSY_GRAY_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_STAIRS, MOSSY_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_WALL, MOSSY_GRAY_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_SLAB, MOSSY_BLACK_TERRACOTTA_BRICKS, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_STAIRS, MOSSY_BLACK_TERRACOTTA_BRICKS, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_WALL, MOSSY_BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_SLAB, MOSSY_TUFF_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_STAIRS, MOSSY_TUFF_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICK_WALL, MOSSY_TUFF_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_SLAB, MOSSY_DEEPSLATE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_STAIRS, MOSSY_DEEPSLATE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICK_WALL, MOSSY_DEEPSLATE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICK_SLAB, SCULKY_DEEPSLATE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICK_STAIRS, SCULKY_DEEPSLATE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICK_WALL, SCULKY_DEEPSLATE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_SLAB, MOSSY_GRANITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_STAIRS, MOSSY_GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICK_WALL, MOSSY_GRANITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_SLAB, MOSSY_ANDESITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_STAIRS, MOSSY_ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICK_WALL, MOSSY_ANDESITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_SLAB, MOSSY_DIORITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_STAIRS, MOSSY_DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICK_WALL, MOSSY_DIORITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_SLAB, CRIMSON_BLACKSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_STAIRS, CRIMSON_BLACKSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICK_WALL, CRIMSON_BLACKSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_SLAB, WARPED_BLACKSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_STAIRS, WARPED_BLACKSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICK_WALL, WARPED_BLACKSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_SLAB, MOLDY_END_STONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_STAIRS, MOLDY_END_STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICK_WALL, MOLDY_END_STONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_SLAB, MOLDY_PURPUR_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_STAIRS, MOLDY_PURPUR_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICK_WALL, MOLDY_PURPUR_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_SLAB, MOSSY_SANDSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_STAIRS, MOSSY_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICK_WALL, MOSSY_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_SLAB, MOSSY_RED_SANDSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_STAIRS, MOSSY_RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICK_WALL, MOSSY_RED_SANDSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_SLAB, BARNACLED_PRISMARINE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_STAIRS, BARNACLED_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_PRISMARINE_BRICK_WALL, BARNACLED_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_SLAB, BARNACLED_DARK_PRISMARINE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_STAIRS, BARNACLED_DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, BARNACLED_DARK_PRISMARINE_BRICK_WALL, BARNACLED_DARK_PRISMARINE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_SLAB, CRIMSON_NETHER_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_STAIRS, CRIMSON_NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICK_WALL, CRIMSON_NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_SLAB, CRIMSON_BASALT_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_STAIRS, CRIMSON_BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICK_WALL, CRIMSON_BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_SLAB, WARPED_NETHER_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_STAIRS, WARPED_NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICK_WALL, WARPED_NETHER_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_SLAB, WARPED_BASALT_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_STAIRS, WARPED_BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICK_WALL, WARPED_BASALT_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_SLAB, MOSSY_CALCITE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_STAIRS, MOSSY_CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICK_WALL, MOSSY_CALCITE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_SLAB, MOSSY_DRIPSTONE_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_STAIRS, MOSSY_DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICK_WALL, MOSSY_DRIPSTONE_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_SLAB, MOSSY_MUD_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_STAIRS, MOSSY_MUD_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MUD_BRICK_WALL, MOSSY_MUD_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_SLAB, MOSSY_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_STAIRS, MOSSY_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICK_WALL, MOSSY_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_SLAB, MOSSY_RED_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_STAIRS, MOSSY_RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICK_WALL, MOSSY_RED_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_SLAB, MOSSY_ORANGE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_STAIRS, MOSSY_ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICK_WALL, MOSSY_ORANGE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_SLAB, MOSSY_YELLOW_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_STAIRS, MOSSY_YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICK_WALL, MOSSY_YELLOW_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_SLAB, MOSSY_LIME_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_STAIRS, MOSSY_LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIME_TERRACOTTA_BRICK_WALL, MOSSY_LIME_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_SLAB, MOSSY_GREEN_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_STAIRS, MOSSY_GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICK_WALL, MOSSY_GREEN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_SLAB, MOSSY_CYAN_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_STAIRS, MOSSY_CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICK_WALL, MOSSY_CYAN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_SLAB, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_STAIRS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICK_WALL, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_SLAB, MOSSY_BLUE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_STAIRS, MOSSY_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICK_WALL, MOSSY_BLUE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_SLAB, MOSSY_PURPLE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_STAIRS, MOSSY_PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICK_WALL, MOSSY_PURPLE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_SLAB, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_STAIRS, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICK_WALL, MOSSY_MAGENTA_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_SLAB, MOSSY_PINK_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_STAIRS, MOSSY_PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICK_WALL, MOSSY_PINK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_SLAB, MOSSY_BROWN_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_STAIRS, MOSSY_BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICK_WALL, MOSSY_BROWN_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_SLAB, MOSSY_WHITE_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_STAIRS, MOSSY_WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICK_WALL, MOSSY_WHITE_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_SLAB, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_STAIRS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICK_WALL, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_SLAB, MOSSY_GRAY_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_STAIRS, MOSSY_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICK_WALL, MOSSY_GRAY_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_SLAB, MOSSY_BLACK_TERRACOTTA_BRICKS, 2);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_STAIRS, MOSSY_BLACK_TERRACOTTA_BRICKS, 1);
+					offerStonecuttingRecipe(exporter, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICK_WALL, MOSSY_BLACK_TERRACOTTA_BRICKS, 1);
 
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_TUFF), RecipeCategory.BUILDING_BLOCKS, Blocks.TUFF, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_TUFF)).offerTo(exporter);
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_GRANITE), RecipeCategory.BUILDING_BLOCKS, Blocks.GRANITE, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_GRANITE)).offerTo(exporter);
@@ -1980,575 +1952,547 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_CALCITE), RecipeCategory.BUILDING_BLOCKS, Blocks.CALCITE, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_CALCITE)).offerTo(exporter);
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_DRIPSTONE), RecipeCategory.BUILDING_BLOCKS, Blocks.DRIPSTONE_BLOCK, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_DRIPSTONE)).offerTo(exporter);
 
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
 							.input(COBBLED_TUFF)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_tuff")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_TUFF, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICKS)
-							.input(Blocks.TUFF_BRICKS)
-							.input(Blocks.VINE)
-							.group("mossy_tuff_bricks")
-							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
-							.offerTo(exporter, convertBetween(MOSSY_TUFF_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICKS)
-							.input(Blocks.TUFF_BRICKS)
-							.input(Blocks.MOSS_BLOCK)
-							.group("mossy_tuff_bricks")
-							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
-							.offerTo(exporter, convertBetween(MOSSY_TUFF_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
 							.input(COBBLED_TUFF)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_tuff")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_TUFF, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
 							.input(Blocks.COBBLED_DEEPSLATE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_deepslate")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DEEPSLATE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
 							.input(Blocks.DEEPSLATE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_deepslate_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_DEEPSLATE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
 							.input(Blocks.COBBLED_DEEPSLATE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_deepslate")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DEEPSLATE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
 							.input(Blocks.DEEPSLATE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_deepslate_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_DEEPSLATE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE)
 							.input(Blocks.COBBLED_DEEPSLATE)
 							.input(Blocks.SCULK)
 							.group("sculky_cobbled_deepslate")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.SCULK))
 							.offerTo(exporter, convertBetween(SCULKY_COBBLED_DEEPSLATE, Blocks.SCULK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICKS)
 							.input(Blocks.DEEPSLATE_BRICKS)
 							.input(Blocks.SCULK)
 							.group("sculky_deepslate_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.SCULK))
 							.offerTo(exporter, convertBetween(SCULKY_DEEPSLATE_BRICKS, Blocks.SCULK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
 							.input(COBBLED_ANDESITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_andesite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_ANDESITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
 							.input(ANDESITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_andesite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_ANDESITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
 							.input(COBBLED_ANDESITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_andesite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_ANDESITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
 							.input(ANDESITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_andesite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_ANDESITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
 							.input(COBBLED_DIORITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_diorite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DIORITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
 							.input(DIORITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_diorite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_DIORITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
 							.input(COBBLED_DIORITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_diorite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DIORITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
 							.input(DIORITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_diorite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_DIORITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
 							.input(COBBLED_GRANITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_granite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_GRANITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
 							.input(GRANITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_granite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_GRANITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
 							.input(COBBLED_GRANITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_granite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_GRANITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
 							.input(GRANITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_granite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_GRANITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
 							.input(Blocks.SANDSTONE)
 							.input(Blocks.VINE)
 							.group("mossy_sandstone")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_sandstone_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
 							.input(Blocks.SANDSTONE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_sandstone")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_sandstone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
 							.input(Blocks.RED_SANDSTONE)
 							.input(Blocks.VINE)
 							.group("mossy_red_sandstone")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossyred_sandstone_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
 							.input(Blocks.RED_SANDSTONE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_red_sandstone")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossyred_sandstone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
 							.input(COBBLED_CALCITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_calcite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_CALCITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
 							.input(CALCITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_calcite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_CALCITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
 							.input(COBBLED_CALCITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_calcite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_CALCITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
 							.input(CALCITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_calcite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_CALCITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
 							.input(COBBLED_DRIPSTONE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_dripstone")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DRIPSTONE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
 							.input(DRIPSTONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_dripstone_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_DRIPSTONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
 							.input(COBBLED_DRIPSTONE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_dripstone")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DRIPSTONE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
 							.input(DRIPSTONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_dripstone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_DRIPSTONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE)
 							.input(COBBLED_BLACKSTONE)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_cobbled_blackstone")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_COBBLED_BLACKSTONE, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICKS)
 							.input(Blocks.POLISHED_BLACKSTONE_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_blackstone_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_BLACKSTONE_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE)
 							.input(COBBLED_BLACKSTONE)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_cobbled_blackstone")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_COBBLED_BLACKSTONE, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICKS)
 							.input(Blocks.POLISHED_BLACKSTONE_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_blackstone_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_BLACKSTONE_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT)
 							.input(COBBLED_BASALT)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_cobbled_basalt")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_COBBLED_BASALT, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICKS)
 							.input(BASALT_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_basalt_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_BASALT_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT)
 							.input(COBBLED_BASALT)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_cobbled_basalt")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_COBBLED_BASALT, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICKS)
 							.input(BASALT_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_basalt_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_BASALT_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK)
 							.input(Blocks.NETHERRACK)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_netherrack")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_NETHERRACK, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK)
 							.input(Blocks.NETHERRACK)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_netherrack")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_NETHERRACK, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICKS)
 							.input(Blocks.NETHER_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_nether_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_NETHER_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICKS)
 							.input(Blocks.NETHER_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_nether_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_NETHER_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_RED_NETHER_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_RED_NETHER_BRICKS)
 							.input(Blocks.RED_NETHER_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_red_nether_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_RED_NETHER_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_RED_NETHER_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_RED_NETHER_BRICKS)
 							.input(Blocks.RED_NETHER_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_red_nether_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_RED_NETHER_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_QUARTZ_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, CRIMSON_QUARTZ_BRICKS)
 							.input(Blocks.QUARTZ_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_quartz_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_QUARTZ_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_QUARTZ_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, WARPED_QUARTZ_BRICKS)
 							.input(Blocks.QUARTZ_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_quartz_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_QUARTZ_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
 							.input(SMOOTH_STONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_smooth_stone_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_SMOOTH_STONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
 							.input(SMOOTH_STONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_smooth_stone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_SMOOTH_STONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE)
 							.input(COBBLED_END_STONE)
 							.input(Items.CHORUS_FRUIT)
 							.group("moldy_cobbled_end_stone")
 							.criterion("has_chorus_fruit", conditionsFromItem(Items.CHORUS_FRUIT))
 							.offerTo(exporter, convertBetween(MOLDY_COBBLED_END_STONE, Items.CHORUS_FRUIT));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICKS)
 							.input(Blocks.END_STONE_BRICKS)
 							.input(Items.CHORUS_FRUIT)
 							.group("moldy_end_stone_bricks")
 							.criterion("has_chorus_fruit", conditionsFromItem(Items.CHORUS_FRUIT))
 							.offerTo(exporter, convertBetween(MOLDY_END_STONE_BRICKS, Items.CHORUS_FRUIT));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICKS)
 							.input(PURPUR_BRICKS)
 							.input(Items.CHORUS_FRUIT)
 							.group("moldy_purpur_bricks")
 							.criterion("has_chorus_fruit", conditionsFromItem(Items.CHORUS_FRUIT))
 							.offerTo(exporter, convertBetween(MOLDY_PURPUR_BRICKS, Items.CHORUS_FRUIT));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICKS)
-							.input(Blocks.RESIN_BRICKS)
-							.input(Blocks.PALE_MOSS_BLOCK)
-							.group("mossy_resin_bricks")
-							.criterion("has_pale_moss_block", conditionsFromItem(Blocks.PALE_MOSS_BLOCK))
-							.offerTo(exporter, convertBetween(MOSSY_RESIN_BRICKS, Blocks.PALE_MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
-							.input(Blocks.BRICKS)
-							.input(Blocks.VINE)
-							.group("mossy_bricks")
-							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
-							.offerTo(exporter, convertBetween(MOSSY_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
 							.input(Blocks.BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
 							.input(RED_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_red_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_RED_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
 							.input(RED_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_red_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_RED_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
 							.input(ORANGE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_orange_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_ORANGE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
 							.input(ORANGE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_orange_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_ORANGE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
 							.input(YELLOW_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_yellow_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_YELLOW_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
 							.input(YELLOW_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_yellow_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_YELLOW_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
 							.input(GREEN_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_green_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_GREEN_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
 							.input(GREEN_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_green_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_GREEN_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
 							.input(CYAN_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_cyan_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_CYAN_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
 							.input(CYAN_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cyan_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_CYAN_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_light_blue_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_light_blue_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
 							.input(BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_blue_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_BLUE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
 							.input(BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_blue_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_BLUE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
 							.input(PURPLE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_purple_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_PURPLE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
 							.input(PURPLE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_purple_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_PURPLE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
 							.input(MAGENTA_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_magenta_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_MAGENTA_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
 							.input(MAGENTA_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_magenta_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_MAGENTA_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
 							.input(PINK_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_pink_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_PINK_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
 							.input(PINK_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_pink_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_PINK_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
 							.input(BROWN_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_brown_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_BROWN_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
 							.input(BROWN_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_brown_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_BROWN_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
 							.input(WHITE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_white_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_WHITE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
 							.input(WHITE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_white_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_WHITE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_light_gray_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_light_gray_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
 							.input(GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_gray_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_GRAY_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
 							.input(GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_gray_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_GRAY_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
 							.input(BLACK_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_black_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_BLACK_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
+					ShapelessRecipeJsonBuilder.create(/^?if >1.21.1 {^/(RegistryEntryLookup<Item>) lookup,/^?}^/ RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
 							.input(BLACK_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_black_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_BLACK_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
 				}};
-        }
-
-		@Override
-		public String getName() {
-			return PucksParityMod.MOD_ID + ":recipe_provider";
-		}
-	}
 
 	private static class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
 		protected BlockLootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-			super(dataOutput, registryLookup);
+			super(dataOutput);
 		}
 
 		@Override
 		public void generate() {
+			addDrop(SOUL_PUMPKIN, drops(SOUL_PUMPKIN));
+			addDrop(REDSTONE_PUMPKIN, drops(REDSTONE_PUMPKIN));
+
 			addDrop(COPPER_CHAIN, drops(COPPER_CHAIN));
 			addDrop(EXPOSED_COPPER_CHAIN, drops(EXPOSED_COPPER_CHAIN));
 			addDrop(WEATHERED_COPPER_CHAIN, drops(WEATHERED_COPPER_CHAIN));
@@ -2623,10 +2567,12 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(GOLD_GATE, drops(GOLD_GATE));
 			addDrop(GOLD_CHAIN, drops(GOLD_CHAIN));
 
+			//? if >1.20.1 {
 			addDrop(GOLD_BULB, drops(GOLD_BULB));
 			addDrop(GOLD_GRATE, drops(GOLD_GRATE));
 			addDrop(IRON_BULB, drops(IRON_BULB));
 			addDrop(IRON_GRATE, drops(IRON_GRATE));
+			//?}
 			addDrop(CUT_IRON, drops(CUT_IRON));
 			addDrop(CHISELED_IRON, drops(CHISELED_IRON));
 			addDrop(IRON_GATE, drops(IRON_GATE));
@@ -3164,26 +3110,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(CRACKED_MUD_TILES, drops(CRACKED_MUD_TILES));
 			addDrop(PACKED_MUD_PILLAR, drops(PACKED_MUD_PILLAR));
 			addDrop(CHISELED_MUD_PILLAR, drops(CHISELED_MUD_PILLAR));
-			addDrop(RESIN, drops(RESIN));
-			addDrop(RESIN_SLAB, drops(RESIN_SLAB));
-			addDrop(RESIN_STAIRS, drops(RESIN_STAIRS));
-			addDrop(RESIN_WALL, drops(RESIN_WALL));
-			addDrop(CRACKED_RESIN, drops(CRACKED_RESIN));
-			addDrop(MOSSY_RESIN_BRICKS, drops(MOSSY_RESIN_BRICKS));
-			addDrop(MOSSY_RESIN_BRICK_SLAB, drops(MOSSY_RESIN_BRICK_SLAB));
-			addDrop(MOSSY_RESIN_BRICK_STAIRS, drops(MOSSY_RESIN_BRICK_STAIRS));
-			addDrop(MOSSY_RESIN_BRICK_WALL, drops(MOSSY_RESIN_BRICK_WALL));
-			addDrop(POLISHED_RESIN, drops(POLISHED_RESIN));
-			addDrop(POLISHED_RESIN_SLAB, drops(POLISHED_RESIN_SLAB));
-			addDrop(POLISHED_RESIN_STAIRS, drops(POLISHED_RESIN_STAIRS));
-			addDrop(POLISHED_RESIN_WALL, drops(POLISHED_RESIN_WALL));
-			addDrop(RESIN_TILES, drops(RESIN_TILES));
-			addDrop(RESIN_TILE_SLAB, drops(RESIN_TILE_SLAB));
-			addDrop(RESIN_TILE_STAIRS, drops(RESIN_TILE_STAIRS));
-			addDrop(RESIN_TILE_WALL, drops(RESIN_TILE_WALL));
-			addDrop(CRACKED_RESIN_TILES, drops(CRACKED_RESIN_TILES));
-			addDrop(RESIN_PILLAR, drops(RESIN_PILLAR));
-			addDrop(CHISELED_RESIN_PILLAR, drops(CHISELED_RESIN_PILLAR));
+
 			addDrop(TERRACOTTA_SLAB, drops(TERRACOTTA_SLAB));
 			addDrop(TERRACOTTA_STAIRS, drops(TERRACOTTA_STAIRS));
 			addDrop(TERRACOTTA_WALL, drops(TERRACOTTA_WALL));
@@ -3637,6 +3564,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			registerPaneDoor(blockStateModelGenerator, GRAY_SLIDING_GLASS_PANE, "gray_sliding_glass_pane");
 			registerPaneDoor(blockStateModelGenerator, BLACK_SLIDING_GLASS_PANE, "black_sliding_glass_pane");
 
+			blockStateModelGenerator.registerParentedItemModel(SOUL_PUMPKIN, Identifier.of(PucksParityMod.MOD_ID, "block/soul_pumpkin"));
+			blockStateModelGenerator.registerParentedItemModel(REDSTONE_PUMPKIN, Identifier.of(PucksParityMod.MOD_ID, "block/redstone_pumpkin"));
+
 			blockStateModelGenerator.registerParentedItemModel(SLIDING_GLASS_PANE, Identifier.of(PucksParityMod.MOD_ID, "block/sliding_glass_pane"));
 			blockStateModelGenerator.registerParentedItemModel(RED_SLIDING_GLASS_PANE, Identifier.of(PucksParityMod.MOD_ID, "block/red_sliding_glass_pane"));
 			blockStateModelGenerator.registerParentedItemModel(ORANGE_SLIDING_GLASS_PANE, Identifier.of(PucksParityMod.MOD_ID, "block/orange_sliding_glass_pane"));
@@ -3759,8 +3689,10 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerTrapdoor(GOLD_TRAPDOOR);
 			blockStateModelGenerator.registerDoor(GOLD_DOOR);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_GOLD);
+			//? if >1.20.1
 			blockStateModelGenerator.registerSimpleCubeAll(GOLD_GRATE);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_IRON);
+			//? if >1.20.1
 			blockStateModelGenerator.registerSimpleCubeAll(IRON_GRATE);
 
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_SMOOTH_STONE_BRICKS);
@@ -3779,7 +3711,6 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_CALCITE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DRIPSTONE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_MUD_BRICKS);
-			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RESIN);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_TERRACOTTA_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ORANGE_TERRACOTTA_BRICKS);
@@ -3818,7 +3749,6 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_CALCITE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DRIPSTONE_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_MUD_TILES);
-			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RESIN_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_TERRACOTTA_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_TERRACOTTA_TILES);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ORANGE_TERRACOTTA_TILES);
@@ -3901,8 +3831,6 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerAxisRotated(CHISELED_DRIPSTONE_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(PACKED_MUD_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_MUD_PILLAR, TexturedModel.CUBE_COLUMN);
-			blockStateModelGenerator.registerAxisRotated(RESIN_PILLAR, TexturedModel.CUBE_COLUMN);
-			blockStateModelGenerator.registerAxisRotated(CHISELED_RESIN_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(TERRACOTTA_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(CHISELED_TERRACOTTA_PILLAR, TexturedModel.CUBE_COLUMN);
 			blockStateModelGenerator.registerAxisRotated(RED_TERRACOTTA_PILLAR, TexturedModel.CUBE_COLUMN);
@@ -4123,7 +4051,6 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(MOSSY_MUD_BRICKS, ModelIds.getBlockModelId(MOSSY_MUD_BRICKS));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_PACKED_MUD, Identifier.of(PucksParityMod.MOD_ID, "block/chiseled_packed_mud"));
 			blockStateModelGenerator.registerParentedItemModel(POLISHED_PACKED_MUD, Identifier.of(PucksParityMod.MOD_ID, "block/polished_packed_mud"));
-			blockStateModelGenerator.registerParentedItemModel(CRACKED_RESIN, Identifier.of(PucksParityMod.MOD_ID, "block/cracked_resin_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(MUD_TILES, Identifier.of(PucksParityMod.MOD_ID, "block/mud_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_MUD_TILES, Identifier.of(PucksParityMod.MOD_ID, "block/cracked_mud_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(PACKED_MUD_PILLAR, Identifier.of(PucksParityMod.MOD_ID, "block/packed_mud_pillar"));
@@ -4463,4 +4390,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.upload(identifier6, textureMap, blockStateModelGenerator.modelCollector);
 		}
 	}
+
+
 }
+*///?}

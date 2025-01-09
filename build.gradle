@@ -34,7 +34,13 @@ loom {
 }
 
 fabricApi {
-	configureDataGeneration()
+	if (stonecutter.eval(stonecutter.current.project, "<1.21.4")) {
+		configureDataGeneration()
+	} else {
+		configureDataGeneration {
+			client = true
+		}
+	}
 }
 
 dependencies {
@@ -43,7 +49,6 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 	modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
 	modImplementation "com.github.Chocohead:Fabric-ASM:v${project.fabricasm_version}"
 }
@@ -52,7 +57,8 @@ processResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": project.version,
+				"minecraft_version" : project.minecraft_version
 	}
 
 	inputs.property "minecraft", stonecutter.current.version

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/lime_terracotta_bricks",
-    "side": "pucks_parity_mod:block/lime_terracotta_bricks",
-    "top": "pucks_parity_mod:block/lime_terracotta_bricks"
-  }
-}

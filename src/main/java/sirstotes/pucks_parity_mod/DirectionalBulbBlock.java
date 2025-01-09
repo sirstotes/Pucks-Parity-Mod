@@ -16,17 +16,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class DirectionalBulbBlock extends FacingBlock {
-    //?if >1.21.1
-    /*public static final MapCodec<DirectionalBulbBlock> CODEC = createCodec(DirectionalBulbBlock::new);*/
+    //? if >1.21.1
+    public static final MapCodec<DirectionalBulbBlock> CODEC = createCodec(DirectionalBulbBlock::new);
     public static final BooleanProperty POWERED = Properties.POWERED;
     public static final BooleanProperty LIT = Properties.LIT;
 
-    //?if >1.21.1 {
-    /*@Override
+    //? if >1.21.1 {
+    @Override
     protected MapCodec<? extends DirectionalBulbBlock> getCodec() {
         return CODEC;
     }
-    *///?}
+    //?}
 
     public DirectionalBulbBlock(AbstractBlock.Settings settings) {
         super(settings);
@@ -34,7 +34,7 @@ public class DirectionalBulbBlock extends FacingBlock {
     }
 
     @Override
-    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
         if (oldState.getBlock() != state.getBlock() && world instanceof ServerWorld serverWorld) {
             this.update(state, serverWorld, pos);
         }
@@ -47,7 +47,7 @@ public class DirectionalBulbBlock extends FacingBlock {
             if (!(Boolean)state.get(POWERED)) {
                 blockState = state.cycle(LIT);
                 //? if >1.20.1
-                /*world.playSound(null, pos, blockState.get(LIT) ? SoundEvents.BLOCK_COPPER_BULB_TURN_ON : SoundEvents.BLOCK_COPPER_BULB_TURN_OFF, SoundCategory.BLOCKS);*/
+                world.playSound(null, pos, blockState.get(LIT) ? SoundEvents.BLOCK_COPPER_BULB_TURN_ON : SoundEvents.BLOCK_COPPER_BULB_TURN_OFF, SoundCategory.BLOCKS);
             }
 
             world.setBlockState(pos, blockState.with(POWERED, Boolean.valueOf(bl)), Block.NOTIFY_ALL);
@@ -60,12 +60,12 @@ public class DirectionalBulbBlock extends FacingBlock {
     }
 
     @Override
-    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ boolean hasComparatorOutput(BlockState state) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ boolean hasComparatorOutput(BlockState state) {
         return true;
     }
 
     @Override
-    /*?if <1.21.2 {*/public/*?} else {*//*protected*//*?}*/ int getComparatorOutput(BlockState state, World world, BlockPos pos) {
+    /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ int getComparatorOutput(BlockState state, World world, BlockPos pos) {
         return world.getBlockState(pos).get(LIT) ? 15 : 0;
     }
 

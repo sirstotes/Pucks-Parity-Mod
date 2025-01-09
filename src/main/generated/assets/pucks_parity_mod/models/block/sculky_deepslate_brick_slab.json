@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/sculky_deepslate_bricks",
-    "side": "pucks_parity_mod:block/sculky_deepslate_bricks",
-    "top": "pucks_parity_mod:block/sculky_deepslate_bricks"
-  }
-}

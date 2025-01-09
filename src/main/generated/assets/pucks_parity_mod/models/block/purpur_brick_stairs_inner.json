@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/purpur_bricks_top",
-    "side": "pucks_parity_mod:block/purpur_bricks_side",
-    "top": "pucks_parity_mod:block/purpur_bricks_top"
-  }
-}

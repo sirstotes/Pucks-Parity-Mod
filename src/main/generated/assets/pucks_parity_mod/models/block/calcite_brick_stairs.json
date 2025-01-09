@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "pucks_parity_mod:block/calcite_bricks",
-    "side": "pucks_parity_mod:block/calcite_bricks",
-    "top": "pucks_parity_mod:block/calcite_bricks"
-  }
-}

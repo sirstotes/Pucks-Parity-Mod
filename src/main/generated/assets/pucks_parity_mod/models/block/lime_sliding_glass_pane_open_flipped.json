@@ -1,8 +1,0 @@
-{
-  "parent": "pucks_parity_mod:block/sliding_pane_open_flipped_base",
-  "textures": {
-    "end": "pucks_parity_mod:block/lime_sliding_glass_pane_end",
-    "particle": "pucks_parity_mod:block/lime_sliding_glass_pane",
-    "texture": "pucks_parity_mod:block/lime_sliding_glass_pane"
-  }
-}
