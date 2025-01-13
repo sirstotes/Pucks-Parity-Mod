@@ -1,9 +1,6 @@
 package sirstotes.pucks_parity_mod;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.ActionResult;
@@ -17,16 +14,15 @@ import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class GoldTrapdoorBlock extends TrapdoorBlock {
+    //? if >1.20.1 {
     private final BlockSetType blockSetType;
-
-    public GoldTrapdoorBlock(BlockSetType type, Settings settings) {
-        //? if <1.21.1 {
-        /*super(settings, type);
-        *///?} else {
-        super(type, settings);
-        //?}
-        blockSetType = type;
-    }
+    public GoldTrapdoorBlock(BlockSetType type, Settings settings) {super(type, settings);blockSetType = type;}
+    //?} elif >1.19.2 {
+    /*private final BlockSetType blockSetType;
+    public GoldTrapdoorBlock(BlockSetType type, Settings settings) {super(settings, type);blockSetType = type;}
+    *///?} else {
+    /*public GoldTrapdoorBlock(Settings settings) {super(settings);}
+     *///?}
 
     @Override
     //? if <1.21.1 {
@@ -34,14 +30,19 @@ public class GoldTrapdoorBlock extends TrapdoorBlock {
         *///?} else {
         protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         //?}
-        if (!blockSetType.canOpenByHand() && world.isReceivingRedstonePower(pos)) {
+        if (world.isReceivingRedstonePower(pos)) {
             return ActionResult.FAIL;
         } else {
             state = state.cycle(OPEN);
             //? if <1.21.2 {
             /*world.setBlockState(pos, state, 2);
-            if ((Boolean)state.get(WATERLOGGED)) {
-                world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+            if (state.get(WATERLOGGED)) {
+                //? if <1.20.1 {
+                /^world.createAndScheduleFluidTick
+                ^///?} else {
+                world.scheduleFluidTick
+                //?}
+                (pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
             }
 
             this.playToggleSound(player, world, pos, state.get(OPEN));
@@ -58,8 +59,13 @@ public class GoldTrapdoorBlock extends TrapdoorBlock {
     private void flip(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player) {
         BlockState blockState = state.cycle(OPEN);
         world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
-        if ((Boolean)blockState.get(WATERLOGGED)) {
-            world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        if (blockState.get(WATERLOGGED)) {
+            //? if <1.20.1 {
+            /*world.createAndScheduleFluidTick
+            *///?} else {
+            world.scheduleFluidTick
+            //?}
+            (pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
         this.playToggleSound(player, world, pos, (Boolean)blockState.get(OPEN));

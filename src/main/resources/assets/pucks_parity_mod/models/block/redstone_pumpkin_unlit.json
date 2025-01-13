@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/orientable",
   "textures": {
-    "front": "pucks_parity_mod:block/redstone_pumpkin_lit",
+    "front": "pucks_parity_mod:block/redstone_pumpkin",
     "side": "minecraft:block/pumpkin_side",
     "top": "minecraft:block/pumpkin_top"
   }

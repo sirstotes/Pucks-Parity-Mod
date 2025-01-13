@@ -1,8 +1,6 @@
 package sirstotes.pucks_parity_mod;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,11 +16,12 @@ import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class GoldSlidingPaneDoorBlock extends SlidingPaneDoorBlock {
+    //? if >1.19.2 {
     private final BlockSetType blockSetType;
-    public GoldSlidingPaneDoorBlock(BlockSetType type, Settings settings) {
-        super(type, settings);
-        blockSetType = type;
-    }
+    public GoldSlidingPaneDoorBlock(BlockSetType type, Settings settings) {super(type, settings);blockSetType = type;}
+    //?} else {
+    /*public GoldSlidingPaneDoorBlock(Settings settings) {super(settings);}
+    *///?}
 
     @Override
     //? if <1.21.1 {
@@ -30,7 +29,7 @@ public class GoldSlidingPaneDoorBlock extends SlidingPaneDoorBlock {
         *///?} else {
         protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         //?}
-        if (!blockSetType.canOpenByHand() && world.isReceivingRedstonePower(pos)) {
+        if (world.isReceivingRedstonePower(pos)) {
             return ActionResult.FAIL;
         } else {
             state = state.cycle(OPEN);
@@ -45,11 +44,15 @@ public class GoldSlidingPaneDoorBlock extends SlidingPaneDoorBlock {
         }
     }
 
+    //? if >1.19.2 {
     private void playOpenCloseSound(@Nullable Entity entity, World world, BlockPos pos, boolean open) {
-        world.playSound(
-                entity, pos, open ? this.blockSetType.doorOpen() : this.blockSetType.doorClose(), SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.1F + 0.9F
-        );
+        world.playSound(entity, pos, open ? this.blockSetType.doorOpen() : this.blockSetType.doorClose(), SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.1F + 0.9F);
     }
+    //?} else {
+    /*private void playOpenCloseSound(@Nullable Entity entity, World world, BlockPos pos, boolean open) {
+        world.syncWorldEvent(null, open ? 1005 : 1011, pos, 0);
+    }
+    *///?}
 
     //Causes gold doors to not switch when receiving redstone power.
     //? if <1.21.1 {

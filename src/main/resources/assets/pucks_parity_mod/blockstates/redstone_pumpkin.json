@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=east": {
-      "model": "pucks_parity_mod:block/redstone_pumpkin",
+    "facing=east,lit=true": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_lit",
       "y": 90
     },
-    "facing=north": {
-      "model": "pucks_parity_mod:block/redstone_pumpkin"
+    "facing=north,lit=true": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_lit"
     },
-    "facing=south": {
-      "model": "pucks_parity_mod:block/redstone_pumpkin",
+    "facing=south,lit=true": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_lit",
       "y": 180
     },
-    "facing=west": {
-      "model": "pucks_parity_mod:block/redstone_pumpkin",
+    "facing=west,lit=true": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_lit",
+      "y": 270
+    },
+    "facing=east,lit=false": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_unlit",
+      "y": 90
+    },
+    "facing=north,lit=false": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_unlit"
+    },
+    "facing=south,lit=false": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_unlit",
+      "y": 180
+    },
+    "facing=west,lit=false": {
+      "model": "pucks_parity_mod:block/redstone_pumpkin_unlit",
       "y": 270
     }
   }

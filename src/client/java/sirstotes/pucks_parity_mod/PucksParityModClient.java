@@ -8,6 +8,8 @@ public class PucksParityModClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.REDSTONE_PUMPKIN, RenderLayer.getCutout());
+
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.COPPER_CHAIN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.EXPOSED_COPPER_CHAIN, RenderLayer.getCutout());
 		BlockRenderLayerMap.INSTANCE.putBlock(PucksParityModBlocks.WEATHERED_COPPER_CHAIN, RenderLayer.getCutout());

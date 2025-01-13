@@ -22,7 +22,8 @@
 			"sirstotes.pucks_parity_mod.PucksParityModClient"
 		],
 		"fabric-datagen": [
-			"sirstotes.pucks_parity_mod.PucksParityModDataGenerator"
+			"sirstotes.pucks_parity_mod.PucksParityModDataGenerator",
+			"sirstotes.pucks_parity_mod.PucksParityModClientDataGenerator"
 		]
 	},
 	"mixins": [

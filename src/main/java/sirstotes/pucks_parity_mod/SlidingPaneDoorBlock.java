@@ -53,9 +53,9 @@ public class SlidingPaneDoorBlock extends Block {
     protected static final VoxelShape EAST_SHAPE = Block.createCuboidShape(7, 0, 0, 9, 16, 16);
     protected static final VoxelShape WEST_SHAPE = Block.createCuboidShape(7, 0, 0, 9, 16, 16);
     //protected static final VoxelShape OPEN_SHAPE = Block.createCuboidShape(7, 0, 7, 9, 16, 9);
+
+    //? if >1.19.2 {
     private final BlockSetType blockSetType;
-
-
     public SlidingPaneDoorBlock(BlockSetType type, AbstractBlock.Settings settings) {
         super(settings.sounds(type.soundType()));
         this.blockSetType = type;
@@ -68,10 +68,22 @@ public class SlidingPaneDoorBlock extends Block {
                         .with(POWERED, false)
         );
     }
-
     public BlockSetType getBlockSetType() {
         return this.blockSetType;
     }
+    //?} else {
+    /*public SlidingPaneDoorBlock(AbstractBlock.Settings settings) {
+        super(settings);
+        this.setDefaultState(
+                this.stateManager
+                        .getDefaultState()
+                        .with(FACING, Direction.NORTH)
+                        .with(OPEN, false)
+                        .with(HINGE, DoorHinge.LEFT)
+                        .with(POWERED, false)
+        );
+    }
+    *///?}
 
     @Override
     /*? if <1.21.2 {*/ /*public*//*?} else {*/protected/*?}*/ VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
@@ -121,17 +133,23 @@ public class SlidingPaneDoorBlock extends Block {
         BlockPos blockPos = ctx.getBlockPos();
         World world = ctx.getWorld();
         boolean bl = world.isReceivingRedstonePower(blockPos) || world.isReceivingRedstonePower(blockPos.up());
-        return this.getDefaultState()
-                .with(FACING, ctx.getHorizontalPlayerFacing())
-                .with(HINGE, this.getHinge(ctx))
-                .with(POWERED, bl)
-                .with(OPEN, bl);
+
+        //? if >1.19.2 {
+        BlockState blockState = this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing());
+         //?} else {
+        /*BlockState blockState = this.getDefaultState().with(FACING, ctx.getPlayerFacing());
+        *///?}
+        return blockState.with(HINGE, this.getHinge(ctx)).with(POWERED, bl).with(OPEN, bl);
     }
 
     private DoorHinge getHinge(ItemPlacementContext ctx) {
         BlockView blockView = ctx.getWorld();
         BlockPos blockPos = ctx.getBlockPos();
+        //? if >1.19.2 {
         Direction direction = ctx.getHorizontalPlayerFacing();
+        //?} else {
+        /*Direction direction = ctx.getPlayerFacing();
+        *///?}
         BlockPos blockPos2 = blockPos.up();
         Direction direction2 = direction.rotateYCounterclockwise();
         BlockPos blockPos3 = blockPos.offset(direction2);
@@ -171,7 +189,7 @@ public class SlidingPaneDoorBlock extends Block {
         *///?} else {
         protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         //?}
-        if (!this.blockSetType.canOpenByHand()) {
+        if (/*? if >1.19.2 {*/!blockSetType.canOpenByHand()/*?} else {*//*this.material == Material.METAL*//*?}*/) {
             return ActionResult.PASS;
         } else {
             state = state.cycle(OPEN);
@@ -231,11 +249,15 @@ public class SlidingPaneDoorBlock extends Block {
 //        return blockState.isSideSolidFullSquare(world, blockPos, Direction.UP);
 //    }
 
+    //? if >1.19.2 {
     private void playOpenCloseSound(@Nullable Entity entity, World world, BlockPos pos, boolean open) {
-        world.playSound(
-                entity, pos, open ? this.blockSetType.doorOpen() : this.blockSetType.doorClose(), SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.1F + 0.9F
-        );
+        world.playSound(entity, pos, open ? this.blockSetType.doorOpen() : this.blockSetType.doorClose(), SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.1F + 0.9F);
     }
+    //?} else {
+    /*private void playOpenCloseSound(@Nullable Entity entity, World world, BlockPos pos, boolean open) {
+        world.syncWorldEvent(null, open ? 1005 : 1011, pos, 0);
+    }
+    *///?}
 
     @Override
     /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ BlockState rotate(BlockState state, BlockRotation rotation) {
@@ -257,6 +279,7 @@ public class SlidingPaneDoorBlock extends Block {
         builder.add(FACING, OPEN, HINGE, POWERED);
     }
 
+    //? if >1.19.2 {
     public static boolean canOpenByHand(World world, BlockPos pos) {
         return canOpenByHand(world.getBlockState(pos));
     }
@@ -264,6 +287,7 @@ public class SlidingPaneDoorBlock extends Block {
     public static boolean canOpenByHand(BlockState state) {
         return state.getBlock() instanceof DoorBlock doorBlock && doorBlock.getBlockSetType().canOpenByHand();
     }
+    //?}
 
     @Override
     /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ boolean hasSidedTransparency(BlockState state) {

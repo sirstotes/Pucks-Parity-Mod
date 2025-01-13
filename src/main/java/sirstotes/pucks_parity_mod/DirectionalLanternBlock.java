@@ -22,7 +22,11 @@ public class DirectionalLanternBlock extends LanternBlock {
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         FluidState fluidState = ctx.getWorld().getFluidState(ctx.getBlockPos());
 
+        //? if >1.19.2 {
         BlockState blockState = this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing());
+        //?} else {
+        /*BlockState blockState = this.getDefaultState().with(FACING, ctx.getPlayerFacing());
+        *///?}
 
         for (Direction direction : ctx.getPlacementDirections()) {
             if (direction.getAxis() == Direction.Axis.Y) {

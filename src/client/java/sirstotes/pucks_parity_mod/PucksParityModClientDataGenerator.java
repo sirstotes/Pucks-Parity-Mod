@@ -1,7 +1,6 @@
 package sirstotes.pucks_parity_mod;
+//? if >1.21.3 {
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -12,6 +11,7 @@ import net.minecraft.block.enums.DoorHinge;
 import net.minecraft.client.data.*;
 import net.minecraft.data.recipe.*;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
@@ -30,18 +30,23 @@ import java.util.concurrent.CompletableFuture;
 
 import static sirstotes.pucks_parity_mod.PucksParityModBlocks.*;
 import static sirstotes.pucks_parity_mod.PucksParityModItems.*;
+//?}
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
-public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
+public class PucksParityModClientDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
-		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
+        //? if >1.21.3 {
+	    FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 		pack.addProvider(BlockLootTableProvider::new);
 		pack.addProvider(ModelGenerator::new);
 		pack.addProvider(RecipeProvider::new);
 		pack.addProvider(ItemTagGenerator::new);
 		pack.addProvider(BlockTagGenerator::new);
+	    //?}
 	}
-
+    //? if >1.21.3 {
 	private static class ItemTagGenerator extends FabricTagProvider<Item> {
 		public ItemTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
 			super(output, RegistryKeys.ITEM, registriesFuture);
@@ -300,11 +305,14 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			return new RecipeGenerator(lookup, exporter) {
 				@Override
 				public void generate() {
+					createShaped(RecipeCategory.BUILDING_BLOCKS, SOUL_PUMPKIN).input('A', Blocks.CARVED_PUMPKIN).input('B', Blocks.SOUL_TORCH).pattern("A").pattern("B").criterion("has_carved_pumpkin", conditionsFromItem(Blocks.CARVED_PUMPKIN)).offerTo(exporter);
+					createShaped(RecipeCategory.BUILDING_BLOCKS, REDSTONE_PUMPKIN).input('A', Blocks.CARVED_PUMPKIN).input('B', Blocks.REDSTONE_TORCH).pattern("A").pattern("B").criterion("has_carved_pumpkin", conditionsFromItem(Blocks.CARVED_PUMPKIN)).offerTo(exporter);
+
 					offerReversibleCompactingRecipesWithCompactingRecipeGroup(RecipeCategory.MISC, COPPER_NUGGET, RecipeCategory.MISC, Items.COPPER_INGOT, "copper_ingot_from_nuggets", "copper_ingot");
 					offerReversibleCompactingRecipesWithCompactingRecipeGroup(RecipeCategory.MISC, Items.POPPED_CHORUS_FRUIT, RecipeCategory.MISC, PURPUR, "purpur_from_chorus_fruit", "purpur");
 
 					offerPressurePlateRecipe(PLAYER_PRESSURE_PLATE, Items.COPPER_INGOT);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, COPPER_BARS, 8)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, COPPER_BARS, 8)
 							.input('#', Items.COPPER_INGOT)
 							.input('X', COPPER_NUGGET)
 							.pattern("#X#")
@@ -312,7 +320,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, COPPER_GATE, 3)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, COPPER_GATE, 3)
 							.input('#', Items.COPPER_INGOT)
 							.input('X', COPPER_NUGGET)
 							.pattern("X#X")
@@ -320,7 +328,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_CHAIN)
+					createShaped(RecipeCategory.DECORATIONS, COPPER_CHAIN)
 							.input('I', Items.COPPER_INGOT)
 							.input('N', COPPER_NUGGET)
 							.pattern("N")
@@ -329,7 +337,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_LANTERN)
+					createShaped(RecipeCategory.DECORATIONS, COPPER_LANTERN)
 							.input('#', Items.TORCH)
 							.input('X', COPPER_NUGGET)
 							.pattern("XXX")
@@ -338,7 +346,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_SOUL_LANTERN)
+					createShaped(RecipeCategory.DECORATIONS, COPPER_SOUL_LANTERN)
 							.input('#', Items.SOUL_TORCH)
 							.input('X', COPPER_NUGGET)
 							.pattern("XXX")
@@ -347,7 +355,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_copper_nugget", conditionsFromItem(COPPER_NUGGET))
 							.criterion("has_copper_ingot", conditionsFromItem(Items.COPPER_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, COPPER_REDSTONE_LANTERN)
+					createShaped(RecipeCategory.DECORATIONS, COPPER_REDSTONE_LANTERN)
 							.input('#', Items.REDSTONE_TORCH)
 							.input('X', COPPER_NUGGET)
 							.pattern("XXX")
@@ -374,7 +382,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_STAIRS, Blocks.GOLD_BLOCK, 4);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD_SLAB, Blocks.GOLD_BLOCK, 8);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, Blocks.GOLD_BLOCK, 4);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, GOLD_BARS, 8)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, GOLD_BARS, 8)
 							.input('#', Items.GOLD_INGOT)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("#X#")
@@ -382,7 +390,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, GOLD_GATE, 3)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, GOLD_GATE, 3)
 							.input('#', Items.GOLD_INGOT)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("X#X")
@@ -390,7 +398,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_CHAIN)
+					createShaped(RecipeCategory.DECORATIONS, GOLD_CHAIN)
 							.input('I', Items.GOLD_INGOT)
 							.input('N', Items.GOLD_NUGGET)
 							.pattern("N")
@@ -399,7 +407,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_iron_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_iron_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_LANTERN)
+					createShaped(RecipeCategory.DECORATIONS, GOLD_LANTERN)
 							.input('#', Items.TORCH)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("XXX")
@@ -408,7 +416,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_SOUL_LANTERN)
+					createShaped(RecipeCategory.DECORATIONS, GOLD_SOUL_LANTERN)
 							.input('#', Items.SOUL_TORCH)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("XXX")
@@ -417,7 +425,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, GOLD_REDSTONE_LANTERN)
+					createShaped(RecipeCategory.DECORATIONS, GOLD_REDSTONE_LANTERN)
 							.input('#', Items.REDSTONE_TORCH)
 							.input('X', Items.GOLD_NUGGET)
 							.pattern("XXX")
@@ -426,7 +434,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.GOLD_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.GOLD_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CUT_GOLD, 4)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, CUT_GOLD, 4)
 							.input('X', Blocks.GOLD_BLOCK)
 							.pattern("XX")
 							.pattern("XX")
@@ -438,7 +446,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					createStairsRecipe(CUT_GOLD_STAIRS, Ingredient.ofItems(CUT_GOLD))
 							.criterion("has_cut_gold_block", conditionsFromItem(CUT_GOLD))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, 1)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, CHISELED_GOLD, 1)
 							.input('X', CUT_GOLD_SLAB)
 							.pattern("X")
 							.pattern("X")
@@ -454,7 +462,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_IRON_STAIRS, Blocks.IRON_BLOCK, 4);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CUT_IRON_SLAB, Blocks.IRON_BLOCK, 8);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, Blocks.IRON_BLOCK, 4);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, Blocks.IRON_BARS, 8)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, Blocks.IRON_BARS, 8)
 							.input('#', Items.IRON_INGOT)
 							.input('X', Items.IRON_NUGGET)
 							.pattern("#X#")
@@ -462,7 +470,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_iron_ingot", conditionsFromItem(Items.IRON_INGOT))
 							.criterion("has_iron_nugget", conditionsFromItem(Items.IRON_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, IRON_GATE, 3)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, IRON_GATE, 3)
 							.input('#', Items.IRON_INGOT)
 							.input('X', Items.IRON_NUGGET)
 							.pattern("X#X")
@@ -470,7 +478,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_iron_ingot", conditionsFromItem(Items.IRON_INGOT))
 							.criterion("has_iron_nugget", conditionsFromItem(Items.IRON_NUGGET))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.DECORATIONS, IRON_REDSTONE_LANTERN)
+					createShaped(RecipeCategory.DECORATIONS, IRON_REDSTONE_LANTERN)
 							.input('#', Items.REDSTONE_TORCH)
 							.input('X', Items.IRON_NUGGET)
 							.pattern("XXX")
@@ -479,7 +487,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 							.criterion("has_gold_nugget", conditionsFromItem(Items.IRON_NUGGET))
 							.criterion("has_gold_ingot", conditionsFromItem(Items.IRON_INGOT))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CUT_IRON, 4)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, CUT_IRON, 4)
 							.input('X', Blocks.IRON_BLOCK)
 							.pattern("XX")
 							.pattern("XX")
@@ -491,7 +499,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					createStairsRecipe(CUT_IRON_STAIRS, Ingredient.ofItems(CUT_IRON))
 							.criterion("has_cut_gold_block", conditionsFromItem(CUT_IRON))
 							.offerTo(exporter);
-					ShapedRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, 1)
+					createShaped(RecipeCategory.BUILDING_BLOCKS, CHISELED_IRON, 1)
 							.input('X', CUT_IRON_SLAB)
 							.pattern("X")
 							.pattern("X")
@@ -704,8 +712,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE, POLISHED_END_STONE, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, END_STONE_PILLAR, POLISHED_END_STONE, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CHISELED_END_STONE_PILLAR, POLISHED_END_STONE, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_SLAB, PURPUR, 2);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_STAIRS, PURPUR, 1);
+					//offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_SLAB, PURPUR, 2);//TODO: Figure out why is broken
+					//offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_STAIRS, PURPUR, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, PURPUR_WALL, PURPUR, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_PURPUR_BRICKS, PURPUR_BRICKS, 1);
@@ -1051,8 +1059,8 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_SLAB, RESIN, 2);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_STAIRS, RESIN, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_WALL, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN, RESIN, 1);
-					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN, RESIN_BRICKS, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_BRICKS, RESIN, 1);
+					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, CRACKED_RESIN_BRICKS, RESIN_BRICKS, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILES, RESIN, 1);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_SLAB, RESIN, 2);
 					offerStonecuttingRecipe(RecipeCategory.BUILDING_BLOCKS, RESIN_TILE_STAIRS, RESIN, 1);
@@ -1980,553 +1988,553 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_CALCITE), RecipeCategory.BUILDING_BLOCKS, Blocks.CALCITE, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_CALCITE)).offerTo(exporter);
 					CookingRecipeJsonBuilder.createSmelting(Ingredient.ofItems(COBBLED_DRIPSTONE), RecipeCategory.BUILDING_BLOCKS, Blocks.DRIPSTONE_BLOCK, 0.0F, 200).criterion("has_cobblestone", conditionsFromItem(COBBLED_DRIPSTONE)).offerTo(exporter);
 
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
 							.input(COBBLED_TUFF)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_tuff")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_TUFF, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICKS)
 							.input(Blocks.TUFF_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_tuff_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_TUFF_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_TUFF_BRICKS)
 							.input(Blocks.TUFF_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_tuff_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_TUFF_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_TUFF)
 							.input(COBBLED_TUFF)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_tuff")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_TUFF, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
 							.input(Blocks.COBBLED_DEEPSLATE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_deepslate")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DEEPSLATE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
 							.input(Blocks.DEEPSLATE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_deepslate_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_DEEPSLATE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DEEPSLATE)
 							.input(Blocks.COBBLED_DEEPSLATE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_deepslate")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DEEPSLATE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_DEEPSLATE_BRICKS)
 							.input(Blocks.DEEPSLATE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_deepslate_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_DEEPSLATE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, SCULKY_COBBLED_DEEPSLATE)
 							.input(Blocks.COBBLED_DEEPSLATE)
 							.input(Blocks.SCULK)
 							.group("sculky_cobbled_deepslate")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.SCULK))
 							.offerTo(exporter, convertBetween(SCULKY_COBBLED_DEEPSLATE, Blocks.SCULK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, SCULKY_DEEPSLATE_BRICKS)
 							.input(Blocks.DEEPSLATE_BRICKS)
 							.input(Blocks.SCULK)
 							.group("sculky_deepslate_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.SCULK))
 							.offerTo(exporter, convertBetween(SCULKY_DEEPSLATE_BRICKS, Blocks.SCULK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
 							.input(COBBLED_ANDESITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_andesite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_ANDESITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
 							.input(ANDESITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_andesite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_ANDESITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_ANDESITE)
 							.input(COBBLED_ANDESITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_andesite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_ANDESITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_ANDESITE_BRICKS)
 							.input(ANDESITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_andesite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_ANDESITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
 							.input(COBBLED_DIORITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_diorite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DIORITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
 							.input(DIORITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_diorite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_DIORITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DIORITE)
 							.input(COBBLED_DIORITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_diorite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DIORITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_DIORITE_BRICKS)
 							.input(DIORITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_diorite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_DIORITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
 							.input(COBBLED_GRANITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_granite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_GRANITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
 							.input(GRANITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_granite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_GRANITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_GRANITE)
 							.input(COBBLED_GRANITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_granite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_GRANITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRANITE_BRICKS)
 							.input(GRANITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_granite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_GRANITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
 							.input(Blocks.SANDSTONE)
 							.input(Blocks.VINE)
 							.group("mossy_sandstone")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_sandstone_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE)
 							.input(Blocks.SANDSTONE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_sandstone")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_sandstone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_SANDSTONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
 							.input(Blocks.RED_SANDSTONE)
 							.input(Blocks.VINE)
 							.group("mossy_red_sandstone")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossyred_sandstone_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE)
 							.input(Blocks.RED_SANDSTONE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_red_sandstone")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_SANDSTONE_BRICKS)
 							.input(SANDSTONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossyred_sandstone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_RED_SANDSTONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
 							.input(COBBLED_CALCITE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_calcite")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_CALCITE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
 							.input(CALCITE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_calcite_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_CALCITE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_CALCITE)
 							.input(COBBLED_CALCITE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_calcite")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_CALCITE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_CALCITE_BRICKS)
 							.input(CALCITE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_calcite_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_CALCITE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
 							.input(COBBLED_DRIPSTONE)
 							.input(Blocks.VINE)
 							.group("mossy_cobbled_dripstone")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DRIPSTONE, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
 							.input(DRIPSTONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_dripstone_bricks")
 							.criterion("has_vine", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_DRIPSTONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_COBBLED_DRIPSTONE)
 							.input(COBBLED_DRIPSTONE)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cobbled_dripstone")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_COBBLED_DRIPSTONE, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_DRIPSTONE_BRICKS)
 							.input(DRIPSTONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_dripstone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_DRIPSTONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BLACKSTONE)
 							.input(COBBLED_BLACKSTONE)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_cobbled_blackstone")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_COBBLED_BLACKSTONE, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BLACKSTONE_BRICKS)
 							.input(Blocks.POLISHED_BLACKSTONE_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_blackstone_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_BLACKSTONE_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BLACKSTONE)
 							.input(COBBLED_BLACKSTONE)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_cobbled_blackstone")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_COBBLED_BLACKSTONE, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_BLACKSTONE_BRICKS)
 							.input(Blocks.POLISHED_BLACKSTONE_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_blackstone_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_BLACKSTONE_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_COBBLED_BASALT)
 							.input(COBBLED_BASALT)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_cobbled_basalt")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_COBBLED_BASALT, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_BASALT_BRICKS)
 							.input(BASALT_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_basalt_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_BASALT_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_COBBLED_BASALT)
 							.input(COBBLED_BASALT)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_cobbled_basalt")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_COBBLED_BASALT, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_BASALT_BRICKS)
 							.input(BASALT_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_basalt_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_BASALT_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHERRACK)
 							.input(Blocks.NETHERRACK)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_netherrack")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_NETHERRACK, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHERRACK)
 							.input(Blocks.NETHERRACK)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_netherrack")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_NETHERRACK, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_NETHER_BRICKS)
 							.input(Blocks.NETHER_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_nether_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_NETHER_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_NETHER_BRICKS)
 							.input(Blocks.NETHER_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_nether_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_NETHER_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_RED_NETHER_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_RED_NETHER_BRICKS)
 							.input(Blocks.RED_NETHER_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_red_nether_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_RED_NETHER_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_RED_NETHER_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_RED_NETHER_BRICKS)
 							.input(Blocks.RED_NETHER_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_red_nether_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_RED_NETHER_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, CRIMSON_QUARTZ_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, CRIMSON_QUARTZ_BRICKS)
 							.input(Blocks.QUARTZ_BRICKS)
 							.input(Blocks.CRIMSON_ROOTS)
 							.group("crimson_quartz_bricks")
 							.criterion("has_crimson_roots", conditionsFromItem(Blocks.CRIMSON_ROOTS))
 							.offerTo(exporter, convertBetween(CRIMSON_QUARTZ_BRICKS, Blocks.CRIMSON_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, WARPED_QUARTZ_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, WARPED_QUARTZ_BRICKS)
 							.input(Blocks.QUARTZ_BRICKS)
 							.input(Blocks.WARPED_ROOTS)
 							.group("warped_quartz_bricks")
 							.criterion("has_warped_roots", conditionsFromItem(Blocks.WARPED_ROOTS))
 							.offerTo(exporter, convertBetween(WARPED_QUARTZ_BRICKS, Blocks.WARPED_ROOTS));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
 							.input(SMOOTH_STONE_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_smooth_stone_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_SMOOTH_STONE_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_SMOOTH_STONE_BRICKS)
 							.input(SMOOTH_STONE_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_smooth_stone_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_SMOOTH_STONE_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOLDY_COBBLED_END_STONE)
 							.input(COBBLED_END_STONE)
 							.input(Items.CHORUS_FRUIT)
 							.group("moldy_cobbled_end_stone")
 							.criterion("has_chorus_fruit", conditionsFromItem(Items.CHORUS_FRUIT))
 							.offerTo(exporter, convertBetween(MOLDY_COBBLED_END_STONE, Items.CHORUS_FRUIT));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOLDY_END_STONE_BRICKS)
 							.input(Blocks.END_STONE_BRICKS)
 							.input(Items.CHORUS_FRUIT)
 							.group("moldy_end_stone_bricks")
 							.criterion("has_chorus_fruit", conditionsFromItem(Items.CHORUS_FRUIT))
 							.offerTo(exporter, convertBetween(MOLDY_END_STONE_BRICKS, Items.CHORUS_FRUIT));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOLDY_PURPUR_BRICKS)
 							.input(PURPUR_BRICKS)
 							.input(Items.CHORUS_FRUIT)
 							.group("moldy_purpur_bricks")
 							.criterion("has_chorus_fruit", conditionsFromItem(Items.CHORUS_FRUIT))
 							.offerTo(exporter, convertBetween(MOLDY_PURPUR_BRICKS, Items.CHORUS_FRUIT));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_RESIN_BRICKS)
 							.input(Blocks.RESIN_BRICKS)
 							.input(Blocks.PALE_MOSS_BLOCK)
 							.group("mossy_resin_bricks")
 							.criterion("has_pale_moss_block", conditionsFromItem(Blocks.PALE_MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_RESIN_BRICKS, Blocks.PALE_MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
 							.input(Blocks.BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BRICKS)
 							.input(Blocks.BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
 							.input(RED_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_red_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_RED_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_RED_TERRACOTTA_BRICKS)
 							.input(RED_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_red_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_RED_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
 							.input(ORANGE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_orange_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_ORANGE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_ORANGE_TERRACOTTA_BRICKS)
 							.input(ORANGE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_orange_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_ORANGE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
 							.input(YELLOW_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_yellow_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_YELLOW_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_YELLOW_TERRACOTTA_BRICKS)
 							.input(YELLOW_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_yellow_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_YELLOW_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
 							.input(GREEN_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_green_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_GREEN_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_GREEN_TERRACOTTA_BRICKS)
 							.input(GREEN_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_green_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_GREEN_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
 							.input(CYAN_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_cyan_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_CYAN_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_CYAN_TERRACOTTA_BRICKS)
 							.input(CYAN_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_cyan_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_CYAN_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_light_blue_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(LIGHT_BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_light_blue_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_BLUE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
 							.input(BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_blue_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_BLUE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLUE_TERRACOTTA_BRICKS)
 							.input(BLUE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_blue_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_BLUE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
 							.input(PURPLE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_purple_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_PURPLE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_PURPLE_TERRACOTTA_BRICKS)
 							.input(PURPLE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_purple_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_PURPLE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
 							.input(MAGENTA_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_magenta_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_MAGENTA_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_MAGENTA_TERRACOTTA_BRICKS)
 							.input(MAGENTA_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_magenta_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_MAGENTA_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
 							.input(PINK_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_pink_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_PINK_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_PINK_TERRACOTTA_BRICKS)
 							.input(PINK_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_pink_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_PINK_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
 							.input(BROWN_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_brown_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_BROWN_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BROWN_TERRACOTTA_BRICKS)
 							.input(BROWN_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_brown_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_BROWN_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
 							.input(WHITE_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_white_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_WHITE_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_WHITE_TERRACOTTA_BRICKS)
 							.input(WHITE_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_white_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_WHITE_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_light_gray_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(LIGHT_GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_light_gray_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_LIGHT_GRAY_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
 							.input(GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_gray_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_GRAY_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_GRAY_TERRACOTTA_BRICKS)
 							.input(GRAY_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_gray_terracotta_bricks")
 							.criterion("has_moss_block", conditionsFromItem(Blocks.MOSS_BLOCK))
 							.offerTo(exporter, convertBetween(MOSSY_GRAY_TERRACOTTA_BRICKS, Blocks.MOSS_BLOCK));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
 							.input(BLACK_TERRACOTTA_BRICKS)
 							.input(Blocks.VINE)
 							.group("mossy_black_terracotta_bricks")
 							.criterion("has_vine_block", conditionsFromItem(Blocks.VINE))
 							.offerTo(exporter, convertBetween(MOSSY_BLACK_TERRACOTTA_BRICKS, Blocks.VINE));
-					ShapelessRecipeJsonBuilder.create((RegistryEntryLookup<Item>) lookup, RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
+					createShapeless(RecipeCategory.BUILDING_BLOCKS, MOSSY_BLACK_TERRACOTTA_BRICKS)
 							.input(BLACK_TERRACOTTA_BRICKS)
 							.input(Blocks.MOSS_BLOCK)
 							.group("mossy_black_terracotta_bricks")
@@ -2549,6 +2557,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generate() {
+			addDrop(SOUL_PUMPKIN, drops(SOUL_PUMPKIN));
+			addDrop(REDSTONE_PUMPKIN, drops(REDSTONE_PUMPKIN));
+
 			addDrop(COPPER_CHAIN, drops(COPPER_CHAIN));
 			addDrop(EXPOSED_COPPER_CHAIN, drops(EXPOSED_COPPER_CHAIN));
 			addDrop(WEATHERED_COPPER_CHAIN, drops(WEATHERED_COPPER_CHAIN));
@@ -2849,7 +2860,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(MOSSY_SANDSTONE_BRICK_STAIRS, drops(MOSSY_SANDSTONE_BRICK_STAIRS));
 			addDrop(MOSSY_SANDSTONE_BRICK_WALL, drops(MOSSY_SANDSTONE_BRICK_WALL));
 			addDrop(CUT_SANDSTONE_STAIRS, drops(CUT_SANDSTONE_STAIRS));
-//			addDrop(CUT_SANDSTONE_WALL, drops(CUT_SANDSTONE_WALL));
+			addDrop(CUT_SANDSTONE_WALL, drops(CUT_SANDSTONE_WALL));
 			addDrop(SANDSTONE_TILES, drops(SANDSTONE_TILES));
 			addDrop(SANDSTONE_TILE_SLAB, drops(SANDSTONE_TILE_SLAB));
 			addDrop(SANDSTONE_TILE_STAIRS, drops(SANDSTONE_TILE_STAIRS));
@@ -3168,7 +3179,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			addDrop(RESIN_SLAB, drops(RESIN_SLAB));
 			addDrop(RESIN_STAIRS, drops(RESIN_STAIRS));
 			addDrop(RESIN_WALL, drops(RESIN_WALL));
-			addDrop(CRACKED_RESIN, drops(CRACKED_RESIN));
+			addDrop(CRACKED_RESIN_BRICKS, drops(CRACKED_RESIN_BRICKS));
 			addDrop(MOSSY_RESIN_BRICKS, drops(MOSSY_RESIN_BRICKS));
 			addDrop(MOSSY_RESIN_BRICK_SLAB, drops(MOSSY_RESIN_BRICK_SLAB));
 			addDrop(MOSSY_RESIN_BRICK_STAIRS, drops(MOSSY_RESIN_BRICK_STAIRS));
@@ -3637,6 +3648,14 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			registerPaneDoor(blockStateModelGenerator, GRAY_SLIDING_GLASS_PANE, "gray_sliding_glass_pane");
 			registerPaneDoor(blockStateModelGenerator, BLACK_SLIDING_GLASS_PANE, "black_sliding_glass_pane");
 
+			blockStateModelGenerator.registerParentedItemModel(PLAYER_PRESSURE_PLATE, Identifier.of(PucksParityMod.MOD_ID, "block/player_pressure_plate"));
+			blockStateModelGenerator.registerParentedItemModel(EXPOSED_PLAYER_PRESSURE_PLATE, Identifier.of(PucksParityMod.MOD_ID, "block/exposed_player_pressure_plate"));
+			blockStateModelGenerator.registerParentedItemModel(WEATHERED_PLAYER_PRESSURE_PLATE, Identifier.of(PucksParityMod.MOD_ID, "block/weathered_player_pressure_plate"));
+			blockStateModelGenerator.registerParentedItemModel(OXIDIZED_PLAYER_PRESSURE_PLATE, Identifier.of(PucksParityMod.MOD_ID, "block/oxidized_player_pressure_plate"));
+
+			blockStateModelGenerator.registerParentedItemModel(SOUL_PUMPKIN, Identifier.of(PucksParityMod.MOD_ID, "block/soul_pumpkin"));
+			blockStateModelGenerator.registerParentedItemModel(REDSTONE_PUMPKIN, Identifier.of(PucksParityMod.MOD_ID, "block/redstone_pumpkin"));
+
 			blockStateModelGenerator.registerParentedItemModel(SLIDING_GLASS_PANE, Identifier.of(PucksParityMod.MOD_ID, "block/sliding_glass_pane"));
 			blockStateModelGenerator.registerParentedItemModel(RED_SLIDING_GLASS_PANE, Identifier.of(PucksParityMod.MOD_ID, "block/red_sliding_glass_pane"));
 			blockStateModelGenerator.registerParentedItemModel(ORANGE_SLIDING_GLASS_PANE, Identifier.of(PucksParityMod.MOD_ID, "block/orange_sliding_glass_pane"));
@@ -3779,7 +3798,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_CALCITE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_DRIPSTONE_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_MUD_BRICKS);
-			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RESIN);
+			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RESIN_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_RED_TERRACOTTA_BRICKS);
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_ORANGE_TERRACOTTA_BRICKS);
@@ -3838,6 +3857,9 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerSimpleCubeAll(CRACKED_BLACK_TERRACOTTA_TILES);
 
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_SMOOTH_STONE);
+			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_ANDESITE);
+			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_DIORITE);
+			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_GRANITE);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_END_STONE);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_PURPUR);
 			blockStateModelGenerator.registerSimpleCubeAll(CHISELED_PRISMARINE);
@@ -4123,7 +4145,7 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			blockStateModelGenerator.registerParentedItemModel(MOSSY_MUD_BRICKS, ModelIds.getBlockModelId(MOSSY_MUD_BRICKS));
 			blockStateModelGenerator.registerParentedItemModel(CHISELED_PACKED_MUD, Identifier.of(PucksParityMod.MOD_ID, "block/chiseled_packed_mud"));
 			blockStateModelGenerator.registerParentedItemModel(POLISHED_PACKED_MUD, Identifier.of(PucksParityMod.MOD_ID, "block/polished_packed_mud"));
-			blockStateModelGenerator.registerParentedItemModel(CRACKED_RESIN, Identifier.of(PucksParityMod.MOD_ID, "block/cracked_resin_bricks"));
+			blockStateModelGenerator.registerParentedItemModel(CRACKED_RESIN_BRICKS, Identifier.of(PucksParityMod.MOD_ID, "block/cracked_resin_bricks"));
 			blockStateModelGenerator.registerParentedItemModel(MUD_TILES, Identifier.of(PucksParityMod.MOD_ID, "block/mud_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(CRACKED_MUD_TILES, Identifier.of(PucksParityMod.MOD_ID, "block/cracked_mud_tiles"));
 			blockStateModelGenerator.registerParentedItemModel(PACKED_MUD_PILLAR, Identifier.of(PucksParityMod.MOD_ID, "block/packed_mud_pillar"));
@@ -4290,55 +4312,60 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(EXPOSED_COPPER_CHAIN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WEATHERED_COPPER_CHAIN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(OXIDIZED_COPPER_CHAIN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_COPPER_CHAIN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_EXPOSED_COPPER_CHAIN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_WEATHERED_COPPER_CHAIN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_CHAIN.asItem(), Models.GENERATED);
+			itemModelGenerator.output.accept(WAXED_COPPER_CHAIN.asItem(), ItemModels.basic(ModelIds.getItemModelId(COPPER_CHAIN.asItem())));
+			itemModelGenerator.output.accept(WAXED_EXPOSED_COPPER_CHAIN.asItem(), ItemModels.basic(ModelIds.getItemModelId(EXPOSED_COPPER_CHAIN.asItem())));
+			itemModelGenerator.output.accept(WAXED_WEATHERED_COPPER_CHAIN.asItem(), ItemModels.basic(ModelIds.getItemModelId(WEATHERED_COPPER_CHAIN.asItem())));
+			itemModelGenerator.output.accept(WAXED_OXIDIZED_COPPER_CHAIN.asItem(), ItemModels.basic(ModelIds.getItemModelId(OXIDIZED_COPPER_CHAIN.asItem())));
 
 			itemModelGenerator.register(COPPER_BARS.asItem(), Models.GENERATED);
 			itemModelGenerator.register(EXPOSED_COPPER_BARS.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WEATHERED_COPPER_BARS.asItem(), Models.GENERATED);
 			itemModelGenerator.register(OXIDIZED_COPPER_BARS.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_COPPER_BARS.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_EXPOSED_COPPER_BARS.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_WEATHERED_COPPER_BARS.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_BARS.asItem(), Models.GENERATED);
+			itemModelGenerator.output.accept(WAXED_COPPER_BARS.asItem(), ItemModels.basic(ModelIds.getItemModelId(COPPER_BARS.asItem())));
+			itemModelGenerator.output.accept(WAXED_EXPOSED_COPPER_BARS.asItem(), ItemModels.basic(ModelIds.getItemModelId(EXPOSED_COPPER_BARS.asItem())));
+			itemModelGenerator.output.accept(WAXED_WEATHERED_COPPER_BARS.asItem(), ItemModels.basic(ModelIds.getItemModelId(WEATHERED_COPPER_BARS.asItem())));
+			itemModelGenerator.output.accept(WAXED_OXIDIZED_COPPER_BARS.asItem(), ItemModels.basic(ModelIds.getItemModelId(OXIDIZED_COPPER_BARS.asItem())));
 
 			itemModelGenerator.register(COPPER_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(EXPOSED_COPPER_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WEATHERED_COPPER_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(OXIDIZED_COPPER_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_COPPER_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_EXPOSED_COPPER_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_WEATHERED_COPPER_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_LANTERN.asItem(), Models.GENERATED);
+			itemModelGenerator.output.accept(WAXED_COPPER_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(COPPER_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_EXPOSED_COPPER_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(EXPOSED_COPPER_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_WEATHERED_COPPER_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(WEATHERED_COPPER_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_OXIDIZED_COPPER_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(OXIDIZED_COPPER_LANTERN.asItem())));
 
 			itemModelGenerator.register(COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(EXPOSED_COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WEATHERED_COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(OXIDIZED_COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_EXPOSED_COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_WEATHERED_COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_SOUL_LANTERN.asItem(), Models.GENERATED);
+			itemModelGenerator.output.accept(WAXED_COPPER_SOUL_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(COPPER_SOUL_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_EXPOSED_COPPER_SOUL_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(EXPOSED_COPPER_SOUL_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_WEATHERED_COPPER_SOUL_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(WEATHERED_COPPER_SOUL_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_OXIDIZED_COPPER_SOUL_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(OXIDIZED_COPPER_SOUL_LANTERN.asItem())));
 
 			itemModelGenerator.register(COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(EXPOSED_COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WEATHERED_COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(OXIDIZED_COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_EXPOSED_COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_WEATHERED_COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN.asItem(), Models.GENERATED);
+			itemModelGenerator.output.accept(WAXED_COPPER_REDSTONE_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(COPPER_REDSTONE_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_EXPOSED_COPPER_REDSTONE_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(EXPOSED_COPPER_REDSTONE_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_WEATHERED_COPPER_REDSTONE_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(WEATHERED_COPPER_REDSTONE_LANTERN.asItem())));
+			itemModelGenerator.output.accept(WAXED_OXIDIZED_COPPER_REDSTONE_LANTERN.asItem(), ItemModels.basic(ModelIds.getItemModelId(OXIDIZED_COPPER_REDSTONE_LANTERN.asItem())));
 
 			itemModelGenerator.register(COPPER_GATE.asItem(), Models.GENERATED);
 			itemModelGenerator.register(EXPOSED_COPPER_GATE.asItem(), Models.GENERATED);
 			itemModelGenerator.register(WEATHERED_COPPER_GATE.asItem(), Models.GENERATED);
 			itemModelGenerator.register(OXIDIZED_COPPER_GATE.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_COPPER_GATE.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_EXPOSED_COPPER_GATE.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_WEATHERED_COPPER_GATE.asItem(), Models.GENERATED);
-			itemModelGenerator.register(WAXED_OXIDIZED_COPPER_GATE.asItem(), Models.GENERATED);
+			itemModelGenerator.output.accept(WAXED_COPPER_GATE.asItem(), ItemModels.basic(ModelIds.getItemModelId(COPPER_GATE.asItem())));
+			itemModelGenerator.output.accept(WAXED_EXPOSED_COPPER_GATE.asItem(), ItemModels.basic(ModelIds.getItemModelId(EXPOSED_COPPER_GATE.asItem())));
+			itemModelGenerator.output.accept(WAXED_WEATHERED_COPPER_GATE.asItem(), ItemModels.basic(ModelIds.getItemModelId(WEATHERED_COPPER_GATE.asItem())));
+			itemModelGenerator.output.accept(WAXED_OXIDIZED_COPPER_GATE.asItem(), ItemModels.basic(ModelIds.getItemModelId(OXIDIZED_COPPER_GATE.asItem())));
+
+			itemModelGenerator.output.accept(WAXED_PLAYER_PRESSURE_PLATE.asItem(), ItemModels.basic(ModelIds.getBlockModelId(PLAYER_PRESSURE_PLATE)));
+			itemModelGenerator.output.accept(WAXED_EXPOSED_PLAYER_PRESSURE_PLATE.asItem(), ItemModels.basic(ModelIds.getBlockModelId(EXPOSED_PLAYER_PRESSURE_PLATE)));
+			itemModelGenerator.output.accept(WAXED_WEATHERED_PLAYER_PRESSURE_PLATE.asItem(), ItemModels.basic(ModelIds.getBlockModelId(WEATHERED_PLAYER_PRESSURE_PLATE)));
+			itemModelGenerator.output.accept(WAXED_OXIDIZED_PLAYER_PRESSURE_PLATE.asItem(), ItemModels.basic(ModelIds.getBlockModelId(OXIDIZED_PLAYER_PRESSURE_PLATE)));
 
 			itemModelGenerator.register(GOLD_CHAIN.asItem(), Models.GENERATED);
 			itemModelGenerator.register(GOLD_BARS.asItem(), Models.GENERATED);
@@ -4463,4 +4490,5 @@ public class PucksParityModDataGenerator implements DataGeneratorEntrypoint {
 					.upload(identifier6, textureMap, blockStateModelGenerator.modelCollector);
 		}
 	}
+    //?}
 }

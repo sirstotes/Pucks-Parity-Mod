@@ -1,13 +1,11 @@
 package sirstotes.pucks_parity_mod;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DoorBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -19,14 +17,15 @@ import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class GoldDoorBlock extends DoorBlock {
+    //? if >1.20.1 {
     private final BlockSetType blockSetType;
-    public GoldDoorBlock(BlockSetType type, Settings settings) {
-        //? if <1.21.1 {
-        /*super(settings, type);
-        *///?} else
-        super(type, settings);
-        blockSetType = type;
-    }
+    public GoldDoorBlock(BlockSetType type, Settings settings) {super(type, settings);blockSetType = type;}
+    //?} elif >1.19.2 {
+    /*private final BlockSetType blockSetType;
+    public GoldDoorBlock(BlockSetType type, Settings settings) {super(settings, type);blockSetType = type;}
+    *///?} else {
+    /*public GoldDoorBlock(Settings settings) {super(settings);}
+    *///?}
 
     @Override
     //? if <1.21.1 {
@@ -34,7 +33,7 @@ public class GoldDoorBlock extends DoorBlock {
     *///?} else {
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
     //?}
-        if (!blockSetType.canOpenByHand() && (world.isReceivingRedstonePower(pos) || (state.get(HALF) == DoubleBlockHalf.LOWER && world.isReceivingRedstonePower(pos.up())) || (state.get(HALF) == DoubleBlockHalf.UPPER && world.isReceivingRedstonePower(pos.down())))) {
+        if ((world.isReceivingRedstonePower(pos) || (state.get(HALF) == DoubleBlockHalf.LOWER && world.isReceivingRedstonePower(pos.up())) || (state.get(HALF) == DoubleBlockHalf.UPPER && world.isReceivingRedstonePower(pos.down())))) {
             return ActionResult.FAIL;
         } else {
             state = state.cycle(OPEN);
@@ -48,12 +47,16 @@ public class GoldDoorBlock extends DoorBlock {
         }
     }
 
-
+    //? if >1.19.2 {
     private void playOpenCloseSound(@Nullable Entity entity, World world, BlockPos pos, boolean open) {
-        world.playSound(
-                entity, pos, open ? this.blockSetType.doorOpen() : this.blockSetType.doorClose(), SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.1F + 0.9F
-        );
+        world.playSound(entity, pos, open ? this.blockSetType.doorOpen() : this.blockSetType.doorClose(), SoundCategory.BLOCKS, 1.0F, world.getRandom().nextFloat() * 0.1F + 0.9F);
     }
+    //?} else {
+    /*private void playOpenCloseSound(@Nullable Entity entity, World world, BlockPos pos, boolean open) {
+        world.syncWorldEvent(null, open ? 1005 : 1011, pos, 0);
+    }
+    *///?}
+
     //Causes gold doors to not switch when receiving redstone power.
     //? if <1.21.1 {
     /*@Override public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {}

@@ -25,11 +25,20 @@ public class OxidizablePlayerOnlyPressurePlateBlock extends PlayerOnlyPressurePl
     public static final IntProperty POWER = Properties.POWER;
     private final int delay;
 
+    //? if >1.19.2 {
     protected OxidizablePlayerOnlyPressurePlateBlock(Settings settings, BlockSetType blockSetType, int pressDelay, OxidationLevel level) {
         super(settings, blockSetType, pressDelay);
         delay = pressDelay;
         oxidationLevel = level;
     }
+    //?} else {
+    /*protected OxidizablePlayerOnlyPressurePlateBlock(Settings settings, int pressDelay, OxidationLevel level) {
+        super(settings, pressDelay);
+        delay = pressDelay;
+        oxidationLevel = level;
+    }
+    *///?}
+
 
     @Override
     /*? if <1.21.2 {*//*public*//*?} else {*/protected/*?}*/ void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {

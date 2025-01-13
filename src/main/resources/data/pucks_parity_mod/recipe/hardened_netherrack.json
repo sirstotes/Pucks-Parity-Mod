@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.0,
-  "ingredient": {
-    "item": "minecraft:netherrack"
-  },
+  "ingredient": "minecraft:netherrack",
   "result": {
     "id": "pucks_parity_mod:hardened_netherrack"
   }
