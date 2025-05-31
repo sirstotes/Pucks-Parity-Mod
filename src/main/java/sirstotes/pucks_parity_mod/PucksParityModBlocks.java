@@ -4,7 +4,7 @@ import io.netty.channel.ChannelPipeline;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
-//?if >1.21.1
+//? if >1.21.1
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.*;
 //? if >1.19.2 {
@@ -49,11 +49,11 @@ public class PucksParityModBlocks {
             Item.Settings s = new Item.Settings()
                     //? if >1.21.3 {
                     .useBlockPrefixedTranslationKey()
-                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, id))
+                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, id));
                     //?}
                     //? if <=1.19.2
-                    /*.group(PucksParityModItems.CUSTOM_ITEM_GROUP)*/;
-            //?if >1.21.3
+                    /*.group(PucksParityModItems.CUSTOM_ITEM_GROUP);*/
+            //? if >1.21.3
             if (isWaxed) s = s.component(DataComponentTypes.ITEM_MODEL, Identifier.of(PucksParityMod.MOD_ID, name.replaceFirst("waxed_", "")));
             BlockItem blockItem = new BlockItem(block, s);
             Registry.register(/*? if >1.19.2 {*/Registries/*?} else {*//*Registry*//*?}*/.ITEM, id, blockItem);

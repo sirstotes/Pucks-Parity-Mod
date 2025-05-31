@@ -17,7 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-//?if >1.21.3 {
+//? if >1.21.3 {
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 //?}

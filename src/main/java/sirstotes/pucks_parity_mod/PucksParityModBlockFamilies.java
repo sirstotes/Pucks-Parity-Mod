@@ -2,11 +2,9 @@ package sirstotes.pucks_parity_mod;
 
 import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.family.BlockFamily;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class PucksParityModBlockFamilies {
